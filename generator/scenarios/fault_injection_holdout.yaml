@@ -1,0 +1,40 @@
+# HOLDOUT labelled anomaly suite: different seed and different incident types from
+# fault_injection.yaml. Detector design iterations used fault_injection (dev set);
+# final detector numbers are reported on this holdout only.
+name: fault_injection_holdout
+description: Holdout labelled performance faults (new seed, unseen incident types) for final detector numbers.
+seed: 4242
+tasks: 12000
+workers: 4
+time_mode: simulated
+sim_days: 1
+workload_mix:
+  - {agent_id: qa-assistant, version: "1.0.0", weight: 1}
+  - {agent_id: qa-assistant, version: "1.1.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.0.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.1.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.0.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.1.0", weight: 1}
+  - {agent_id: planner-agent, version: "1.0.0", weight: 1}
+  - {agent_id: planner-agent, version: "2.0.0", weight: 1}
+fault_profile:
+  slow_tool: 0.02
+  tool_timeout: 0.02
+  loop: 0.02
+  malformed_response: 0.015
+  high_token_usage: 0.02
+  failed_retrieval: 0.02
+max_faults_per_run: 1
+incidents:
+  - name: planner-latency-incident
+    agent_id: planner-agent
+    version: "1.0.0"
+    start_pct: 0.30
+    duration_pct: 0.03
+    effect: {llm_latency_multiplier: 2.5}
+  - name: ops-tool-outage
+    agent_id: ops-tool-agent
+    version: "1.1.0"
+    start_pct: 0.70
+    duration_pct: 0.03
+    effect: {tool_error_rate: 0.6}

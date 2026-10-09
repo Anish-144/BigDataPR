@@ -1,0 +1,38 @@
+{
+  "query": "dq_orphan_spans",
+  "file": "06_data_quality_checks.sql",
+  "tags": {
+    "query": "dq_orphan_spans",
+    "title": "Spans whose parent span is missing",
+    "concept": "Anti-join (LEFT JOIN ... WHERE right side IS NULL)",
+    "question": "Which traces contain spans pointing to a parent that never arrived (or was quarantined)?",
+    "interpretation": "Orphans break the trace waterfall. Causes: corrupted parent IDs, or a parent event that was quarantined as structurally invalid (check dead_letter_events for the same trace).",
+    "params": "days=30"
+  },
+  "elapsed_ms": 906.9,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 968,
+    "cpuTimeMillis": 802,
+    "wallTimeMillis": 1564,
+    "processedRows": 907740,
+    "processedBytes": 34832560,
+    "physicalInputBytes": 25857823,
+    "peakMemoryBytes": 11170166,
+    "totalSplits": 113
+  },
+  "columns": [
+    "test_run_id",
+    "orphan_spans",
+    "affected_traces",
+    "example_trace_id"
+  ],
+  "rows": [
+    [
+      "TR-20261009-315910",
+      205,
+      67,
+      "01d9b1700eb498726081963a50a4c37d"
+    ]
+  ]
+}

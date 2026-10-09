@@ -1,0 +1,143 @@
+{
+  "query": "latency_percentiles_by_version",
+  "file": "02_performance_analytics.sql",
+  "tags": {
+    "query": "latency_percentiles_by_version",
+    "title": "Latency percentiles by agent version",
+    "concept": "Percentiles (approx_percentile), aggregation, GROUP BY",
+    "question": "How do median and tail latencies (p50/p90/p95/p99) and time-to-first-token compare across agent versions?",
+    "interpretation": "approx_percentile is computed from a quantile digest (approximate; see exact_vs_approx_p95). Tail percentiles (p95/p99) expose fault-driven outliers (timeouts, loops) that averages hide. TTFT is SIMULATED by the mock agents (the time to first streamed token of the final model call).",
+    "params": "days=30"
+  },
+  "elapsed_ms": 155.4,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 98,
+    "cpuTimeMillis": 65,
+    "wallTimeMillis": 78,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 47345,
+    "totalSplits": 57
+  },
+  "columns": [
+    "agent_name",
+    "agent_version",
+    "model_name",
+    "runs",
+    "avg_ms",
+    "p50_ms",
+    "p90_ms",
+    "p95_ms",
+    "p99_ms",
+    "p50_ttft_ms",
+    "avg_tokens"
+  ],
+  "rows": [
+    [
+      "Planner Agent",
+      "2.0.0",
+      "mock-large",
+      5688,
+      4369.5,
+      4100.9,
+      5867.5,
+      6548.9,
+      11661.1,
+      3054.7,
+      3527.6
+    ],
+    [
+      "Planner Agent",
+      "1.0.0",
+      "mock-large",
+      5724,
+      3831.0,
+      3496.6,
+      5092.1,
+      5804.7,
+      10552.8,
+      2379.5,
+      2594.8
+    ],
+    [
+      "RAG Helpdesk",
+      "2.0.0",
+      "mock-medium",
+      5827,
+      1704.2,
+      1477.5,
+      2217.1,
+      2623.3,
+      4659.2,
+      728.4,
+      1937.6
+    ],
+    [
+      "Ops Tool Agent",
+      "1.1.0",
+      "mock-small",
+      5654,
+      1592.7,
+      1383.3,
+      1910.8,
+      2197.5,
+      4545.2,
+      895.5,
+      1021.8
+    ],
+    [
+      "RAG Helpdesk",
+      "2.1.0",
+      "mock-medium",
+      5788,
+      1463.1,
+      1283.7,
+      1872.1,
+      2166.8,
+      3639.1,
+      631.1,
+      1432.8
+    ],
+    [
+      "Ops Tool Agent",
+      "1.0.0",
+      "mock-small",
+      5793,
+      1407.3,
+      1211.0,
+      1637.0,
+      1851.7,
+      4230.7,
+      787.7,
+      792.7
+    ],
+    [
+      "QA Assistant",
+      "1.1.0",
+      "mock-medium",
+      5752,
+      979.2,
+      914.2,
+      1388.3,
+      1590.6,
+      2161.9,
+      181.7,
+      621.2
+    ],
+    [
+      "QA Assistant",
+      "1.0.0",
+      "mock-small",
+      5754,
+      704.5,
+      644.0,
+      1031.4,
+      1207.9,
+      1692.3,
+      142.2,
+      509.4
+    ]
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "query": "quality_metrics_by_version",
+  "file": "04_regression_comparison.sql",
+  "tags": {
+    "query": "quality_metrics_by_version",
+    "title": "Deterministic quality metrics by version",
+    "concept": "Conditional aggregation over long-format evaluation records",
+    "question": "How do schema validity, exact-match accuracy, tool correctness and hallucination indicators compare?",
+    "interpretation": "All metrics here are deterministic (evaluator_type = 'deterministic'); model-judged scores, if enabled, are stored separately and never mixed into these columns.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 142.9,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 136,
+    "cpuTimeMillis": 350,
+    "wallTimeMillis": 389,
+    "processedRows": 324686,
+    "processedBytes": 8840653,
+    "physicalInputBytes": 8840653,
+    "peakMemoryBytes": 4231954,
+    "totalSplits": 89
+  },
+  "columns": [
+    "agent_id",
+    "agent_version",
+    "runs",
+    "schema_validity",
+    "exact_match",
+    "token_f1",
+    "tool_selection_acc",
+    "tool_argument_acc",
+    "hallucination_flag_rate"
+  ],
+  "rows": [
+    [
+      "ops-tool-agent",
+      "1.0.0",
+      5794,
+      0.9886,
+      0.9007,
+      0.8985,
+      0.9589,
+      0.9335,
+      0.0269
+    ],
+    [
+      "ops-tool-agent",
+      "1.1.0",
+      5658,
+      0.9841,
+      0.8574,
+      0.856,
+      0.9402,
+      0.9062,
+      0.0474
+    ],
+    [
+      "planner-agent",
+      "1.0.0",
+      5726,
+      0.9895,
+      0.6594,
+      0.661,
+      0.9461,
+      0.9227,
+      0.1097
+    ],
+    [
+      "planner-agent",
+      "2.0.0",
+      5694,
+      0.9902,
+      0.759,
+      0.759,
+      0.9685,
+      0.9517,
+      0.0793
+    ],
+    [
+      "qa-assistant",
+      "1.0.0",
+      5758,
+      0.9894,
+      0.8227,
+      0.8813,
+      null,
+      null,
+      0.052
+    ],
+    [
+      "qa-assistant",
+      "1.1.0",
+      5754,
+      0.9934,
+      0.9163,
+      0.9437,
+      null,
+      null,
+      0.0259
+    ],
+    [
+      "rag-helpdesk",
+      "2.0.0",
+      5828,
+      0.9921,
+      0.8765,
+      0.9171,
+      null,
+      null,
+      0.0419
+    ],
+    [
+      "rag-helpdesk",
+      "2.1.0",
+      5788,
+      0.9905,
+      0.8003,
+      0.8832,
+      null,
+      null,
+      0.0651
+    ]
+  ]
+}

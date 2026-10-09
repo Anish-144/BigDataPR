@@ -1,0 +1,97 @@
+{
+  "query": "files_per_partition",
+  "file": "08_query_plan_experiments.sql",
+  "tags": {
+    "query": "files_per_partition",
+    "title": "Iceberg data files per partition (small-files check)",
+    "concept": "Iceberg metadata tables (\"$files\") queried with SQL",
+    "question": "How many data files does each table/partition have, and how big are they?",
+    "interpretation": "Frequent streaming commits create many small files; compaction (sql/09: optimize) rewrites them into fewer, larger files, which reduces per-file open/plan overhead for queries."
+  },
+  "elapsed_ms": 143.2,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 126,
+    "cpuTimeMillis": 33,
+    "wallTimeMillis": 67,
+    "processedRows": 14,
+    "processedBytes": 121637,
+    "physicalInputBytes": 121637,
+    "peakMemoryBytes": 3680,
+    "totalSplits": 100
+  },
+  "columns": [
+    "table_name",
+    "event_date",
+    "data_files",
+    "records",
+    "size_mb",
+    "avg_file_kb"
+  ],
+  "rows": [
+    [
+      "agent_spans",
+      "2026-10-06",
+      1,
+      15607,
+      0.85,
+      866.1
+    ],
+    [
+      "agent_spans",
+      "2026-10-07",
+      1,
+      43526,
+      2.36,
+      2414.9
+    ],
+    [
+      "agent_spans",
+      "2026-10-08",
+      2,
+      72064,
+      3.91,
+      2000.3
+    ],
+    [
+      "agent_spans",
+      "2026-10-09",
+      3,
+      171383,
+      9.3,
+      3173.2
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-06",
+      1,
+      34881,
+      3.42,
+      3503.0
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-07",
+      1,
+      97248,
+      9.67,
+      9905.2
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-08",
+      2,
+      160660,
+      15.98,
+      8182.3
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-09",
+      3,
+      383585,
+      37.84,
+      12915.2
+    ]
+  ]
+}

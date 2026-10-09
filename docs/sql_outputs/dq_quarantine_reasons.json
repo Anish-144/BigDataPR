@@ -1,0 +1,116 @@
+{
+  "query": "dq_quarantine_reasons",
+  "file": "06_data_quality_checks.sql",
+  "tags": {
+    "query": "dq_quarantine_reasons",
+    "title": "Quarantined (dead-letter) records by reason and day",
+    "concept": "Aggregation over the dead-letter table",
+    "question": "Why were records rejected by the stream processor, and is the rejection rate stable?",
+    "interpretation": "Every rejected record is kept (raw bytes + reason) - nothing is silently dropped.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 258.9,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 253,
+    "cpuTimeMillis": 15,
+    "wallTimeMillis": 36,
+    "processedRows": 446,
+    "processedBytes": 56070,
+    "physicalInputBytes": 56070,
+    "peakMemoryBytes": 3992,
+    "totalSplits": 51
+  },
+  "columns": [
+    "ingest_date",
+    "validation_error",
+    "kafka_topic",
+    "records"
+  ],
+  "rows": [
+    [
+      "2026-10-09",
+      "unknown_event_type",
+      "agent-evaluations",
+      68
+    ],
+    [
+      "2026-10-09",
+      "malformed_json",
+      "agent-evaluations",
+      64
+    ],
+    [
+      "2026-10-09",
+      "invalid_event_time",
+      "agent-evaluations",
+      62
+    ],
+    [
+      "2026-10-09",
+      "missing_event_id",
+      "agent-evaluations",
+      59
+    ],
+    [
+      "2026-10-09",
+      "unknown_event_type",
+      "agent-traces",
+      45
+    ],
+    [
+      "2026-10-09",
+      "missing_event_id",
+      "agent-traces",
+      43
+    ],
+    [
+      "2026-10-09",
+      "malformed_json",
+      "agent-traces",
+      40
+    ],
+    [
+      "2026-10-09",
+      "invalid_event_time",
+      "agent-traces",
+      35
+    ],
+    [
+      "2026-10-09",
+      "invalid_event_time",
+      "agent-metrics",
+      11
+    ],
+    [
+      "2026-10-09",
+      "unknown_event_type",
+      "agent-metrics",
+      7
+    ],
+    [
+      "2026-10-09",
+      "missing_event_id",
+      "agent-metrics",
+      5
+    ],
+    [
+      "2026-10-09",
+      "malformed_json",
+      "agent-metrics",
+      3
+    ],
+    [
+      "2026-10-09",
+      "missing_payload",
+      "agent-metrics",
+      3
+    ],
+    [
+      "2026-10-09",
+      "unknown_event_type",
+      "agent-security-events",
+      1
+    ]
+  ]
+}

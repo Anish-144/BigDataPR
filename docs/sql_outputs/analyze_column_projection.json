@@ -1,0 +1,32 @@
+{
+  "query": "analyze_column_projection",
+  "file": "08_query_plan_experiments.sql",
+  "tags": {
+    "query": "analyze_column_projection",
+    "title": "EXPLAIN ANALYZE - columnar projection (2 columns of a wide table)",
+    "concept": "Parquet columnar reads: only referenced columns are fetched",
+    "question": "How many bytes are read when a query touches 2 of the 22 columns of raw_agent_events?",
+    "interpretation": "raw_value (full JSON) dominates the table size; queries that do not reference it skip those column chunks entirely. Compare physical input bytes with exp_tier_raw_json, which must read raw_value.",
+    "params": "days=60"
+  },
+  "elapsed_ms": 271.4,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 269,
+    "cpuTimeMillis": 29,
+    "wallTimeMillis": 161,
+    "processedRows": 676374,
+    "processedBytes": 347696,
+    "physicalInputBytes": 347696,
+    "peakMemoryBytes": 3872298,
+    "totalSplits": 56
+  },
+  "columns": [
+    "Query Plan"
+  ],
+  "rows": [
+    [
+      "Trino version: 467\nQueued: 247.36us, Analysis: 19.53ms, Planning: 99.57ms, Execution: 239.60ms\nFragment 1 [HASH]\n    CPU: 5.08ms, Scheduled: 6.02ms, Blocked 834.92ms (Input: 415.12ms, Output: 0.00ns), Input: 38 rows (1.05kB); per task: avg.: 38.00 std.dev.: 0.00, Output: 8 rows (216B)\n    Peak Memory: 3.69MB, Tasks count: 1; per task: max: 3.69MB\n    Output layout: [event_type, count]\n    Output partitioning: SINGLE []\n    Aggregate[type = FINAL, keys = [event_type]]\n    \u2502   Layout: [event_type:varchar, count:bigint]\n    \u2502   Estimates: {rows: ? (?), cpu: 9.04M, memory: ?, network: 0B}\n    \u2502   CPU: 1.00ms (4.76%), Scheduled: 1.00ms (2.04%), Blocked: 0.00ns (0.00%), Output: 8 rows (216B)\n    \u2502   Input avg.: 2.38 rows, Input std.dev.: 174.80%\n    \u2502   count := count(count_0)\n    \u2514\u2500 LocalExchange[partitioning = HASH, arguments = [event_type::varchar]]\n       \u2502   Layout: [event_type:varchar, count_0:bigint]\n       \u2502   Estimates: {rows: 676374 (9.04MB), cpu: 9.04M, memory: 0B, network: 0B}\n       \u2502   CPU: 1.00ms (4.76%), Scheduled: 2.00ms (4.08%), Blocked: 420.00ms (50.30%), Output: 38 rows (1.05kB)\n       \u2502   Input avg.: 2.38 rows, Input std.dev.: 143.46%\n       \u2514\u2500 RemoteSource[sourceFragmentIds = [2]]\n              Layout: [event_type:varchar, count_0:bigint]\n              CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 415.00ms (49.70%), Output: 38 rows (1.05kB)\n              Input avg.: 2.38 rows, Input std.dev.: 143.46%\n\nFragment 2 [SOURCE]\n    CPU: 20.09ms, Scheduled: 46.86ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 676374 rows (2.59MB); per task: avg.: 676374.00 std.dev.: 0.00, Output: 38 rows (1.05kB)\n    Peak Memory: 2.90kB, Tasks count: 1; per task: max: 2.90kB\n    Output layout: [event_type, count_0]\n    Output partitioning: HASH [event_type]\n    Aggregate[type = PARTIAL, keys = [event_type]]\n    \u2502   Layout: [event_type:varchar, count_0:bigint]\n    \u2502   Estimates: {rows: 676374 (9.04MB), cpu: ?, memory: ?, network: ?}\n    \u2502   CPU: 5.00ms (23.81%), Scheduled: 5.00ms (10.20%), Blocked: 0.00ns (0.00%), Output: 38 rows (1.05kB)\n    \u2502   Input avg.: 96624.86 rows, Input std.dev.: 62.99%\n    \u2502   count_0 := count(*)\n    \u2514\u2500 TableScan[table = lakehouse:analytics.raw_agent_events$data@2444391658245296219 constraint on [event_date]]\n           Layout: [event_type:varchar]\n           Estimates: {rows: 676374 (3.23MB), cpu: 3.23M, memory: 0B, network: 0B}\n           CPU: 14.00ms (66.67%), Scheduled: 41.00ms (83.67%), Blocked: 0.00ns (0.00%), Output: 676374 rows (2.59MB)\n           Input avg.: 96624.86 rows, Input std.dev.: 62.99%\n           event_type := 2:event_type:varchar\n           5:event_date:date\n               :: [[2026-08-10, <max>)]\n           Input: 676374 rows (2.59MB), Physical input: 339.55kB, Physical input time: 30.20ms\n\n"
+    ]
+  ]
+}

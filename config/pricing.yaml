@@ -1,0 +1,22 @@
+# LOCAL, ILLUSTRATIVE pricing table for the MOCK models used by AgentShield.
+#
+# These numbers are NOT real provider prices and must not be presented as such.
+# Every monetary value derived from this file is stored as `estimated_cost_usd`
+# together with `cost_source = local_pricing_config:<pricing_version>`.
+# A model missing from this table produces estimated_cost_usd = NULL and
+# cost_source = "unavailable" (token counts are still reported).
+
+pricing_version: "local-demo-2026.10"
+currency: USD
+disclaimer: "Illustrative local prices for mock models; not real provider pricing. All costs are estimates."
+
+models:
+  mock-small:
+    input_per_1k_tokens: 0.00015
+    output_per_1k_tokens: 0.0006
+  mock-medium:
+    input_per_1k_tokens: 0.0008
+    output_per_1k_tokens: 0.0032
+  mock-large:
+    input_per_1k_tokens: 0.0025
+    output_per_1k_tokens: 0.01

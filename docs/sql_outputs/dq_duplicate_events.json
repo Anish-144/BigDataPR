@@ -1,0 +1,50 @@
+{
+  "query": "dq_duplicate_events",
+  "file": "06_data_quality_checks.sql",
+  "tags": {
+    "query": "dq_duplicate_events",
+    "title": "Duplicate event IDs (at-least-once delivery / producer retries)",
+    "concept": "GROUP BY ... HAVING count(*) > 1",
+    "question": "Which event IDs were ingested more than once, and on which topics?",
+    "interpretation": "Duplicates are expected under at-least-once delivery. Analytical queries that must be exact can de-duplicate with ROW_NUMBER() OVER (PARTITION BY event_id ...).",
+    "params": "days=30"
+  },
+  "elapsed_ms": 461.4,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 470,
+    "cpuTimeMillis": 2260,
+    "wallTimeMillis": 3116,
+    "processedRows": 676374,
+    "processedBytes": 18872488,
+    "physicalInputBytes": 18872488,
+    "peakMemoryBytes": 1112670,
+    "totalSplits": 89
+  },
+  "columns": [
+    "kafka_topic",
+    "event_type",
+    "duplicated_event_ids",
+    "extra_copies"
+  ],
+  "rows": [
+    [
+      "agent-evaluations",
+      "evaluation.result",
+      48,
+      48
+    ],
+    [
+      "agent-traces",
+      "span.completed",
+      33,
+      33
+    ],
+    [
+      "agent-metrics",
+      "run.metrics",
+      9,
+      9
+    ]
+  ]
+}

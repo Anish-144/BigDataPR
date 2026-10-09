@@ -1,0 +1,19 @@
+# Candidate-vs-baseline regression suite: equal traffic on each version pair, no faults,
+# so differences come only from the version profiles (feeds the regression gate).
+name: regression
+description: Clean A/B suite comparing each agent's baseline and candidate version.
+seed: 1234
+tasks: 8000
+workers: 4
+time_mode: simulated
+sim_days: 0.5
+workload_mix:
+  - {agent_id: qa-assistant, version: "1.0.0", weight: 1}
+  - {agent_id: qa-assistant, version: "1.1.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.0.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.1.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.0.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.1.0", weight: 1}
+  - {agent_id: planner-agent, version: "1.0.0", weight: 1}
+  - {agent_id: planner-agent, version: "2.0.0", weight: 1}
+fault_profile: {}

@@ -1,0 +1,143 @@
+{
+  "query": "version_regression_lag",
+  "file": "04_regression_comparison.sql",
+  "tags": {
+    "query": "version_regression_lag",
+    "title": "Version-over-version latency change (LAG by release sequence)",
+    "concept": "CTE + window functions (LAG, RANK) ordered by a numeric release sequence",
+    "question": "Did a new release of an agent get slower, and how does each version rank on task success?",
+    "interpretation": "latency_change_pct compares each version with the previous release of the same agent. Ordering by agent_release_seq avoids lexical-version pitfalls (e.g. '1.10.0' < '1.9.0' as strings).",
+    "params": "days=30"
+  },
+  "elapsed_ms": 106.3,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 108,
+    "cpuTimeMillis": 46,
+    "wallTimeMillis": 79,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 4689028,
+    "totalSplits": 89
+  },
+  "columns": [
+    "agent_name",
+    "previous_version",
+    "agent_version",
+    "runs",
+    "avg_latency_ms",
+    "previous_version_latency",
+    "latency_change_pct",
+    "p95_latency_ms",
+    "success_rate",
+    "avg_tokens",
+    "success_rank"
+  ],
+  "rows": [
+    [
+      "QA Assistant",
+      "1.0.0",
+      "1.1.0",
+      5752,
+      979.2,
+      704.5,
+      39.0,
+      1590.6,
+      0.9166,
+      621.2,
+      1
+    ],
+    [
+      "Planner Agent",
+      "1.0.0",
+      "2.0.0",
+      5688,
+      4369.5,
+      3831.0,
+      14.06,
+      6582.2,
+      0.7387,
+      3527.6,
+      1
+    ],
+    [
+      "Ops Tool Agent",
+      "1.0.0",
+      "1.1.0",
+      5654,
+      1592.7,
+      1407.3,
+      13.17,
+      2188.1,
+      0.8573,
+      1021.8,
+      2
+    ],
+    [
+      "RAG Helpdesk",
+      "2.0.0",
+      "2.1.0",
+      5788,
+      1463.1,
+      1704.2,
+      -14.15,
+      2170.9,
+      0.7998,
+      1432.8,
+      2
+    ],
+    [
+      "Ops Tool Agent",
+      null,
+      "1.0.0",
+      5793,
+      1407.3,
+      null,
+      null,
+      1844.7,
+      0.9009,
+      792.7,
+      1
+    ],
+    [
+      "RAG Helpdesk",
+      null,
+      "2.0.0",
+      5827,
+      1704.2,
+      null,
+      null,
+      2619.4,
+      0.8764,
+      1937.6,
+      1
+    ],
+    [
+      "QA Assistant",
+      null,
+      "1.0.0",
+      5754,
+      704.5,
+      null,
+      null,
+      1204.9,
+      0.8227,
+      509.4,
+      2
+    ],
+    [
+      "Planner Agent",
+      null,
+      "1.0.0",
+      5724,
+      3831.0,
+      null,
+      null,
+      5797.8,
+      0.6265,
+      2594.8,
+      2
+    ]
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "recorded_at": "2026-10-09T18:12:08.507000+00:00",
+  "model_version": "iforest-20261009T181109-84ff9e",
+  "model_training_scenarios": [
+    "baseline",
+    "regression"
+  ],
+  "eval_scenario": "fault_injection_holdout",
+  "eval_runs": 12000,
+  "positives": 1043,
+  "overall": {
+    "rules": {
+      "tp": 655,
+      "fp": 0,
+      "fn": 388,
+      "tn": 10957,
+      "precision": 1.0,
+      "recall": 0.628,
+      "f1": 0.7715,
+      "false_positive_rate": 0.0
+    },
+    "isolation_forest": {
+      "tp": 290,
+      "fp": 83,
+      "fn": 753,
+      "tn": 10874,
+      "precision": 0.7775,
+      "recall": 0.278,
+      "f1": 0.4096,
+      "false_positive_rate": 0.0076
+    },
+    "combined": {
+      "tp": 712,
+      "fp": 83,
+      "fn": 331,
+      "tn": 10874,
+      "precision": 0.8956,
+      "recall": 0.6826,
+      "f1": 0.7748,
+      "false_positive_rate": 0.0076
+    }
+  },
+  "isolation_forest_roc_auc": 0.913,
+  "per_fault_recall": {
+    "slow_tool": {
+      "runs": 175,
+      "rules": 0.84,
+      "isolation_forest": 0.0286,
+      "combined": 0.8457
+    },
+    "tool_timeout": {
+      "runs": 149,
+      "rules": 1.0,
+      "isolation_forest": 0.6443,
+      "combined": 1.0
+    },
+    "loop": {
+      "runs": 125,
+      "rules": 1.0,
+      "isolation_forest": 0.984,
+      "combined": 1.0
+    },
+    "malformed_response": {
+      "runs": 161,
+      "rules": 0.0,
+      "isolation_forest": 0.2981,
+      "combined": 0.2981
+    },
+    "high_token_usage": {
+      "runs": 235,
+      "rules": 0.9957,
+      "isolation_forest": 0.0426,
+      "combined": 0.9957
+    },
+    "failed_retrieval": {
+      "runs": 120,
+      "rules": 0.0,
+      "isolation_forest": 0.0083,
+      "combined": 0.0083
+    },
+    "incident:ops-tool-outage": {
+      "runs": 40,
+      "rules": 0.05,
+      "isolation_forest": 0.15,
+      "combined": 0.15
+    },
+    "incident:planner-latency-incident": {
+      "runs": 45,
+      "rules": 0.0444,
+      "isolation_forest": 0.0889,
+      "combined": 0.1111
+    }
+  },
+  "alerts_by_detector": {
+    "rule:token_spike": 292,
+    "rule:tool_latency_spike": 296,
+    "rule:tool_timeout": 149,
+    "rule:repeated_tool_calls": 125,
+    "rule:latency_spike": 133,
+    "rule:long_chain": 9,
+    "rule:window_latency_regression": 3,
+    "isolation_forest": 373
+  },
+  "isolation_forest_operating_points": {
+    "0.95": {
+      "threshold": 0.5710322180709353,
+      "tp": 465,
+      "fp": 427,
+      "fn": 578,
+      "tn": 10530,
+      "precision": 0.5213,
+      "recall": 0.4458,
+      "f1": 0.4806,
+      "false_positive_rate": 0.039
+    },
+    "0.97": {
+      "threshold": 0.6030003291669561,
+      "tp": 385,
+      "fp": 208,
+      "fn": 658,
+      "tn": 10749,
+      "precision": 0.6492,
+      "recall": 0.3691,
+      "f1": 0.4707,
+      "false_positive_rate": 0.019
+    },
+    "0.985": {
+      "threshold": 0.6437974508780313,
+      "tp": 290,
+      "fp": 83,
+      "fn": 753,
+      "tn": 10874,
+      "precision": 0.7775,
+      "recall": 0.278,
+      "f1": 0.4096,
+      "false_positive_rate": 0.0076
+    },
+    "0.99": {
+      "threshold": 0.6629141938207755,
+      "tp": 250,
+      "fp": 47,
+      "fn": 793,
+      "tn": 10910,
+      "precision": 0.8418,
+      "recall": 0.2397,
+      "f1": 0.3731,
+      "false_positive_rate": 0.0043
+    }
+  },
+  "incident_windows": {
+    "incidents": [
+      {
+        "incident": "incident:ops-tool-outage",
+        "agent": "ops-tool-agent@1.1.0",
+        "start": "2026-10-09 11:00:18.774121+00:00",
+        "end": "2026-10-09 11:42:12.330704+00:00",
+        "runs": 40,
+        "detected_by_window_rule": false,
+        "window_alerts": 0
+      },
+      {
+        "incident": "incident:planner-latency-incident",
+        "agent": "planner-agent@1.0.0",
+        "start": "2026-10-09 01:23:40.839600+00:00",
+        "end": "2026-10-09 02:05:09.433669+00:00",
+        "runs": 45,
+        "detected_by_window_rule": true,
+        "window_alerts": 3
+      }
+    ],
+    "window_alerts_total": 3,
+    "window_alerts_outside_incidents": 0
+  },
+  "clean_traffic": {
+    "scenario": "security_suite",
+    "runs": 6000,
+    "runs_with_perf_labels": 0,
+    "rules_flag_rate": 0.0,
+    "isolation_forest_flag_rate": 0.0392,
+    "combined_flag_rate": 0.0392
+  }
+}

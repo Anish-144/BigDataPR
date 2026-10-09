@@ -1,0 +1,22 @@
+# AgentShield Python runtime dependencies (generator, ingestion, evaluation, ml,
+# security, investigation, backend). Pinned for reproducibility; see docs/ARCHITECTURE.md
+# for the compatibility notes. The Spark job does NOT use this file (it runs on the
+# apache/spark image with only PySpark + the stdlib).
+pydantic==2.10.6
+orjson==3.10.15
+PyYAML==6.0.2
+confluent-kafka==2.8.0
+trino==0.333.0
+fastapi==0.115.8
+uvicorn[standard]==0.34.0
+SQLAlchemy==2.0.38
+psycopg[binary]==3.2.4
+numpy==2.2.3
+pandas==2.2.3
+scikit-learn==1.6.1
+joblib==1.4.2
+jsonschema==4.23.0
+psutil==6.1.1
+httpx==0.28.1
+# Optional LLM rephrasing for the investigation assistant (used only when LLM_PROVIDER=anthropic)
+anthropic==1.13.0

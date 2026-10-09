@@ -1,0 +1,82 @@
+{
+  "query": "dq_scorecard",
+  "file": "06_data_quality_checks.sql",
+  "tags": {
+    "query": "dq_scorecard",
+    "title": "Data-quality scorecard (one row per check)",
+    "concept": "CTE per check + UNION ALL into a single scorecard",
+    "question": "How healthy is the curated data overall?",
+    "interpretation": "issue_rate_pct is issues / rows checked. Non-zero counts are expected when a scenario injects dirty data (dirty_rate > 0); compare them with the generator's dirty_injected summary.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 581.7,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 619,
+    "cpuTimeMillis": 3856,
+    "wallTimeMillis": 6718,
+    "processedRows": 3773355,
+    "processedBytes": 120528316,
+    "physicalInputBytes": 103565956,
+    "peakMemoryBytes": 63744371,
+    "totalSplits": 426
+  },
+  "columns": [
+    "check_name",
+    "issues",
+    "rows_checked",
+    "issue_rate_pct",
+    "result"
+  ],
+  "rows": [
+    [
+      "quarantined_records",
+      446,
+      676374,
+      0.0659,
+      "REVIEW"
+    ],
+    [
+      "orphan_spans",
+      205,
+      256611,
+      0.0799,
+      "REVIEW"
+    ],
+    [
+      "duplicate_event_ids",
+      90,
+      675928,
+      0.0133,
+      "REVIEW"
+    ],
+    [
+      "negative_span_durations",
+      36,
+      302580,
+      0.0119,
+      "REVIEW"
+    ],
+    [
+      "future_event_times",
+      0,
+      302580,
+      0.0,
+      "PASS"
+    ],
+    [
+      "end_before_start",
+      0,
+      302580,
+      0.0,
+      "PASS"
+    ],
+    [
+      "null_trace_ids_in_spans",
+      0,
+      302580,
+      0.0,
+      "PASS"
+    ]
+  ]
+}

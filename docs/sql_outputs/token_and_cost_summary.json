@@ -1,0 +1,143 @@
+{
+  "query": "token_and_cost_summary",
+  "file": "02_performance_analytics.sql",
+  "tags": {
+    "query": "token_and_cost_summary",
+    "title": "Token usage and ESTIMATED cost by model and agent version",
+    "concept": "Aggregation with explicit provenance of monetary values",
+    "question": "How many tokens does each agent version consume and what is the estimated cost?",
+    "interpretation": "estimated_cost_usd comes from config/pricing.yaml (illustrative local prices for mock models, NOT provider pricing). cost_source records the pricing version; runs without pricing are counted separately.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 77.9,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 77,
+    "cpuTimeMillis": 26,
+    "wallTimeMillis": 30,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 22376,
+    "totalSplits": 57
+  },
+  "columns": [
+    "model_name",
+    "agent_name",
+    "agent_version",
+    "runs",
+    "input_tokens",
+    "output_tokens",
+    "avg_tokens_per_run",
+    "est_total_cost_usd",
+    "est_cost_per_1k_runs_usd",
+    "runs_without_pricing",
+    "cost_source"
+  ],
+  "rows": [
+    [
+      "mock-large",
+      "Planner Agent",
+      "2.0.0",
+      5688,
+      16819816,
+      3245077,
+      3527.6,
+      74.5003,
+      13.0978,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ],
+    [
+      "mock-large",
+      "Planner Agent",
+      "1.0.0",
+      5724,
+      12254175,
+      2598538,
+      2594.8,
+      56.6208,
+      9.8918,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ],
+    [
+      "mock-medium",
+      "RAG Helpdesk",
+      "2.0.0",
+      5827,
+      9851378,
+      1438814,
+      1937.6,
+      12.4853,
+      2.1427,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ],
+    [
+      "mock-medium",
+      "RAG Helpdesk",
+      "2.1.0",
+      5788,
+      6971476,
+      1321385,
+      1432.8,
+      9.8056,
+      1.6941,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ],
+    [
+      "mock-medium",
+      "QA Assistant",
+      "1.1.0",
+      5752,
+      2718193,
+      854738,
+      621.2,
+      4.9097,
+      0.8536,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ],
+    [
+      "mock-small",
+      "Ops Tool Agent",
+      "1.1.0",
+      5654,
+      4608834,
+      1168286,
+      1021.8,
+      1.3923,
+      0.2462,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ],
+    [
+      "mock-small",
+      "Ops Tool Agent",
+      "1.0.0",
+      5793,
+      3728161,
+      864143,
+      792.7,
+      1.0777,
+      0.186,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ],
+    [
+      "mock-small",
+      "QA Assistant",
+      "1.0.0",
+      5754,
+      2258435,
+      672608,
+      509.4,
+      0.7423,
+      0.129,
+      0,
+      "local_pricing_config:local-demo-2026.10"
+    ]
+  ]
+}

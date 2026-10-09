@@ -1,0 +1,178 @@
+# AgentShield agent registry (dimension data).
+#
+# These are deterministic MOCK agents. "profile" parameters drive the simulated
+# behaviour (latency, tokens, accuracy, tool reliability) so that benchmarks are
+# repeatable without paid model APIs. Version pairs are designed to create
+# realistic, measurable differences for cohort / regression comparisons.
+#
+# release_seq gives the semantic ordering of versions (do not order by the
+# version string lexically).
+
+agents:
+  - agent_id: qa-assistant
+    agent_name: QA Assistant
+    workload_type: qa
+    owner: member-3
+    description: Single-turn factual question answering over a fixed answer bank.
+    versions:
+      - version: "1.0.0"
+        release_seq: 1
+        released_at: "2026-08-03"
+        model_name: mock-small
+        prompt_version: qa-p1
+        profile:
+          llm_latency_ms: 620
+          latency_sigma: 0.28
+          ttft_ratio: 0.22
+          input_tokens: 380
+          output_tokens: 110
+          accuracy: 0.84
+          json_validity: 0.97
+      - version: "1.1.0"
+        release_seq: 2
+        released_at: "2026-09-14"
+        model_name: mock-medium
+        prompt_version: qa-p2
+        profile:
+          llm_latency_ms: 880
+          latency_sigma: 0.25
+          ttft_ratio: 0.20
+          input_tokens: 460
+          output_tokens: 140
+          accuracy: 0.93
+          json_validity: 0.99
+
+  - agent_id: rag-helpdesk
+    agent_name: RAG Helpdesk
+    workload_type: rag
+    owner: member-3
+    description: Retrieves knowledge-base documents and answers with citations.
+    versions:
+      - version: "2.0.0"
+        release_seq: 1
+        released_at: "2026-08-10"
+        model_name: mock-medium
+        prompt_version: rag-p3
+        profile:
+          llm_latency_ms: 950
+          latency_sigma: 0.30
+          ttft_ratio: 0.25
+          input_tokens: 1450
+          output_tokens: 190
+          accuracy: 0.90
+          json_validity: 0.98
+          retrieval_latency_ms: 85
+          top_k: 5
+          retrieval_noise: 0.10
+          citation_rate: 0.95
+      - version: "2.1.0"
+        release_seq: 2
+        released_at: "2026-09-21"
+        model_name: mock-medium
+        prompt_version: rag-p4
+        # Smaller top_k + new chunking: faster and cheaper, but retrieval quality regresses.
+        profile:
+          llm_latency_ms: 820
+          latency_sigma: 0.30
+          ttft_ratio: 0.25
+          input_tokens: 980
+          output_tokens: 170
+          accuracy: 0.90
+          json_validity: 0.98
+          retrieval_latency_ms: 60
+          top_k: 3
+          retrieval_noise: 0.32
+          citation_rate: 0.85
+
+  - agent_id: ops-tool-agent
+    agent_name: Ops Tool Agent
+    workload_type: tool
+    owner: member-3
+    description: Uses allowlisted mock tools (calculator, order status, tickets, KB search).
+    versions:
+      - version: "1.0.0"
+        release_seq: 1
+        released_at: "2026-08-17"
+        model_name: mock-small
+        prompt_version: ops-p1
+        profile:
+          llm_latency_ms: 540
+          latency_sigma: 0.27
+          ttft_ratio: 0.22
+          input_tokens: 620
+          output_tokens: 95
+          accuracy: 0.91
+          json_validity: 0.98
+          tool_latency_ms: 140
+          tool_error_rate: 0.03
+          wrong_tool_rate: 0.04
+          bad_args_rate: 0.03
+      - version: "1.1.0"
+        release_seq: 2
+        released_at: "2026-09-28"
+        model_name: mock-small
+        prompt_version: ops-p2
+        # New prompt: more verbose reasoning and more retries after tool errors.
+        profile:
+          llm_latency_ms: 610
+          latency_sigma: 0.30
+          ttft_ratio: 0.22
+          input_tokens: 780
+          output_tokens: 150
+          accuracy: 0.89
+          json_validity: 0.96
+          tool_latency_ms: 150
+          tool_error_rate: 0.06
+          wrong_tool_rate: 0.06
+          bad_args_rate: 0.05
+
+  - agent_id: planner-agent
+    agent_name: Planner Agent
+    workload_type: multi_step
+    owner: member-3
+    description: Plans multi-step tasks, executes tools, retries, and synthesises a final answer.
+    versions:
+      - version: "1.0.0"
+        release_seq: 1
+        released_at: "2026-08-24"
+        model_name: mock-large
+        prompt_version: plan-p1
+        profile:
+          llm_latency_ms: 1300
+          latency_sigma: 0.32
+          ttft_ratio: 0.28
+          input_tokens: 1100
+          output_tokens: 260
+          accuracy: 0.80
+          json_validity: 0.97
+          tool_latency_ms: 160
+          tool_error_rate: 0.04
+          wrong_tool_rate: 0.05
+          bad_args_rate: 0.04
+          retrieval_latency_ms: 90
+          top_k: 4
+          retrieval_noise: 0.12
+          citation_rate: 0.9
+      - version: "2.0.0"
+        release_seq: 2
+        released_at: "2026-10-01"
+        model_name: mock-large
+        prompt_version: plan-p2
+        # Delegates sub-tasks to a helper agent: higher success, longer chains, more tokens.
+        profile:
+          llm_latency_ms: 1250
+          latency_sigma: 0.30
+          ttft_ratio: 0.28
+          input_tokens: 1350
+          output_tokens: 300
+          accuracy: 0.88
+          json_validity: 0.98
+          tool_latency_ms: 150
+          tool_error_rate: 0.035
+          wrong_tool_rate: 0.03
+          bad_args_rate: 0.03
+          retrieval_latency_ms: 90
+          top_k: 4
+          retrieval_noise: 0.10
+          citation_rate: 0.92
+          delegation: true

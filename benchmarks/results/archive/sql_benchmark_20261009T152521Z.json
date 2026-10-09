@@ -1,0 +1,235 @@
+{
+  "recorded_at": "2026-10-09T15:24:57.374322+00:00",
+  "dataset": {
+    "raw_agent_events": 676374,
+    "agent_run_metrics": 45980,
+    "agent_spans": 302580,
+    "daily_agent_summary": 32
+  },
+  "environment": "single-node Trino 467 in Docker (see docs/BENCHMARK_METHODOLOGY.md); NOT a multi-node cluster",
+  "tiers": [
+    {
+      "query": "exp_tier_raw_json",
+      "runs": 5,
+      "wall_ms_median": 350.3,
+      "wall_ms_min": 257.1,
+      "wall_ms_max": 1229.5,
+      "trino_elapsed_ms_median": 374,
+      "cpu_ms_median": 419,
+      "processed_rows": 676374,
+      "processed_bytes": 54337098,
+      "physical_input_bytes": 54337098,
+      "splits": 57
+    },
+    {
+      "query": "exp_tier_curated",
+      "runs": 5,
+      "wall_ms_median": 104.4,
+      "wall_ms_min": 81.3,
+      "wall_ms_max": 214.7,
+      "trino_elapsed_ms_median": 82,
+      "cpu_ms_median": 28,
+      "processed_rows": 45980,
+      "processed_bytes": 4352821,
+      "physical_input_bytes": 4352821,
+      "splits": 57
+    },
+    {
+      "query": "exp_tier_summary",
+      "runs": 5,
+      "wall_ms_median": 57.5,
+      "wall_ms_min": 46.3,
+      "wall_ms_max": 73.8,
+      "trino_elapsed_ms_median": 43,
+      "cpu_ms_median": 4,
+      "processed_rows": 32,
+      "processed_bytes": 14317,
+      "physical_input_bytes": 14317,
+      "splits": 22
+    }
+  ],
+  "pruning": [
+    {
+      "query": "with_partition_filter",
+      "runs": 5,
+      "wall_ms_median": 83.7,
+      "wall_ms_min": 70.2,
+      "wall_ms_max": 102.7,
+      "trino_elapsed_ms_median": 71,
+      "cpu_ms_median": 13,
+      "processed_rows": 25962,
+      "processed_bytes": 2419739,
+      "physical_input_bytes": 2419739,
+      "splits": 35
+    },
+    {
+      "query": "without_partition_filter",
+      "runs": 5,
+      "wall_ms_median": 92.3,
+      "wall_ms_min": 72.7,
+      "wall_ms_max": 278.6,
+      "trino_elapsed_ms_median": 76,
+      "cpu_ms_median": 26,
+      "processed_rows": 45980,
+      "processed_bytes": 4352821,
+      "physical_input_bytes": 4352821,
+      "splits": 39
+    }
+  ],
+  "layout": {
+    "variants": {
+      "sorted": {
+        "table": "agent_spans_sorted_by_trace",
+        "session_properties": {},
+        "build_ms": 4449.4,
+        "data_files": 4,
+        "bytes": 18365845
+      },
+      "sorted_small_rowgroups": {
+        "table": "agent_spans_sorted_small_rg",
+        "session_properties": {
+          "lakehouse.parquet_writer_block_size": "1MB"
+        },
+        "build_ms": 4411.6,
+        "data_files": 4,
+        "bytes": 19019469
+      },
+      "unsorted": {
+        "table": "agent_spans",
+        "data_files": 7,
+        "bytes": 17204484
+      }
+    },
+    "lookups": [
+      {
+        "trace_id": "275a81c9b7457679bf741a52a3d40cc5",
+        "unsorted": {
+          "wall_ms_median": 76.4,
+          "processed_rows": 105869,
+          "physical_input_bytes": 2500693,
+          "splits": 7
+        },
+        "sorted": {
+          "wall_ms_median": 77.9,
+          "processed_rows": 243447,
+          "physical_input_bytes": 6926893,
+          "splits": 4
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 116.1,
+          "processed_rows": 3206,
+          "physical_input_bytes": 351578,
+          "splits": 88
+        }
+      },
+      {
+        "trace_id": "5291665e020d85a144edc059a7d209a0",
+        "unsorted": {
+          "wall_ms_median": 69.4,
+          "processed_rows": 149446,
+          "physical_input_bytes": 4561875,
+          "splits": 7
+        },
+        "sorted": {
+          "wall_ms_median": 70.2,
+          "processed_rows": 243447,
+          "physical_input_bytes": 6095411,
+          "splits": 4
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 102.9,
+          "processed_rows": 3806,
+          "physical_input_bytes": 264513,
+          "splits": 88
+        }
+      },
+      {
+        "trace_id": "ed31608a942a444d939f295c89f9e95d",
+        "unsorted": {
+          "wall_ms_median": 74.9,
+          "processed_rows": 134017,
+          "physical_input_bytes": 3686257,
+          "splits": 7
+        },
+        "sorted": {
+          "wall_ms_median": 68.4,
+          "processed_rows": 243447,
+          "physical_input_bytes": 6926893,
+          "splits": 4
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 126.4,
+          "processed_rows": 3207,
+          "physical_input_bytes": 351926,
+          "splits": 88
+        }
+      },
+      {
+        "trace_id": "690427513438c652c12780a4aa2670c5",
+        "unsorted": {
+          "wall_ms_median": 80.3,
+          "processed_rows": 121476,
+          "physical_input_bytes": 2969401,
+          "splits": 7
+        },
+        "sorted": {
+          "wall_ms_median": 76.2,
+          "processed_rows": 259054,
+          "physical_input_bytes": 7013686,
+          "splits": 4
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 104.6,
+          "processed_rows": 3240,
+          "physical_input_bytes": 973487,
+          "splits": 88
+        }
+      },
+      {
+        "trace_id": "d4e8a81baa57837a5e16059199dba871",
+        "unsorted": {
+          "wall_ms_median": 71.9,
+          "processed_rows": 105869,
+          "physical_input_bytes": 2500693,
+          "splits": 7
+        },
+        "sorted": {
+          "wall_ms_median": 68.7,
+          "processed_rows": 243447,
+          "physical_input_bytes": 6926893,
+          "splits": 4
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 113.2,
+          "processed_rows": 3502,
+          "physical_input_bytes": 362826,
+          "splits": 88
+        }
+      }
+    ],
+    "explain_unsorted": {
+      "scan_inputs": [
+        "105869 rows (1.14MB)",
+        "105869 rows (1.14MB)"
+      ],
+      "plan_excerpt": "    CPU: 233.39ms, Scheduled: 265.77ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 105869 rows (1.14MB); per task: avg.: 105869.00 std.dev.: 0.00, Output: 8 rows (168B)\n    ScanFilterProject[table = lakehouse:analytics.agent_spans$data@8907210680098053594, filterPredicate = (trace_id = varchar '275a81c9b7457679bf741a52a3d40cc5')]\n        Input: 105869 rows (1.14MB), Filtered: 99.99%, Physical input: 1.66MB, Physical input time: 335.73us",
+      "splits_mentions": []
+    },
+    "explain_sorted": {
+      "scan_inputs": [
+        "243447 rows (2.40MB)",
+        "243447 rows (2.40MB)"
+      ],
+      "plan_excerpt": "    CPU: 29.96ms, Scheduled: 40.31ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 243447 rows (2.40MB); per task: avg.: 243447.00 std.dev.: 0.00, Output: 8 rows (168B)\n    ScanFilterProject[table = lakehouse:analytics.agent_spans_sorted_by_trace$data@3197039199697643149, filterPredicate = (trace_id = varchar '275a81c9b7457679bf741a52a3d40cc5')]\n        Input: 243447 rows (2.40MB), Filtered: 100.00%, Physical input: 3.83MB, Physical input time: 19.06ms",
+      "splits_mentions": []
+    },
+    "explain_sorted_small_rowgroups": {
+      "scan_inputs": [
+        "3206 rows (51.08kB)",
+        "3206 rows (51.08kB)"
+      ],
+      "plan_excerpt": "    CPU: 622.57ms, Scheduled: 1.15s, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 3206 rows (51.08kB); per task: avg.: 3206.00 std.dev.: 0.00, Output: 8 rows (168B)\n    ScanFilterProject[table = lakehouse:analytics.agent_spans_sorted_small_rg$data@4232806254425872088, filterPredicate = (trace_id = varchar '275a81c9b7457679bf741a52a3d40cc5')]\n        Input: 3206 rows (51.08kB), Filtered: 99.75%, Physical input: 280.84kB, Physical input time: 16.08ms",
+      "splits_mentions": []
+    }
+  }
+}

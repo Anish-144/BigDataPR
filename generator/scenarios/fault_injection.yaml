@@ -1,0 +1,32 @@
+# Labelled anomaly suite for detector evaluation (precision / recall / F1).
+name: fault_injection
+description: Elevated, labelled performance faults for evaluating rule-based and ML anomaly detectors.
+seed: 99
+tasks: 12000
+workers: 4
+time_mode: simulated
+sim_days: 1
+workload_mix:
+  - {agent_id: qa-assistant, version: "1.0.0", weight: 1}
+  - {agent_id: qa-assistant, version: "1.1.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.0.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.1.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.0.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.1.0", weight: 1}
+  - {agent_id: planner-agent, version: "1.0.0", weight: 1}
+  - {agent_id: planner-agent, version: "2.0.0", weight: 1}
+fault_profile:
+  slow_tool: 0.02
+  tool_timeout: 0.02
+  loop: 0.02
+  malformed_response: 0.015
+  high_token_usage: 0.02
+  failed_retrieval: 0.02
+max_faults_per_run: 1
+incidents:
+  - name: rag-latency-incident
+    agent_id: rag-helpdesk
+    version: "2.0.0"
+    start_pct: 0.40
+    duration_pct: 0.03
+    effect: {llm_latency_multiplier: 3.0}

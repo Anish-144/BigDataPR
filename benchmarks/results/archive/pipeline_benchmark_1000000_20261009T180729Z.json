@@ -1,0 +1,245 @@
+{
+  "recorded_at": "2026-10-09T18:07:28.485508+00:00",
+  "target_events": 1000000,
+  "test_run_id": "TR-20261009-116c2c",
+  "environment": {
+    "host": {
+      "platform": "Windows-11-10.0.26300-SP0",
+      "python": "3.12.10",
+      "cpu_logical": 24,
+      "cpu_physical": 16,
+      "ram_gb": 16.9,
+      "in_container": false
+    },
+    "docker": {
+      "cpus": 24,
+      "memory_gib": 7.61,
+      "server_version": "28.3.3",
+      "os": "Docker Desktop"
+    },
+    "python": "3.12.10",
+    "stack": "Kafka 3.9.0 (1 broker) | Spark 3.5.3 local[4] | Iceberg 1.7.1 | Trino 467 | MinIO (bitnamilegacy 2025.4.22)",
+    "note": "single machine, Docker Desktop; no multi-node scaling is claimed"
+  },
+  "workload": {
+    "scenario": "generator/scenarios/benchmark.yaml",
+    "seed": 31337,
+    "tasks": 68890,
+    "workers": 6,
+    "calibrated_events_per_task": 14.516,
+    "events_by_type": {
+      "span.completed": 451093,
+      "run.metrics": 68890,
+      "evaluation.result": 487158,
+      "security.finding": 2491,
+      "worker.resource": 18
+    },
+    "fault_profile": {
+      "slow_tool": 0.006,
+      "tool_timeout": 0.006,
+      "loop": 0.005,
+      "malformed_response": 0.004,
+      "high_token_usage": 0.004,
+      "failed_retrieval": 0.005,
+      "suspicious_tool_access": 0.003,
+      "policy_violation": 0.002,
+      "prompt_injection": 0.003,
+      "sensitive_data_leak": 0.002,
+      "exfiltration_sequence": 0.002,
+      "privilege_escalation": 0.002
+    },
+    "dirty_rate": 0.001
+  },
+  "producer": {
+    "events": 1009825,
+    "wall_seconds": 19.573,
+    "events_per_sec": 51592.9,
+    "delivered": 1009823,
+    "failed": 0
+  },
+  "end_to_end": {
+    "seconds_produce_start_to_all_in_lakehouse": 86.1,
+    "seconds_after_producer_finished": 66.4,
+    "events_per_sec_end_to_end": 11733.0,
+    "ingest_curve": [
+      {
+        "t_s": 19.9,
+        "lakehouse_rows_added": 0
+      },
+      {
+        "t_s": 25.0,
+        "lakehouse_rows_added": 234815
+      },
+      {
+        "t_s": 30.0,
+        "lakehouse_rows_added": 234815
+      },
+      {
+        "t_s": 35.1,
+        "lakehouse_rows_added": 234815
+      },
+      {
+        "t_s": 40.3,
+        "lakehouse_rows_added": 234815
+      },
+      {
+        "t_s": 45.4,
+        "lakehouse_rows_added": 234815
+      },
+      {
+        "t_s": 50.5,
+        "lakehouse_rows_added": 534809
+      },
+      {
+        "t_s": 55.6,
+        "lakehouse_rows_added": 534809
+      },
+      {
+        "t_s": 60.7,
+        "lakehouse_rows_added": 534809
+      },
+      {
+        "t_s": 65.7,
+        "lakehouse_rows_added": 534809
+      },
+      {
+        "t_s": 70.8,
+        "lakehouse_rows_added": 834801
+      },
+      {
+        "t_s": 75.9,
+        "lakehouse_rows_added": 834801
+      },
+      {
+        "t_s": 81.0,
+        "lakehouse_rows_added": 834801
+      },
+      {
+        "t_s": 86.1,
+        "lakehouse_rows_added": 1009825
+      }
+    ]
+  },
+  "spark": {
+    "batches": 3,
+    "rows": 834801,
+    "invalid_rows": 612,
+    "busy_seconds": 66.1,
+    "first_batch_start": "2026-10-09T18:06:00.071916+00:00",
+    "last_batch_end": "2026-10-09T18:07:06.915307+00:00",
+    "rows_per_sec_over_span": 12488.9,
+    "rows_per_sec_while_busy": 12621.9,
+    "largest_batch_rows": 299994,
+    "p95_batch_ms": 26982.63168334961,
+    "avg_ingest_lag_ms": 43615.74299027922,
+    "p95_batch_avg_lag_ms": 57015.236539992846,
+    "max_ingest_lag_ms": 60217.30709075928
+  },
+  "validation": {
+    "quarantined_by_reason": {
+      "unknown_event_type": 186,
+      "missing_event_id": 173,
+      "malformed_json": 186,
+      "invalid_event_time": 175
+    },
+    "injected_structural": {
+      "bad_timestamp": 175,
+      "malformed_json": 186,
+      "unknown_event_type": 186,
+      "missing_event_id": 173
+    },
+    "quarantine_matches_injected": true
+  },
+  "storage": {
+    "added_by_table": {
+      "raw_agent_events": {
+        "files": 14,
+        "bytes": 105334792,
+        "rows": 1009825
+      },
+      "agent_spans": {
+        "files": 11,
+        "bytes": 25684928,
+        "rows": 450881
+      },
+      "agent_run_metrics": {
+        "files": 11,
+        "bytes": 6613702,
+        "rows": 68844
+      },
+      "agent_evaluation_results": {
+        "files": 11,
+        "bytes": 18537270,
+        "rows": 486869
+      },
+      "agent_security_findings": {
+        "files": 11,
+        "bytes": 262825,
+        "rows": 2491
+      },
+      "dead_letter_events": {
+        "files": 4,
+        "bytes": 107754,
+        "rows": 720
+      },
+      "stream_agent_metrics_1m": {
+        "files": 1,
+        "bytes": 6168,
+        "rows": 4
+      }
+    },
+    "added_mb_total": 149.3,
+    "bytes_per_event": 155.0
+  },
+  "agent_latency_this_run": {
+    "runs": 68844,
+    "success_rate": 0.8223084074138632,
+    "p50_ms": 1353.3171717111854,
+    "p95_ms": 4865.369008635776,
+    "p99_ms": 6746.629949775268
+  },
+  "query_latency_after_load": {
+    "p95_by_version_full_table_ms": 102.1,
+    "p95_by_version_this_run_ms": 90.8,
+    "count_raw_events_ms": 66.0,
+    "trace_lookup_ms": 298.1
+  },
+  "container_resources_at_completion": [
+    {
+      "CPUPerc": "0.12%",
+      "MemPerc": "9.97%",
+      "MemUsage": "102.1MiB / 1GiB",
+      "Name": "agentshield-backend-1"
+    },
+    {
+      "CPUPerc": "0.95%",
+      "MemPerc": "54.49%",
+      "MemUsage": "558MiB / 1GiB",
+      "Name": "agentshield-kafka-1"
+    },
+    {
+      "CPUPerc": "6.83%",
+      "MemPerc": "55.37%",
+      "MemUsage": "425.2MiB / 768MiB",
+      "Name": "agentshield-minio-1"
+    },
+    {
+      "CPUPerc": "331.78%",
+      "MemPerc": "97.37%",
+      "MemUsage": "2.434GiB / 2.5GiB",
+      "Name": "agentshield-spark-streaming-1"
+    },
+    {
+      "CPUPerc": "2.75%",
+      "MemPerc": "9.00%",
+      "MemUsage": "46.1MiB / 512MiB",
+      "Name": "agentshield-postgres-1"
+    },
+    {
+      "CPUPerc": "2.75%",
+      "MemPerc": "94.46%",
+      "MemUsage": "2.125GiB / 2.25GiB",
+      "Name": "agentshield-trino-1"
+    }
+  ]
+}

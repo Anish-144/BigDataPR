@@ -1,0 +1,168 @@
+{
+  "recorded_at": "2026-10-09T18:11:14.604940+00:00",
+  "model_version": "iforest-20261009T181109-84ff9e",
+  "model_training_scenarios": [
+    "baseline",
+    "regression"
+  ],
+  "eval_scenario": "fault_injection",
+  "eval_runs": 12000,
+  "positives": 1051,
+  "overall": {
+    "rules": {
+      "tp": 689,
+      "fp": 0,
+      "fn": 362,
+      "tn": 10949,
+      "precision": 1.0,
+      "recall": 0.6556,
+      "f1": 0.792,
+      "false_positive_rate": 0.0
+    },
+    "isolation_forest": {
+      "tp": 279,
+      "fp": 109,
+      "fn": 772,
+      "tn": 10840,
+      "precision": 0.7191,
+      "recall": 0.2655,
+      "f1": 0.3878,
+      "false_positive_rate": 0.01
+    },
+    "combined": {
+      "tp": 751,
+      "fp": 109,
+      "fn": 300,
+      "tn": 10840,
+      "precision": 0.8733,
+      "recall": 0.7146,
+      "f1": 0.786,
+      "false_positive_rate": 0.01
+    }
+  },
+  "isolation_forest_roc_auc": 0.9265,
+  "per_fault_recall": {
+    "slow_tool": {
+      "runs": 168,
+      "rules": 0.881,
+      "isolation_forest": 0.0238,
+      "combined": 0.8929
+    },
+    "tool_timeout": {
+      "runs": 168,
+      "rules": 1.0,
+      "isolation_forest": 0.6071,
+      "combined": 1.0
+    },
+    "loop": {
+      "runs": 104,
+      "rules": 1.0,
+      "isolation_forest": 0.9808,
+      "combined": 1.0
+    },
+    "malformed_response": {
+      "runs": 174,
+      "rules": 0.0057,
+      "isolation_forest": 0.3391,
+      "combined": 0.3448
+    },
+    "high_token_usage": {
+      "runs": 268,
+      "rules": 0.9925,
+      "isolation_forest": 0.0373,
+      "combined": 0.9925
+    },
+    "failed_retrieval": {
+      "runs": 125,
+      "rules": 0.0,
+      "isolation_forest": 0.008,
+      "combined": 0.008
+    },
+    "incident:rag-latency-incident": {
+      "runs": 50,
+      "rules": 0.14,
+      "isolation_forest": 0.04,
+      "combined": 0.14
+    }
+  },
+  "alerts_by_detector": {
+    "rule:repeated_tool_calls": 104,
+    "rule:token_spike": 330,
+    "rule:latency_spike": 159,
+    "rule:tool_latency_spike": 316,
+    "rule:tool_timeout": 168,
+    "rule:long_chain": 7,
+    "rule:window_latency_regression": 9,
+    "rule:window_error_rate": 2,
+    "isolation_forest": 388
+  },
+  "isolation_forest_operating_points": {
+    "0.95": {
+      "threshold": 0.5710322180709353,
+      "tp": 482,
+      "fp": 450,
+      "fn": 569,
+      "tn": 10499,
+      "precision": 0.5172,
+      "recall": 0.4586,
+      "f1": 0.4861,
+      "false_positive_rate": 0.0411
+    },
+    "0.97": {
+      "threshold": 0.6030003291669561,
+      "tp": 410,
+      "fp": 250,
+      "fn": 641,
+      "tn": 10699,
+      "precision": 0.6212,
+      "recall": 0.3901,
+      "f1": 0.4793,
+      "false_positive_rate": 0.0228
+    },
+    "0.985": {
+      "threshold": 0.6437974508780313,
+      "tp": 279,
+      "fp": 109,
+      "fn": 772,
+      "tn": 10840,
+      "precision": 0.7191,
+      "recall": 0.2655,
+      "f1": 0.3878,
+      "false_positive_rate": 0.01
+    },
+    "0.99": {
+      "threshold": 0.6629141938207755,
+      "tp": 237,
+      "fp": 48,
+      "fn": 814,
+      "tn": 10901,
+      "precision": 0.8316,
+      "recall": 0.2255,
+      "f1": 0.3548,
+      "false_positive_rate": 0.0044
+    }
+  },
+  "incident_windows": {
+    "incidents": [
+      {
+        "incident": "incident:rag-latency-incident",
+        "agent": "rag-helpdesk@2.0.0",
+        "start": "2026-10-09 00:59:14.661818+00:00",
+        "end": "2026-10-09 01:41:16.705690+00:00",
+        "runs": 50,
+        "detected_by_window_rule": true,
+        "window_alerts": 4
+      }
+    ],
+    "window_alerts_total": 11,
+    "window_alerts_outside_incidents": 7
+  },
+  "clean_traffic": {
+    "scenario": "security_suite",
+    "runs": 6000,
+    "runs_with_perf_labels": 0,
+    "rules_flag_rate": 0.0,
+    "isolation_forest_flag_rate": 0.0392,
+    "combined_flag_rate": 0.0392
+  }
+}

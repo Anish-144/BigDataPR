@@ -1,0 +1,50 @@
+{
+  "query": "streaming_batch_stats",
+  "file": "02_performance_analytics.sql",
+  "tags": {
+    "query": "streaming_batch_stats",
+    "title": "Spark micro-batch throughput and end-to-end ingest lag",
+    "concept": "Operational analytics over pipeline telemetry; percentiles of batch duration",
+    "question": "How fast does Spark Structured Streaming process Kafka records, and how far behind does it run?",
+    "interpretation": "Lag = batch commit time - Kafka record timestamp (queueing + trigger interval + processing). rows_per_sec is per micro-batch (input rows / batch duration), measured, single-node local[4] Spark.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 97.3,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 78,
+    "cpuTimeMillis": 6,
+    "wallTimeMillis": 11,
+    "processedRows": 2,
+    "processedBytes": 9377,
+    "physicalInputBytes": 9377,
+    "peakMemoryBytes": 6992,
+    "totalSplits": 34
+  },
+  "columns": [
+    "query_name",
+    "batches",
+    "rows_in",
+    "rows_invalid",
+    "avg_batch_ms",
+    "p95_batch_ms",
+    "rows_per_sec_while_busy",
+    "peak_batch_rows_per_sec",
+    "avg_ingest_lag_ms",
+    "max_ingest_lag_ms"
+  ],
+  "rows": [
+    [
+      "lakehouse_fanout",
+      2,
+      592942,
+      446,
+      19736.0,
+      20390.0,
+      15022.2,
+      15721.5,
+      29876.0,
+      40872.0
+    ]
+  ]
+}

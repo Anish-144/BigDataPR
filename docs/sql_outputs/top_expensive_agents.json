@@ -1,0 +1,80 @@
+{
+  "query": "top_expensive_agents",
+  "file": "03_window_functions_and_rankings.sql",
+  "tags": {
+    "query": "top_expensive_agents",
+    "title": "Top-N most expensive agent versions and share of total (ESTIMATED cost)",
+    "concept": "Top-N with ORDER BY/LIMIT, share-of-total via SUM() OVER (), running total",
+    "question": "Which agent versions drive most of the estimated spend?",
+    "interpretation": "Costs are estimates from the local pricing table. cumulative_share shows Pareto concentration.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 106.7,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 105,
+    "cpuTimeMillis": 20,
+    "wallTimeMillis": 221,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 2398538,
+    "totalSplits": 73
+  },
+  "columns": [
+    "agent_name",
+    "agent_version",
+    "model_name",
+    "runs",
+    "est_cost_usd",
+    "share_pct",
+    "cumulative_share_pct"
+  ],
+  "rows": [
+    [
+      "Planner Agent",
+      "2.0.0",
+      "mock-large",
+      5688,
+      74.5003,
+      46.12,
+      46.12
+    ],
+    [
+      "Planner Agent",
+      "1.0.0",
+      "mock-large",
+      5724,
+      56.6208,
+      35.05,
+      81.17
+    ],
+    [
+      "RAG Helpdesk",
+      "2.0.0",
+      "mock-medium",
+      5827,
+      12.4853,
+      7.73,
+      88.9
+    ],
+    [
+      "RAG Helpdesk",
+      "2.1.0",
+      "mock-medium",
+      5788,
+      9.8056,
+      6.07,
+      94.97
+    ],
+    [
+      "QA Assistant",
+      "1.1.0",
+      "mock-medium",
+      5752,
+      4.9097,
+      3.04,
+      98.01
+    ]
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "query": "snapshot_history",
+  "file": "09_lakehouse_features.sql",
+  "tags": {
+    "query": "snapshot_history",
+    "title": "Snapshot history of a streaming-written table",
+    "concept": "Iceberg \"$snapshots\" metadata table; every Spark micro-batch commit is a snapshot",
+    "question": "How many commits has the stream made to agent_run_metrics, and what did each add?",
+    "interpretation": "The summary map holds Iceberg commit stats plus our agentshield.batch_id property, which the stream uses to skip already-committed tables when a micro-batch is replayed after a crash."
+  },
+  "elapsed_ms": 108.4,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 94,
+    "cpuTimeMillis": 6,
+    "wallTimeMillis": 9,
+    "processedRows": 4,
+    "processedBytes": 3557,
+    "physicalInputBytes": 3557,
+    "peakMemoryBytes": 1542,
+    "totalSplits": 35
+  },
+  "columns": [
+    "committed_at",
+    "snapshot_id",
+    "operation",
+    "added_records",
+    "total_records",
+    "added_files",
+    "stream_batch_id"
+  ],
+  "rows": [
+    [
+      "2026-10-09T15:24:30.005000+00:00",
+      1920632619667562006,
+      "append",
+      "5658",
+      "45980",
+      "1",
+      "3"
+    ],
+    [
+      "2026-10-09T15:24:16.010000+00:00",
+      1488821045953757403,
+      "append",
+      "20342",
+      "40322",
+      "2",
+      "2"
+    ],
+    [
+      "2026-10-09T15:23:55.635000+00:00",
+      7016487036279333152,
+      "append",
+      "19980",
+      "19980",
+      "4",
+      "1"
+    ],
+    [
+      "2026-10-09T15:22:53.029000+00:00",
+      400282557845404738,
+      "append",
+      null,
+      "0",
+      null,
+      null
+    ]
+  ]
+}

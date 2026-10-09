@@ -1,0 +1,40 @@
+# Thresholds for the regression gate (evaluation/regression_gate.py) and the
+# rule-based anomaly detector (ml/rules.py). All values are configurable; they
+# are starting points for the synthetic workloads, not universal truths.
+
+regression_gate:
+  # Candidate vs baseline comparison. A metric breaching a "fail" bound marks the
+  # gate FAILED; breaching a "review" bound marks it NEEDS_REVIEW.
+  min_runs_per_cohort: 50
+  success_rate_drop_pct_points: {review: 2.0, fail: 5.0}
+  p95_latency_increase_pct: {review: 10.0, fail: 25.0}
+  avg_tokens_increase_pct: {review: 15.0, fail: 40.0}
+  cost_per_success_increase_pct: {review: 15.0, fail: 40.0}
+  retrieval_recall_drop_pct_points: {review: 3.0, fail: 8.0}
+  security_findings_increase_per_1k_runs: {review: 2.0, fail: 10.0}
+
+anomaly_rules:
+  # Per-run rules (explainable, immediate). Baselines are robust per-agent-version
+  # statistics computed from the reference (training) window: median + k * MAD-scale.
+  latency_mad_k: 6.0
+  tokens_mad_k: 6.0
+  tool_latency_mad_k: 6.0         # v2: slow individual tool calls (avg tool latency per run)
+  min_baseline_runs: 30
+  repeated_tool_calls: 5          # >= N consecutive identical tool calls => suspected loop
+  max_chain_spans: 30             # spans in one run
+  # Window rules (per agent version, per window). v2: binomial tail tests against the
+  # reference profile instead of fixed ratios (v1 produced a false alert on 4/20 failures).
+  window_minutes: 15
+  min_window_runs: 8
+  # Bonferroni: ~768 window tests per simulated day (96 windows x 8 versions) at a 1% family-wise
+  # error rate -> 0.01 / 768 ~= 1.3e-5. (p < 0.001 alone produced peak-hour false alarms on the dev set.)
+  window_p_value: 1.0e-5          # one-sided binomial tail probability required to alert
+  error_rate_abs: 0.15            # ... and the window error rate must be at least this high
+  slow_share_abs: 0.40            # ... and at least this share of window runs slower than baseline p90
+
+isolation_forest:
+  n_estimators: 200
+  contamination: auto
+  random_state: 42
+  score_threshold_quantile: 0.985  # alert when anomaly score exceeds this training quantile
+  report_quantiles: [0.95, 0.97, 0.985, 0.99]  # operating points shown in the evaluation (analysis only)

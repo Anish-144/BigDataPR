@@ -1,0 +1,74 @@
+{
+  "query": "storage_footprint",
+  "file": "08_query_plan_experiments.sql",
+  "tags": {
+    "query": "storage_footprint",
+    "title": "Lakehouse storage footprint per table (Parquet/ZSTD on MinIO)",
+    "concept": "Iceberg metadata ($files) aggregation; compression ratio estimate",
+    "question": "How much object storage does each table use, and how many bytes per row?",
+    "interpretation": "Sizes are compressed Parquet bytes reported by Iceberg metadata (actual files on MinIO)."
+  },
+  "elapsed_ms": 197.6,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 196,
+    "cpuTimeMillis": 86,
+    "wallTimeMillis": 165,
+    "processedRows": 39,
+    "processedBytes": 324836,
+    "physicalInputBytes": 324836,
+    "peakMemoryBytes": 4246,
+    "totalSplits": 238
+  },
+  "columns": [
+    "table_name",
+    "files",
+    "records",
+    "size_mb",
+    "bytes_per_row"
+  ],
+  "rows": [
+    [
+      "raw_agent_events",
+      7,
+      676374,
+      66.91,
+      103.7
+    ],
+    [
+      "agent_spans",
+      7,
+      302580,
+      16.41,
+      56.9
+    ],
+    [
+      "agent_evaluation_results",
+      7,
+      324686,
+      11.79,
+      38.1
+    ],
+    [
+      "agent_run_metrics",
+      7,
+      45980,
+      4.15,
+      94.7
+    ],
+    [
+      "agent_security_findings",
+      7,
+      2674,
+      0.22,
+      87.2
+    ],
+    [
+      "daily_agent_summary",
+      4,
+      32,
+      0.01,
+      447.4
+    ]
+  ]
+}

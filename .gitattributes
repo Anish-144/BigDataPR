@@ -1,0 +1,6 @@
+# Keep LF line endings everywhere: shell scripts and configs are mounted into Linux containers,
+# where CRLF breaks them ($'\r': command not found).
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ico binary

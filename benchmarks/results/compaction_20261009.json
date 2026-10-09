@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-10-09",
+  "command": "python -m lakehouse.maintenance compact --days 3 (Trino ALTER TABLE ... EXECUTE optimize(file_size_threshold => '64MB'))",
+  "note": "Values copied verbatim from the command output. Query latency = median-of-4 client wall time for SELECT agent_version, approx_percentile(duration_ms, 0.95) FROM agent_spans GROUP BY 1.",
+  "tables": [
+    {"table": "raw_agent_events", "files_before": 40, "files_after": 13, "mb_before": 188.6, "mb_after": 190.0, "seconds": 35.1},
+    {"table": "agent_spans", "files_before": 29, "files_after": 9, "mb_before": 46.0, "mb_after": 46.1, "seconds": 6.5},
+    {"table": "agent_run_metrics", "files_before": 29, "files_after": 9, "mb_before": 11.8, "mb_after": 11.2, "seconds": 1.73},
+    {"table": "agent_evaluation_results", "files_before": 29, "files_after": 9, "mb_before": 33.0, "mb_after": 32.9, "seconds": 3.97},
+    {"table": "agent_security_findings", "files_before": 29, "files_after": 9, "mb_before": 0.6, "mb_after": 0.4, "seconds": 0.86},
+    {"table": "agent_anomaly_alerts", "files_before": 8, "files_after": 8, "mb_before": 0.8, "mb_after": 0.8, "seconds": 0.51},
+    {"table": "dead_letter_events", "files_before": 7, "files_after": 1, "mb_before": 0.2, "mb_after": 0.1, "seconds": 1.42},
+    {"table": "pipeline_batch_metrics", "files_before": 17, "files_after": 1, "mb_before": 0.1, "mb_after": 0.0, "seconds": 0.65},
+    {"table": "stream_agent_metrics_1m", "files_before": 11, "files_after": 4, "mb_before": 0.5, "mb_after": 0.5, "seconds": 0.48},
+    {"table": "worker_resource_metrics", "files_before": 7, "files_after": 1, "mb_before": 0.0, "mb_after": 0.0, "seconds": 0.6}
+  ],
+  "query_latency_ms": {"before": 110.7, "after": 129.5},
+  "interpretation": "File count fell from 206 to 64. No latency improvement was measured at this data size (difference within run-to-run noise; fewer, larger files also mean fewer parallel splits on single-node Trino). The benefit of compaction grows with file count and data size; it is reported here as measured, not assumed."
+}

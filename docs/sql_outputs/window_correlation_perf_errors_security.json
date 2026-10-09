@@ -1,0 +1,215 @@
+{
+  "query": "window_correlation_perf_errors_security",
+  "file": "05_security_correlation.sql",
+  "tags": {
+    "query": "window_correlation_perf_errors_security",
+    "title": "Hourly correlation of latency regressions, tool errors and security findings",
+    "concept": "Time-window join of three aggregated CTEs; corr() statistical aggregate",
+    "question": "In which hours did tail latency spike, and did tool errors or security findings rise at the same time?",
+    "interpretation": "Joining on (agent, hour) aligns signals that live in different tables. corr() quantifies how strongly hourly tool errors track hourly p95 latency across all windows.",
+    "params": "days=30, agent_id='ops-tool-agent'"
+  },
+  "elapsed_ms": 222.1,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 219,
+    "cpuTimeMillis": 254,
+    "wallTimeMillis": 575,
+    "processedRows": 351234,
+    "processedBytes": 17706399,
+    "physicalInputBytes": 17706399,
+    "peakMemoryBytes": 3457402,
+    "totalSplits": 183
+  },
+  "columns": [
+    "agent_version",
+    "hour",
+    "runs",
+    "p95_ms",
+    "tool_failures",
+    "findings",
+    "corr_p95_vs_tool_failures"
+  ],
+  "rows": [
+    [
+      "1.1.0",
+      "2026-10-09T07:00:00+00:00",
+      213,
+      2084.0,
+      46,
+      12,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-08T12:00:00+00:00",
+      39,
+      2948.6,
+      45,
+      0,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T10:00:00+00:00",
+      258,
+      2129.1,
+      43,
+      15,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T04:00:00+00:00",
+      232,
+      2046.8,
+      40,
+      20,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T00:00:00+00:00",
+      89,
+      2564.1,
+      39,
+      1,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T14:00:00+00:00",
+      228,
+      2124.6,
+      34,
+      10,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T06:00:00+00:00",
+      237,
+      2377.8,
+      33,
+      36,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T05:00:00+00:00",
+      242,
+      1997.9,
+      32,
+      11,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T08:00:00+00:00",
+      265,
+      2204.2,
+      30,
+      30,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T03:00:00+00:00",
+      184,
+      2118.4,
+      30,
+      7,
+      0.138
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T09:00:00+00:00",
+      256,
+      2049.4,
+      30,
+      16,
+      0.138
+    ],
+    [
+      "1.0.0",
+      "2026-10-09T06:00:00+00:00",
+      255,
+      1853.0,
+      30,
+      30,
+      0.006
+    ],
+    [
+      "1.0.0",
+      "2026-10-09T11:00:00+00:00",
+      229,
+      1712.1,
+      26,
+      16,
+      0.006
+    ],
+    [
+      "1.0.0",
+      "2026-10-09T13:00:00+00:00",
+      234,
+      2052.0,
+      25,
+      10,
+      0.006
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T11:00:00+00:00",
+      240,
+      1985.1,
+      25,
+      11,
+      0.138
+    ],
+    [
+      "1.0.0",
+      "2026-10-09T09:00:00+00:00",
+      238,
+      1921.3,
+      25,
+      25,
+      0.006
+    ],
+    [
+      "1.0.0",
+      "2026-10-09T04:00:00+00:00",
+      263,
+      1711.0,
+      25,
+      20,
+      0.006
+    ],
+    [
+      "1.0.0",
+      "2026-10-09T05:00:00+00:00",
+      228,
+      1606.4,
+      23,
+      11,
+      0.006
+    ],
+    [
+      "1.1.0",
+      "2026-10-09T13:00:00+00:00",
+      228,
+      2200.8,
+      22,
+      16,
+      0.138
+    ],
+    [
+      "1.0.0",
+      "2026-10-09T14:00:00+00:00",
+      271,
+      2000.7,
+      22,
+      19,
+      0.006
+    ]
+  ]
+}

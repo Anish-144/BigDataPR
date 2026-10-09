@@ -1,0 +1,90 @@
+{
+  "query": "security_detection_vs_ground_truth",
+  "file": "05_security_correlation.sql",
+  "tags": {
+    "query": "security_detection_vs_ground_truth",
+    "title": "Security rule detection rate and false positives vs synthetic ground truth",
+    "concept": "UNNEST of label arrays, LEFT JOIN, confusion-matrix style conditional aggregation",
+    "question": "For each injected security scenario, how often did the expected rule category fire, and how many findings occurred on runs with no injected security scenario?",
+    "interpretation": "Ground truth = injected_faults labels written by the generator (never used by detectors). 'poisoned_document_retrieved' marks runs that retrieved a poisoned KB document without an injected fault - prompt-injection findings there are true detections, not false positives.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 237.7,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 231,
+    "cpuTimeMillis": 108,
+    "wallTimeMillis": 203,
+    "processedRows": 99841,
+    "processedBytes": 9278559,
+    "physicalInputBytes": 9172158,
+    "peakMemoryBytes": 14001382,
+    "totalSplits": 309
+  },
+  "columns": [
+    "injected_scenario",
+    "expected_category",
+    "labelled_runs",
+    "detected_runs",
+    "detection_rate_pct",
+    "same_category_findings_on_unlabelled_runs"
+  ],
+  "rows": [
+    [
+      "exfiltration_sequence",
+      "exfiltration_sequence",
+      177,
+      177,
+      100.0,
+      0
+    ],
+    [
+      "poisoned_document_retrieved",
+      "prompt_injection",
+      593,
+      592,
+      99.83,
+      0
+    ],
+    [
+      "policy_violation",
+      "policy_violation",
+      224,
+      224,
+      100.0,
+      0
+    ],
+    [
+      "privilege_escalation",
+      "privilege_escalation",
+      208,
+      208,
+      100.0,
+      0
+    ],
+    [
+      "prompt_injection",
+      "prompt_injection",
+      220,
+      220,
+      100.0,
+      0
+    ],
+    [
+      "sensitive_data_leak",
+      "sensitive_data_output",
+      232,
+      232,
+      100.0,
+      0
+    ],
+    [
+      "suspicious_tool_access",
+      "tool_not_allowlisted",
+      194,
+      194,
+      100.0,
+      0
+    ]
+  ]
+}

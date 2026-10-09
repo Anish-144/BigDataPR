@@ -1,0 +1,31 @@
+# Small end-to-end functional check (~5k events). Seconds to generate.
+name: smoke
+description: Functional smoke test across all agent versions with a little of every fault and some dirty data.
+seed: 7
+tasks: 300
+workers: 2
+time_mode: simulated
+sim_days: 1
+workload_mix:
+  - {agent_id: qa-assistant, version: "1.0.0", weight: 1}
+  - {agent_id: qa-assistant, version: "1.1.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.0.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.1.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.0.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.1.0", weight: 1}
+  - {agent_id: planner-agent, version: "1.0.0", weight: 1}
+  - {agent_id: planner-agent, version: "2.0.0", weight: 1}
+fault_profile:
+  slow_tool: 0.03
+  tool_timeout: 0.03
+  loop: 0.03
+  malformed_response: 0.02
+  high_token_usage: 0.02
+  failed_retrieval: 0.03
+  suspicious_tool_access: 0.02
+  policy_violation: 0.02
+  prompt_injection: 0.02
+  sensitive_data_leak: 0.02
+  exfiltration_sequence: 0.02
+  privilege_escalation: 0.02
+dirty_rate: 0.01

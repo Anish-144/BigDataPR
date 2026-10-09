@@ -1,0 +1,66 @@
+{
+  "query": "dq_null_ids",
+  "file": "06_data_quality_checks.sql",
+  "tags": {
+    "query": "dq_null_ids",
+    "title": "Null identifiers per curated table",
+    "concept": "Conditional aggregation across UNION ALL of several fact tables",
+    "question": "Do any curated rows lack the shared keys every module relies on?",
+    "interpretation": "Spark rejects events missing required context, so these should be zero; a non-zero value would indicate a contract change that bypassed validation.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 140.3,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 128,
+    "cpuTimeMillis": 162,
+    "wallTimeMillis": 236,
+    "processedRows": 675920,
+    "processedBytes": 29481768,
+    "physicalInputBytes": 29481768,
+    "peakMemoryBytes": 2243001,
+    "totalSplits": 112
+  },
+  "columns": [
+    "table_name",
+    "rows_checked",
+    "null_event_id",
+    "null_run_id",
+    "null_trace_id",
+    "null_agent_id"
+  ],
+  "rows": [
+    [
+      "agent_security_findings",
+      2674,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      "agent_run_metrics",
+      45980,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      "agent_evaluation_results",
+      324686,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      "agent_spans",
+      302580,
+      0,
+      0,
+      0,
+      0
+    ]
+  ]
+}

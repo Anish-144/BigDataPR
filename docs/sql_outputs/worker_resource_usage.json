@@ -1,0 +1,34 @@
+{
+  "query": "worker_resource_usage",
+  "file": "02_performance_analytics.sql",
+  "tags": {
+    "query": "worker_resource_usage",
+    "title": "Load-generator worker CPU and memory",
+    "concept": "Aggregation over resource telemetry joined to test runs",
+    "question": "How much CPU and memory did the local test workers use, and at what event rate?",
+    "interpretation": "Measured with psutil inside each generator worker process (sampled every 5 s).",
+    "params": "days=30"
+  },
+  "elapsed_ms": 130.5,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 132,
+    "cpuTimeMillis": 15,
+    "wallTimeMillis": 34,
+    "processedRows": 0,
+    "processedBytes": 0,
+    "physicalInputBytes": 0,
+    "peakMemoryBytes": 133904,
+    "totalSplits": 70
+  },
+  "columns": [
+    "test_run_id",
+    "test_run_name",
+    "workers",
+    "samples",
+    "avg_cpu_pct",
+    "peak_memory_mb",
+    "avg_events_per_sec_per_worker"
+  ],
+  "rows": []
+}

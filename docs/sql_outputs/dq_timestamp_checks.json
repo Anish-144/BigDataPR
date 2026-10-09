@@ -1,0 +1,71 @@
+{
+  "query": "dq_timestamp_checks",
+  "file": "06_data_quality_checks.sql",
+  "tags": {
+    "query": "dq_timestamp_checks",
+    "title": "Timestamp sanity: span ordering, clock skew and run-window consistency",
+    "concept": "Interval arithmetic, joins to the test-run dimension",
+    "question": "Are event timestamps plausible (ordered, not in the future, inside their test run's window)?",
+    "interpretation": "For simulated runs event_time lies in the test run's simulated window; for realtime runs it lies between started_at and ended_at. Events outside indicate producer clock problems.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 280.8,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 267,
+    "cpuTimeMillis": 75,
+    "wallTimeMillis": 217,
+    "processedRows": 45988,
+    "processedBytes": 4390077,
+    "physicalInputBytes": 4389397,
+    "peakMemoryBytes": 134728,
+    "totalSplits": 78
+  },
+  "columns": [
+    "test_run_id",
+    "time_mode",
+    "runs",
+    "end_before_start",
+    "future_events",
+    "outside_sim_window",
+    "avg_event_to_ingest_ms_realtime"
+  ],
+  "rows": [
+    [
+      "TR-20261009-315910",
+      "simulated",
+      19980,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261009-12eb56",
+      "simulated",
+      12000,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261009-23c1c6",
+      "simulated",
+      8000,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261009-9b7e8a",
+      "simulated",
+      6000,
+      0,
+      0,
+      0,
+      null
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "query": "analyze_without_partition_filter",
+  "file": "08_query_plan_experiments.sql",
+  "tags": {
+    "query": "analyze_without_partition_filter",
+    "title": "EXPLAIN ANALYZE - full table scan (no partition filter)",
+    "concept": "EXPLAIN ANALYZE baseline for pruning comparison",
+    "question": "What does the same aggregation cost without a partition filter?",
+    "interpretation": "Every partition is read; the difference to the filtered plan is the pruning benefit.",
+    "params": "days=0"
+  },
+  "elapsed_ms": 217.4,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 220,
+    "cpuTimeMillis": 34,
+    "wallTimeMillis": 201,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 1362308,
+    "totalSplits": 56
+  },
+  "columns": [
+    "Query Plan"
+  ],
+  "rows": [
+    [
+      "Trino version: 467\nQueued: 190.44us, Analysis: 13.26ms, Planning: 21.84ms, Execution: 193.10ms\nFragment 1 [HASH]\n    CPU: 5.42ms, Scheduled: 6.86ms, Blocked 1.38s (Input: 689.58ms, Output: 0.00ns), Input: 28 rows (24.85kB); per task: avg.: 28.00 std.dev.: 0.00, Output: 4 rows (143B)\n    Peak Memory: 1.29MB, Tasks count: 1; per task: max: 1.29MB\n    Output layout: [agent_id, count, approx_percentile]\n    Output partitioning: SINGLE []\n    Aggregate[type = FINAL, keys = [agent_id]]\n    \u2502   Layout: [agent_id:varchar, count:bigint, approx_percentile:double]\n    \u2502   Estimates: {rows: ? (?), cpu: 3.06M, memory: ?, network: 0B}\n    \u2502   CPU: 1.00ms (4.00%), Scheduled: 2.00ms (2.44%), Blocked: 0.00ns (0.00%), Output: 4 rows (143B)\n    \u2502   Input avg.: 1.75 rows, Input std.dev.: 300.00%\n    \u2502   count := count(count_1)\n    \u2502   approx_percentile := approx_percentile(approx_percentile_2)\n    \u2514\u2500 LocalExchange[partitioning = HASH, arguments = [agent_id::varchar]]\n       \u2502   Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n       \u2502   Estimates: {rows: 45980 (3.06MB), cpu: 3.06M, memory: 0B, network: 0B}\n       \u2502   CPU: 2.00ms (8.00%), Scheduled: 2.00ms (2.44%), Blocked: 690.00ms (50.00%), Output: 28 rows (24.85kB)\n       \u2502   Input avg.: 1.75 rows, Input std.dev.: 113.39%\n       \u2514\u2500 RemoteSource[sourceFragmentIds = [2]]\n              Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n              CPU: 0.00ns (0.00%), Scheduled: 0.00ns (0.00%), Blocked: 690.00ms (50.00%), Output: 28 rows (24.85kB)\n              Input avg.: 1.75 rows, Input std.dev.: 113.39%\n\nFragment 2 [SOURCE]\n    CPU: 23.15ms, Scheduled: 79.39ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 45980 rows (589.15kB); per task: avg.: 45980.00 std.dev.: 0.00, Output: 28 rows (24.85kB)\n    Peak Memory: 4.74kB, Tasks count: 1; per task: max: 4.74kB\n    Output layout: [agent_id, count_1, approx_percentile_2]\n    Output partitioning: HASH [agent_id]\n    Aggregate[type = PARTIAL, keys = [agent_id]]\n    \u2502   Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n    \u2502   Estimates: {rows: 45980 (3.06MB), cpu: ?, memory: ?, network: ?}\n    \u2502   CPU: 8.00ms (32.00%), Scheduled: 10.00ms (12.20%), Blocked: 0.00ns (0.00%), Output: 28 rows (24.85kB)\n    \u2502   Input avg.: 6568.57 rows, Input std.dev.: 62.58%\n    \u2502   count_1 := count(*)\n    \u2502   approx_percentile_2 := approx_percentile(latency_ms, expr_0)\n    \u2514\u2500 ScanProject[table = lakehouse:analytics.agent_run_metrics$data@1920632619667562006]\n           Layout: [latency_ms:double, expr_0:double, agent_id:varchar]\n           Estimates: {rows: 45980 (1.04MB), cpu: 661.75k, memory: 0B, network: 0B}/{rows: 45980 (1.04MB), cpu: 1.04M, memory: 0B, network: 0B}\n           CPU: 14.00ms (56.00%), Scheduled: 68.00ms (82.93%), Blocked: 0.00ns (0.00%), Output: 45980 rows (634.56kB)\n           Input avg.: 6568.57 rows, Input std.dev.: 62.58%\n           expr_0 := double '0.95'\n           latency_ms := 21:latency_ms:double\n           agent_id := 5:agent_id:varchar\n           Input: 45980 rows (589.15kB), Filtered: 0.00%, Physical input: 4.15MB, Physical input time: 47.96ms\n\n"
+    ]
+  ]
+}

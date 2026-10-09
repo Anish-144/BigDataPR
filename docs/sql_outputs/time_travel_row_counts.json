@@ -1,0 +1,37 @@
+{
+  "query": "time_travel_row_counts",
+  "file": "09_lakehouse_features.sql",
+  "tags": {
+    "query": "time_travel_row_counts",
+    "title": "Time travel - current table vs the table as of one minute ago",
+    "concept": "FOR TIMESTAMP AS OF (Iceberg time travel; requires a constant expression)",
+    "question": "How many runs did agent_run_metrics hold one minute ago compared with now?",
+    "interpretation": "Each snapshot is an immutable table version, so historical reports are reproducible. Snapshot-id time travel (FOR VERSION AS OF <id>) and rollback are demonstrated by benchmarks/lakehouse_features_demo.py."
+  },
+  "elapsed_ms": 96.2,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 89,
+    "cpuTimeMillis": 8,
+    "wallTimeMillis": 14,
+    "processedRows": 45980,
+    "processedBytes": 0,
+    "physicalInputBytes": 0,
+    "peakMemoryBytes": 2544,
+    "totalSplits": 58
+  },
+  "columns": [
+    "version",
+    "runs"
+  ],
+  "rows": [
+    [
+      "as of 1 minute ago",
+      0
+    ],
+    [
+      "current",
+      45980
+    ]
+  ]
+}

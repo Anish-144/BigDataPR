@@ -1,0 +1,120 @@
+{
+  "recorded_at": "2026-10-09T18:08:55.716983+00:00",
+  "model_version": "iforest-20261009T180846-84ff9e",
+  "model_training_scenarios": [
+    "baseline",
+    "regression"
+  ],
+  "eval_scenario": "fault_injection",
+  "eval_runs": 12000,
+  "positives": 1051,
+  "overall": {
+    "rules": {
+      "tp": 547,
+      "fp": 0,
+      "fn": 504,
+      "tn": 10949,
+      "precision": 1.0,
+      "recall": 0.5205,
+      "f1": 0.6846,
+      "false_positive_rate": 0.0
+    },
+    "isolation_forest": {
+      "tp": 289,
+      "fp": 109,
+      "fn": 762,
+      "tn": 10840,
+      "precision": 0.7261,
+      "recall": 0.275,
+      "f1": 0.3989,
+      "false_positive_rate": 0.01
+    },
+    "combined": {
+      "tp": 612,
+      "fp": 109,
+      "fn": 439,
+      "tn": 10840,
+      "precision": 0.8488,
+      "recall": 0.5823,
+      "f1": 0.6907,
+      "false_positive_rate": 0.01
+    }
+  },
+  "isolation_forest_roc_auc": 0.9267,
+  "per_fault_recall": {
+    "slow_tool": {
+      "runs": 168,
+      "rules": 0.0357,
+      "isolation_forest": 0.0238,
+      "combined": 0.0595
+    },
+    "tool_timeout": {
+      "runs": 168,
+      "rules": 1.0,
+      "isolation_forest": 0.6667,
+      "combined": 1.0
+    },
+    "loop": {
+      "runs": 104,
+      "rules": 1.0,
+      "isolation_forest": 0.9808,
+      "combined": 1.0
+    },
+    "malformed_response": {
+      "runs": 174,
+      "rules": 0.0057,
+      "isolation_forest": 0.3391,
+      "combined": 0.3448
+    },
+    "high_token_usage": {
+      "runs": 268,
+      "rules": 0.9925,
+      "isolation_forest": 0.0373,
+      "combined": 0.9925
+    },
+    "failed_retrieval": {
+      "runs": 125,
+      "rules": 0.0,
+      "isolation_forest": 0.016,
+      "combined": 0.016
+    },
+    "incident:rag-latency-incident": {
+      "runs": 50,
+      "rules": 0.1,
+      "isolation_forest": 0.02,
+      "combined": 0.1
+    }
+  },
+  "alerts_by_detector": {
+    "rule:latency_spike": 159,
+    "rule:tool_timeout": 168,
+    "rule:token_spike": 330,
+    "rule:repeated_tool_calls": 104,
+    "rule:long_chain": 7,
+    "rule:window_error_rate": 1,
+    "isolation_forest": 398
+  },
+  "incident_windows": {
+    "incidents": [
+      {
+        "incident": "incident:rag-latency-incident",
+        "agent": "rag-helpdesk@2.0.0",
+        "start": "2026-10-09 00:59:14.661818+00:00",
+        "end": "2026-10-09 01:41:16.705690+00:00",
+        "runs": 50,
+        "detected_by_window_rule": false,
+        "window_alerts": 0
+      }
+    ],
+    "window_alerts_total": 1,
+    "window_alerts_outside_incidents": 1
+  },
+  "clean_traffic": {
+    "scenario": "security_suite",
+    "runs": 6000,
+    "runs_with_perf_labels": 0,
+    "rules_flag_rate": 0.0,
+    "isolation_forest_flag_rate": 0.0398,
+    "combined_flag_rate": 0.0398
+  }
+}

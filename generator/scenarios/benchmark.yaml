@@ -1,0 +1,32 @@
+# Volume benchmark. Override --tasks from the CLI / scripts/run_benchmark.sh.
+# ~15 events per task: 70k tasks ~= 1M events, 340k tasks ~= 5M events.
+name: benchmark
+description: Volume benchmark workload with baseline fault rates.
+seed: 31337
+tasks: 70000
+workers: 6
+time_mode: simulated
+sim_days: 7
+workload_mix:
+  - {agent_id: qa-assistant, version: "1.0.0", weight: 1}
+  - {agent_id: qa-assistant, version: "1.1.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.0.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.1.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.0.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.1.0", weight: 1}
+  - {agent_id: planner-agent, version: "1.0.0", weight: 1}
+  - {agent_id: planner-agent, version: "2.0.0", weight: 1}
+fault_profile:
+  slow_tool: 0.006
+  tool_timeout: 0.006
+  loop: 0.005
+  malformed_response: 0.004
+  high_token_usage: 0.004
+  failed_retrieval: 0.005
+  suspicious_tool_access: 0.003
+  policy_violation: 0.002
+  prompt_injection: 0.003
+  sensitive_data_leak: 0.002
+  exfiltration_sequence: 0.002
+  privilege_escalation: 0.002
+dirty_rate: 0.001

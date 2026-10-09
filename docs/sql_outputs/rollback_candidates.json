@@ -1,0 +1,49 @@
+{
+  "query": "rollback_candidates",
+  "file": "09_lakehouse_features.sql",
+  "tags": {
+    "query": "rollback_candidates",
+    "title": "Snapshots of the scratch table (rollback targets)",
+    "concept": "Iceberg snapshot lineage; rollback with CALL system.rollback_to_snapshot",
+    "question": "Which snapshot would restore the scratch table to before the last INSERT?",
+    "interpretation": "To roll back (scratch table only): CALL lakehouse.system.rollback_to_snapshot('analytics', 'demo_evolution', <parent snapshot_id>) benchmarks/lakehouse_features_demo.py performs and verifies this rollback."
+  },
+  "elapsed_ms": 57.8,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 39,
+    "cpuTimeMillis": 3,
+    "wallTimeMillis": 5,
+    "processedRows": 2,
+    "processedBytes": 1690,
+    "physicalInputBytes": 1690,
+    "peakMemoryBytes": 1428,
+    "totalSplits": 19
+  },
+  "columns": [
+    "committed_at",
+    "snapshot_id",
+    "parent_id",
+    "operation",
+    "added_records",
+    "total_records"
+  ],
+  "rows": [
+    [
+      "2026-10-09T15:24:51.676000+00:00",
+      6952394289294953375,
+      null,
+      "append",
+      "1000",
+      "1000"
+    ],
+    [
+      "2026-10-09T15:24:52.059000+00:00",
+      7689789007103398000,
+      6952394289294953375,
+      "append",
+      "200",
+      "1200"
+    ]
+  ]
+}

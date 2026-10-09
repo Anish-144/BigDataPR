@@ -1,0 +1,109 @@
+# AgentShield security & governance policy (policy-as-code).
+#
+# Evaluated by security/policy_engine.py at tool-call time (runtime guard) and by
+# security/detectors.py on inputs, retrieved documents and outputs.
+# All sensitive values in this project are SYNTHETIC canaries. Text found in
+# prompts, documents or tool results is treated as untrusted data and is never
+# executed as an instruction.
+
+policy_version: "2026.10-2"
+
+data_classifications: [public, internal, confidential, restricted]
+
+# Per-agent permissions. max_data_classification is the most sensitive class an
+# agent may read without a finding being raised.
+agents:
+  qa-assistant:
+    allowed_tools: []
+    max_tool_calls: 0
+    max_data_classification: internal
+    runtime_role: agent_runtime
+  rag-helpdesk:
+    allowed_tools: [document_lookup]
+    max_tool_calls: 3
+    max_data_classification: internal
+    runtime_role: agent_runtime
+  ops-tool-agent:
+    allowed_tools: [search_kb, calculator, create_ticket, get_order_status]
+    max_tool_calls: 8
+    max_data_classification: confidential
+    runtime_role: agent_runtime
+  planner-agent:
+    allowed_tools: [search_kb, calculator, document_lookup, create_ticket, get_order_status, delegate_subtask]
+    max_tool_calls: 14
+    max_data_classification: confidential
+    runtime_role: agent_runtime
+
+# Actions that are never allowed for any agent.
+prohibited_tools: [export_data, execute_shell, delete_records, modify_permissions]
+
+# Tools that move data outside the platform boundary (used for exfiltration-sequence detection).
+egress_tools: [send_external_email, http_post, export_data]
+
+# Mock resources that require elevated access.
+restricted_resources: [hr/salaries, finance/payroll, secrets/api_keys]
+
+# Synthetic canary formats. Real secrets / personal data are never used.
+sensitive_patterns:
+  - name: canary_token
+    regex: "AGSH-CANARY-[0-9A-F]{8}"
+  - name: synthetic_api_key
+    regex: "sk-agsh-test-[a-z0-9]{12}"
+
+# Prompt-injection indicators (case-insensitive). Heuristic: they raise findings,
+# they do not prove intent.
+prompt_injection_indicators:
+  - "ignore (all |any )?(previous|prior|above) instructions"
+  - "disregard (the |your )?(system prompt|instructions|rules)"
+  - "you are now (in )?(developer|admin|dan) mode"
+  - "reveal (the |your )?(system prompt|api key|secrets?|credentials)"
+  # v2: require an explicit destination (email or URL). v1 matched benign advice such as
+  # "emails that ask you to send data to unknown addresses" (732 false-positive findings, see THREAT_MODEL.md).
+  - '(send|forward|upload) (all |the )?(data|records|files|conversation) to (https?://|[\w.+-]+@[\w-]+\.)'
+  - "call (the )?(export_data|execute_shell|http_post) tool"
+
+privilege:
+  expected_role: agent_runtime
+  elevated_roles: [admin, root, security_admin]
+
+rules:
+  - rule_id: SEC-001
+    rule_name: Tool not on agent allowlist
+    category: tool_not_allowlisted
+    severity: high
+    description: Agent requested a tool that is not in its allowed_tools list.
+  - rule_id: SEC-002
+    rule_name: Prohibited action attempted
+    category: policy_violation
+    severity: critical
+    description: Agent requested a globally prohibited tool/action.
+  - rule_id: SEC-003
+    rule_name: Restricted data access
+    category: restricted_data_access
+    severity: high
+    description: Agent accessed a document or resource above its max_data_classification.
+  - rule_id: SEC-004
+    rule_name: Prompt-injection indicator
+    category: prompt_injection
+    severity: medium
+    description: Untrusted input or a retrieved document matched a prompt-injection indicator.
+  - rule_id: SEC-005
+    rule_name: Sensitive data in output
+    category: sensitive_data_output
+    severity: critical
+    description: Agent output contained a synthetic canary / secret pattern.
+  - rule_id: SEC-006
+    rule_name: Unexpected privilege transition
+    category: privilege_escalation
+    severity: critical
+    description: Runtime role changed from the expected role to an elevated role.
+  - rule_id: SEC-007
+    rule_name: Exfiltration-like sequence
+    category: exfiltration_sequence
+    severity: critical
+    description: Sensitive data read followed by an egress tool call in the same trace.
+  - rule_id: SEC-008
+    rule_name: Tool-call budget exceeded
+    category: excessive_tool_calls
+    severity: medium
+    description: Agent exceeded max_tool_calls for a single run.

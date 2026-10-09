@@ -1,0 +1,107 @@
+{
+  "query": "cost_per_successful_task",
+  "file": "04_regression_comparison.sql",
+  "tags": {
+    "query": "cost_per_successful_task",
+    "title": "ESTIMATED cost efficiency per successful task",
+    "concept": "Ratio of aggregates with NULLIF guard (cost per success, not per request)",
+    "question": "Which agent version delivers successful tasks most cheaply?",
+    "interpretation": "A cheaper-per-request version can be more expensive per *successful* task if it fails more often. All monetary values are estimates from config/pricing.yaml (local, illustrative, not provider pricing).",
+    "params": "days=30"
+  },
+  "elapsed_ms": 103.3,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 86,
+    "cpuTimeMillis": 18,
+    "wallTimeMillis": 32,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 11232,
+    "totalSplits": 57
+  },
+  "columns": [
+    "agent_name",
+    "agent_version",
+    "total_estimated_cost_usd",
+    "successful_tasks",
+    "estimated_cost_per_request",
+    "estimated_cost_per_success",
+    "tokens_per_success"
+  ],
+  "rows": [
+    [
+      "QA Assistant",
+      "1.0.0",
+      0.7423,
+      4734,
+      0.000129,
+      0.000157,
+      619.1
+    ],
+    [
+      "Ops Tool Agent",
+      "1.0.0",
+      1.0777,
+      5219,
+      0.000186,
+      0.000206,
+      879.9
+    ],
+    [
+      "Ops Tool Agent",
+      "1.1.0",
+      1.3923,
+      4847,
+      0.000246,
+      0.000287,
+      1191.9
+    ],
+    [
+      "QA Assistant",
+      "1.1.0",
+      4.9097,
+      5272,
+      0.000854,
+      0.000931,
+      677.7
+    ],
+    [
+      "RAG Helpdesk",
+      "2.1.0",
+      9.8056,
+      4629,
+      0.001694,
+      0.002118,
+      1791.5
+    ],
+    [
+      "RAG Helpdesk",
+      "2.0.0",
+      12.4853,
+      5107,
+      0.002143,
+      0.002445,
+      2210.7
+    ],
+    [
+      "Planner Agent",
+      "1.0.0",
+      56.6208,
+      3586,
+      0.009892,
+      0.015789,
+      4141.9
+    ],
+    [
+      "Planner Agent",
+      "2.0.0",
+      74.5003,
+      4202,
+      0.013098,
+      0.01773,
+      4775.1
+    ]
+  ]
+}

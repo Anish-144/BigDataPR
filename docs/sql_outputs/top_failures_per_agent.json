@@ -1,0 +1,98 @@
+{
+  "query": "top_failures_per_agent",
+  "file": "03_window_functions_and_rankings.sql",
+  "tags": {
+    "query": "top_failures_per_agent",
+    "title": "Top-3 failure reasons per agent (Top-N per group)",
+    "concept": "ROW_NUMBER() OVER (PARTITION BY ...) for per-group Top-N",
+    "question": "What are the three most common failure reasons for each agent?",
+    "interpretation": "Combines run-level error categories with evaluation failures ('wrong_answer' = completed run whose answer did not match the reference).",
+    "params": "days=30"
+  },
+  "elapsed_ms": 96.7,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 83,
+    "cpuTimeMillis": 21,
+    "wallTimeMillis": 32,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 18120,
+    "totalSplits": 89
+  },
+  "columns": [
+    "agent_name",
+    "rank",
+    "reason",
+    "n"
+  ],
+  "rows": [
+    [
+      "Ops Tool Agent",
+      1,
+      "wrong_answer",
+      904
+    ],
+    [
+      "Ops Tool Agent",
+      2,
+      "malformed_response",
+      152
+    ],
+    [
+      "Ops Tool Agent",
+      3,
+      "tool_error",
+      145
+    ],
+    [
+      "Planner Agent",
+      1,
+      "wrong_answer",
+      3188
+    ],
+    [
+      "Planner Agent",
+      2,
+      "invalid_tool_args",
+      161
+    ],
+    [
+      "Planner Agent",
+      3,
+      "tool_error",
+      139
+    ],
+    [
+      "QA Assistant",
+      1,
+      "wrong_answer",
+      1401
+    ],
+    [
+      "QA Assistant",
+      2,
+      "malformed_response",
+      99
+    ],
+    [
+      "RAG Helpdesk",
+      1,
+      "wrong_answer",
+      1729
+    ],
+    [
+      "RAG Helpdesk",
+      2,
+      "malformed_response",
+      101
+    ],
+    [
+      "RAG Helpdesk",
+      3,
+      "retrieval_error",
+      49
+    ]
+  ]
+}

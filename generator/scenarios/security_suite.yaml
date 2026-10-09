@@ -1,0 +1,26 @@
+# Controlled security test suite: each security scenario injected at a known rate,
+# plus benign near-miss inputs/documents, to measure detection rate and false positives.
+name: security_suite
+description: Labelled security-policy scenarios (allowlist, prohibited actions, injection, canary leaks, exfiltration, privilege).
+seed: 2026
+tasks: 6000
+workers: 4
+time_mode: simulated
+sim_days: 0.5
+workload_mix:
+  - {agent_id: qa-assistant, version: "1.0.0", weight: 1}
+  - {agent_id: qa-assistant, version: "1.1.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.0.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.1.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.0.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.1.0", weight: 1}
+  - {agent_id: planner-agent, version: "1.0.0", weight: 1}
+  - {agent_id: planner-agent, version: "2.0.0", weight: 1}
+fault_profile:
+  suspicious_tool_access: 0.03
+  policy_violation: 0.03
+  prompt_injection: 0.03
+  sensitive_data_leak: 0.03
+  exfiltration_sequence: 0.03
+  privilege_escalation: 0.03
+max_faults_per_run: 1

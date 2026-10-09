@@ -1,0 +1,264 @@
+# AgentShield local stack (single node). See README.md for commands and
+# docs/ARCHITECTURE.md for the data flow and version compatibility notes.
+#
+# Published ports bind to 127.0.0.1 (BIND_ADDRESS) because the demo API is unauthenticated.
+# Memory budget (Docker Desktop default ~7.6 GiB): limits below sum to ~7.5 GiB
+# (limits are caps, not reservations; measured steady-state use is ~3.5 GiB).
+# The optional Airflow profile adds ~1.5 GiB (raise Docker/WSL memory first).
+
+name: agentshield
+
+x-python-env: &python-env
+  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  TRINO_HOST: trino
+  TRINO_PORT: "8080"
+  TRINO_USER: agentshield
+  POSTGRES_DSN: postgresql+psycopg://${POSTGRES_USER:-agentshield}:${POSTGRES_PASSWORD:-agentshield}@postgres:5432/${POSTGRES_DB:-agentshield}
+  CAPTURE_CONTENT: ${CAPTURE_CONTENT:-false}
+  TRINO_QUERY_TIMEOUT_S: ${TRINO_QUERY_TIMEOUT_S:-60}
+  LLM_PROVIDER: ${LLM_PROVIDER:-none}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-opus-5-5}
+  SPARK_STATE_FILE: /app/state/spark/stream_progress.json
+  SPARK_UI_URL: http://spark-streaming:4040
+  AIRFLOW_URL: http://airflow:8080
+
+x-python-image: &python-image
+  build:
+    context: .
+    dockerfile: infra/python/Dockerfile
+  image: agentshield/python:0.1.0
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agentshield}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentshield}
+      POSTGRES_DB: ${POSTGRES_DB:-agentshield}
+      ICEBERG_CATALOG_DB: ${ICEBERG_CATALOG_DB:-iceberg_catalog}
+      ICEBERG_CATALOG_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+      ICEBERG_CATALOG_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+      AIRFLOW_DB: ${AIRFLOW_DB:-airflow}
+      AIRFLOW_DB_USER: ${AIRFLOW_DB_USER:-airflow}
+      AIRFLOW_DB_PASSWORD: ${AIRFLOW_DB_PASSWORD:-airflow}
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:${POSTGRES_HOST_PORT:-5433}:5432"]   # 5433 on the host: avoids clashing with a locally installed PostgreSQL
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./infra/postgres/init.sh:/docker-entrypoint-initdb.d/10-agentshield.sh:ro
+      - ./infra/postgres/iceberg_catalog.sql:/docker-entrypoint-initdb.d/iceberg_catalog.sql.inc:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agentshield} -d ${POSTGRES_DB:-agentshield}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 512m
+    restart: unless-stopped
+
+  minio:
+    # MinIO stopped publishing community images to Docker Hub in 2025; this is
+    # Bitnami's (archived, version-pinned) packaging of the MinIO server.
+    image: bitnamilegacy/minio:2025.4.22
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-agentshield}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-agentshield-minio-secret}
+      MINIO_DEFAULT_BUCKETS: warehouse
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:9000:9000", "${BIND_ADDRESS:-127.0.0.1}:9001:9001"]
+    volumes:
+      - minio-data:/bitnami/minio/data
+    healthcheck:
+      test: ["CMD-SHELL", "mc alias set hc http://localhost:9000 \"$$MINIO_ROOT_USER\" \"$$MINIO_ROOT_PASSWORD\" >/dev/null 2>&1 && mc ls hc/warehouse >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+    mem_limit: 768m
+    restart: unless-stopped
+
+  kafka:
+    image: apache/kafka:3.9.0
+    hostname: kafka
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:9094:9094"]
+    environment:
+      CLUSTER_ID: 5L6g3nShT-eMCtK--X86sw
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_MESSAGE_MAX_BYTES: 2097152
+      KAFKA_HEAP_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 15s
+      retries: 20
+      start_period: 15s
+    mem_limit: 1g
+    restart: unless-stopped
+
+  kafka-init:
+    image: apache/kafka:3.9.0
+    depends_on:
+      kafka: {condition: service_healthy}
+    entrypoint: ["/bin/bash", "/scripts/create-topics.sh"]
+    environment:
+      KAFKA_BOOTSTRAP: kafka:9092
+    volumes:
+      - ./infra/kafka/create-topics.sh:/scripts/create-topics.sh:ro
+    restart: "no"
+
+  trino:
+    image: trinodb/trino:467
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:8080:8080"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-agentshield}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-agentshield-minio-secret}
+      ICEBERG_CATALOG_DB: ${ICEBERG_CATALOG_DB:-iceberg_catalog}
+      ICEBERG_CATALOG_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+      ICEBERG_CATALOG_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+    volumes:
+      - ./infra/trino/catalog:/etc/trino/catalog:ro
+      - ./infra/trino/etc/config.properties:/etc/trino/config.properties:ro
+      - ./infra/trino/etc/jvm.config:/etc/trino/jvm.config:ro
+      - ./infra/trino/etc/resource-groups.properties:/etc/trino/resource-groups.properties:ro
+      - ./infra/trino/etc/resource-groups.json:/etc/trino/resource-groups.json:ro
+    depends_on:
+      postgres: {condition: service_healthy}
+      minio: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "trino --execute 'SELECT 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 20s
+      retries: 30
+      start_period: 20s
+    mem_limit: 2304m
+    restart: unless-stopped
+
+  lakehouse-init:
+    <<: *python-image
+    environment: *python-env
+    command: ["sh", "-c", "python -m lakehouse.run_sql sql/01_schema_and_tables.sql --wait 180 --quiet --retries 5 && python -m lakehouse.seed_dimensions"]
+    depends_on:
+      trino: {condition: service_healthy}
+    restart: "no"
+
+  spark-streaming:
+    build:
+      context: .
+      dockerfile: infra/spark/Dockerfile
+    image: agentshield/spark:0.1.0
+    hostname: spark-streaming
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      ICEBERG_JDBC_URI: jdbc:postgresql://postgres:5432/${ICEBERG_CATALOG_DB:-iceberg_catalog}
+      ICEBERG_JDBC_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+      ICEBERG_JDBC_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+      S3_ENDPOINT: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-agentshield}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-agentshield-minio-secret}
+      AWS_REGION: us-east-1
+      SPARK_MASTER: ${SPARK_MASTER:-local[4]}
+      SPARK_DRIVER_MEMORY: ${SPARK_DRIVER_MEMORY:-1536m}
+      TRIGGER_SECONDS: ${SPARK_TRIGGER_SECONDS:-10}
+      MAX_OFFSETS_PER_TRIGGER: ${SPARK_MAX_OFFSETS_PER_TRIGGER:-300000}
+      WATERMARK_DELAY: ${SPARK_WATERMARK_DELAY:-30 minutes}
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:4040:4040"]
+    volumes:
+      - spark-checkpoints:/opt/agentshield/checkpoints
+      - spark-state:/opt/agentshield/state
+    depends_on:
+      kafka-init: {condition: service_completed_successfully}
+      lakehouse-init: {condition: service_completed_successfully}
+    mem_limit: 3g          # measured peak 2.43 GiB during a 1M-event burst at 2.5g
+    restart: unless-stopped
+
+  backend:
+    <<: *python-image
+    environment: *python-env
+    command: ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:8000:8000"]
+    volumes:
+      - spark-state:/app/state/spark:ro
+      - ./benchmarks/results:/app/benchmarks/results
+      - ./models:/app/models
+    depends_on:
+      postgres: {condition: service_healthy}
+      kafka: {condition: service_healthy}
+      trino: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 1g        # API + up to 4 spawned generator workers for API-triggered test runs
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    image: agentshield/frontend:0.1.0
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:3000:80"]
+    depends_on:
+      backend: {condition: service_started}
+    mem_limit: 128m
+    restart: unless-stopped
+
+  # Optional orchestration profile:  docker compose --profile orchestration up -d airflow
+  # UI: http://localhost:8088 (admin / ${AIRFLOW_ADMIN_PASSWORD:-admin}). DAGs start paused.
+  airflow:
+    profiles: ["orchestration"]
+    build:
+      context: .
+      dockerfile: infra/airflow/Dockerfile
+    image: agentshield/airflow:0.1.0
+    environment:
+      <<: *python-env
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${AIRFLOW_DB_USER:-airflow}:${AIRFLOW_DB_PASSWORD:-airflow}@postgres:5432/${AIRFLOW_DB:-airflow}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      AIRFLOW__WEBSERVER__WORKERS: "1"
+      AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY:-agentshield-local-demo-secret}
+      AIRFLOW_ADMIN_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-admin}
+    command: >
+      bash -c "airflow db migrate &&
+               (airflow users create --username admin --password \"$${AIRFLOW_ADMIN_PASSWORD}\" --firstname Admin
+                 --lastname User --role Admin --email admin@example.invalid || true) &&
+               (airflow scheduler &) && exec airflow webserver --port 8080"
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:8088:8080"]
+    volumes:
+      - ./benchmarks/results:/opt/agentshield/benchmarks/results
+      - ./models:/opt/agentshield/models
+      - ./orchestration/dags:/opt/airflow/dags:ro
+    depends_on:
+      postgres: {condition: service_healthy}
+      kafka: {condition: service_healthy}
+      trino: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/health >/dev/null"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    mem_limit: 1536m
+    restart: unless-stopped
+
+volumes:
+  pg-data:
+  minio-data:
+  kafka-data:
+  spark-checkpoints:
+  spark-state:

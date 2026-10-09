@@ -1,0 +1,37 @@
+{
+  "query": "schema_evolution_result",
+  "file": "09_lakehouse_features.sql",
+  "tags": {
+    "query": "schema_evolution_result",
+    "title": "Schema evolution - old rows read the added column as NULL",
+    "concept": "ALTER TABLE ADD COLUMN on Iceberg (metadata-only change)",
+    "question": "After adding routing_strategy, what do old and new rows contain?",
+    "interpretation": "Iceberg tracks columns by ID, so adding a column is a metadata operation; no file rewrite."
+  },
+  "elapsed_ms": 132.1,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 103,
+    "cpuTimeMillis": 8,
+    "wallTimeMillis": 14,
+    "processedRows": 1200,
+    "processedBytes": 11622,
+    "physicalInputBytes": 11622,
+    "peakMemoryBytes": 2808,
+    "totalSplits": 34
+  },
+  "columns": [
+    "routing_strategy",
+    "rows_"
+  ],
+  "rows": [
+    [
+      "<NULL: written before ADD COLUMN>",
+      1000
+    ],
+    [
+      "cost_aware",
+      200
+    ]
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "query": "exp_tier_curated",
+  "file": "08_query_plan_experiments.sql",
+  "tags": {
+    "query": "exp_tier_curated",
+    "title": "Tier 2 - daily success rate from curated Iceberg facts",
+    "concept": "Typed columnar facts, partition pruning",
+    "question": "Daily success rate per agent version from agent_run_metrics.",
+    "interpretation": "Reads two narrow typed columns (task_success, keys) instead of JSON text.",
+    "params": "days=60"
+  },
+  "elapsed_ms": 253.9,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 254,
+    "cpuTimeMillis": 134,
+    "wallTimeMillis": 2175,
+    "processedRows": 45980,
+    "processedBytes": 4352821,
+    "physicalInputBytes": 4352821,
+    "peakMemoryBytes": 12296,
+    "totalSplits": 57
+  },
+  "columns": [
+    "event_date",
+    "agent_id",
+    "agent_version",
+    "runs",
+    "success_rate"
+  ],
+  "rows": [
+    [
+      "2026-10-06",
+      "ops-tool-agent",
+      "1.0.0",
+      316,
+      0.9051
+    ],
+    [
+      "2026-10-06",
+      "ops-tool-agent",
+      "1.1.0",
+      326,
+      0.8926
+    ],
+    [
+      "2026-10-06",
+      "planner-agent",
+      "1.0.0",
+      287,
+      0.6237
+    ],
+    [
+      "2026-10-06",
+      "planner-agent",
+      "2.0.0",
+      302,
+      0.7185
+    ],
+    [
+      "2026-10-06",
+      "qa-assistant",
+      "1.0.0",
+      306,
+      0.8137
+    ],
+    [
+      "2026-10-06",
+      "qa-assistant",
+      "1.1.0",
+      289,
+      0.9031
+    ],
+    [
+      "2026-10-06",
+      "rag-helpdesk",
+      "2.0.0",
+      274,
+      0.8942
+    ],
+    [
+      "2026-10-06",
+      "rag-helpdesk",
+      "2.1.0",
+      291,
+      0.7835
+    ],
+    [
+      "2026-10-07",
+      "ops-tool-agent",
+      "1.0.0",
+      837,
+      0.8889
+    ],
+    [
+      "2026-10-07",
+      "ops-tool-agent",
+      "1.1.0",
+      823,
+      0.8591
+    ],
+    [
+      "2026-10-07",
+      "planner-agent",
+      "1.0.0",
+      805,
+      0.6248
+    ],
+    [
+      "2026-10-07",
+      "planner-agent",
+      "2.0.0",
+      783,
+      0.7625
+    ],
+    [
+      "2026-10-07",
+      "qa-assistant",
+      "1.0.0",
+      846,
+      0.8262
+    ],
+    [
+      "2026-10-07",
+      "qa-assistant",
+      "1.1.0",
+      840,
+      0.9262
+    ],
+    [
+      "2026-10-07",
+      "rag-helpdesk",
+      "2.0.0",
+      852,
+      0.8885
+    ],
+    [
+      "2026-10-07",
+      "rag-helpdesk",
+      "2.1.0",
+      874,
+      0.7849
+    ],
+    [
+      "2026-10-08",
+      "ops-tool-agent",
+      "1.0.0",
+      1384,
+      0.8981
+    ],
+    [
+      "2026-10-08",
+      "ops-tool-agent",
+      "1.1.0",
+      1351,
+      0.849
+    ],
+    [
+      "2026-10-08",
+      "planner-agent",
+      "1.0.0",
+      1364,
+      0.6188
+    ],
+    [
+      "2026-10-08",
+      "planner-agent",
+      "2.0.0",
+      1340,
+      0.7299
+    ],
+    [
+      "2026-10-08",
+      "qa-assistant",
+      "1.0.0",
+      1415,
+      0.8205
+    ],
+    [
+      "2026-10-08",
+      "qa-assistant",
+      "1.1.0",
+      1350,
+      0.923
+    ],
+    [
+      "2026-10-08",
+      "rag-helpdesk",
+      "2.0.0",
+      1378,
+      0.8621
+    ],
+    [
+      "2026-10-08",
+      "rag-helpdesk",
+      "2.1.0",
+      1385,
+      0.8116
+    ],
+    [
+      "2026-10-09",
+      "ops-tool-agent",
+      "1.0.0",
+      3256,
+      0.9048
+    ],
+    [
+      "2026-10-09",
+      "ops-tool-agent",
+      "1.1.0",
+      3154,
+      0.8567
+    ],
+    [
+      "2026-10-09",
+      "planner-agent",
+      "1.0.0",
+      3268,
+      0.6304
+    ],
+    [
+      "2026-10-09",
+      "planner-agent",
+      "2.0.0",
+      3263,
+      0.7386
+    ],
+    [
+      "2026-10-09",
+      "qa-assistant",
+      "1.0.0",
+      3187,
+      0.8237
+    ],
+    [
+      "2026-10-09",
+      "qa-assistant",
+      "1.1.0",
+      3273,
+      0.9126
+    ],
+    [
+      "2026-10-09",
+      "rag-helpdesk",
+      "2.0.0",
+      3323,
+      0.8778
+    ],
+    [
+      "2026-10-09",
+      "rag-helpdesk",
+      "2.1.0",
+      3238,
+      0.8002
+    ]
+  ]
+}

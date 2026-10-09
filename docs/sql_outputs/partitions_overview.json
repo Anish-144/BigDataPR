@@ -1,0 +1,55 @@
+{
+  "query": "partitions_overview",
+  "file": "09_lakehouse_features.sql",
+  "tags": {
+    "query": "partitions_overview",
+    "title": "Partition statistics of the span fact table",
+    "concept": "Iceberg \"$partitions\" metadata table",
+    "question": "How are rows and files distributed across event_date partitions?",
+    "interpretation": "Balanced, date-aligned partitions keep pruning effective; many tiny files per partition signal that compaction is due."
+  },
+  "elapsed_ms": 95.6,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 75,
+    "cpuTimeMillis": 10,
+    "wallTimeMillis": 25,
+    "processedRows": 4,
+    "processedBytes": 5973,
+    "physicalInputBytes": 5973,
+    "peakMemoryBytes": 1470,
+    "totalSplits": 19
+  },
+  "columns": [
+    "event_date",
+    "record_count",
+    "file_count",
+    "size_mb"
+  ],
+  "rows": [
+    [
+      "2026-10-06",
+      15607,
+      1,
+      0.85
+    ],
+    [
+      "2026-10-07",
+      43526,
+      1,
+      2.36
+    ],
+    [
+      "2026-10-08",
+      72064,
+      2,
+      3.91
+    ],
+    [
+      "2026-10-09",
+      171383,
+      3,
+      9.3
+    ]
+  ]
+}

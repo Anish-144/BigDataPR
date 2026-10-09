@@ -1,0 +1,40 @@
+# Realistic baseline traffic over 3 simulated days with rare faults and one
+# simulated incident window (ops-tool-agent 1.1.0 dependency outage).
+# Used for trend analysis, version comparison and anomaly-detector training.
+name: baseline
+description: Three simulated days of mixed traffic with rare injected faults and one incident window.
+seed: 42
+tasks: 20000
+workers: 4
+time_mode: simulated
+sim_days: 3
+workload_mix:
+  - {agent_id: qa-assistant, version: "1.0.0", weight: 1}
+  - {agent_id: qa-assistant, version: "1.1.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.0.0", weight: 1}
+  - {agent_id: rag-helpdesk, version: "2.1.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.0.0", weight: 1}
+  - {agent_id: ops-tool-agent, version: "1.1.0", weight: 1}
+  - {agent_id: planner-agent, version: "1.0.0", weight: 1}
+  - {agent_id: planner-agent, version: "2.0.0", weight: 1}
+fault_profile:
+  slow_tool: 0.006
+  tool_timeout: 0.006
+  loop: 0.005
+  malformed_response: 0.004
+  high_token_usage: 0.004
+  failed_retrieval: 0.005
+  suspicious_tool_access: 0.003
+  policy_violation: 0.002
+  prompt_injection: 0.003
+  sensitive_data_leak: 0.002
+  exfiltration_sequence: 0.002
+  privilege_escalation: 0.002
+incidents:
+  - name: ops-tool-dependency-outage
+    agent_id: ops-tool-agent
+    version: "1.1.0"
+    start_pct: 0.62
+    duration_pct: 0.02
+    effect: {tool_error_rate: 0.55, tool_latency_multiplier: 2.5}
+dirty_rate: 0.002
