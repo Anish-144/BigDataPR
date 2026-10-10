@@ -66,11 +66,11 @@ export function Layout() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar onMenu={() => setDrawer(true)} />
-        <main id="main" className="mx-auto w-full min-w-0 max-w-[1600px] flex-1 px-4 py-5 lg:px-6">
+        <main id="main" className="mx-auto w-full min-w-0 max-w-[1600px] flex-1 p-6 lg:p-8">
           <Outlet />
         </main>
-        <footer className="border-t border-line px-6 py-3 text-2xs text-muted">
-          AgentShield workbench · synthetic, deterministic mock-agent telemetry · costs are estimates from a local pricing table · findings and anomalies are signals for human review, not proof of an attack.
+        <footer className="border-t border-line px-6 py-4 text-xs text-muted bg-surface/50">
+          AgentShield workbench · synthetic, deterministic mock-agent telemetry · findings are signals for human review.
         </footer>
       </div>
     </div>
@@ -79,15 +79,14 @@ export function Layout() {
 
 function Brand({ collapsed }: { collapsed: boolean }) {
   return (
-    <Link to="/" className="flex h-14 items-center gap-2 px-3.5 text-ink">
+    <Link to="/app" className="flex h-16 items-center gap-2 px-4 text-ink hover:text-accent-strong transition-colors">
       <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" className="shrink-0">
         <path d="M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7L16 2Z" fill="rgb(var(--accent-strong))" />
         <path d="M10 16.5l4 4 8-9" fill="none" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       {!collapsed && (
         <span className="leading-tight">
-          <span className="block text-sm font-semibold">AgentShield</span>
-          <span className="block text-2xs text-muted">Agent testing workbench</span>
+          <span className="block text-[15px] font-bold tracking-tight">AgentShield</span>
         </span>
       )}
     </Link>
@@ -102,13 +101,13 @@ function SideNav({ collapsed }: { collapsed: boolean }) {
           <li key={n.path}>
             <NavLink
               to={n.path}
-              end={n.path === "/"}
+              end={n.path === "/app"}
               title={collapsed ? n.label : undefined}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm ${isActive ? "bg-accent/10 font-medium text-accent-ink" : "text-ink-2 hover:bg-surface-2 hover:text-ink"}`
+                `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${isActive ? "bg-surface-2 text-accent-strong shadow-sm" : "text-ink-2 hover:bg-surface-2 hover:text-ink"}`
               }
             >
-              <Icon name={n.icon} size={17} className="shrink-0" />
+              <Icon name={n.icon} size={18} className="shrink-0" />
               {!collapsed && <span className="truncate">{n.label}</span>}
             </NavLink>
           </li>
@@ -162,7 +161,7 @@ function PipelinePill() {
   const icon = tone === "good" ? "check" : tone === "critical" ? "x" : tone === "warning" ? "alert" : "minus";
   return (
     <Link
-      to="/pipeline"
+      to="/app/pipeline"
       className="hidden items-center gap-1.5 rounded-full border border-line-strong px-2.5 py-1 text-xs text-ink-2 hover:bg-surface-2 sm:inline-flex"
       title={q.data ? `Pipeline ${q.data.status}${notOk.length ? " - " + notOk.join(", ") : ""} (checked ${new Date(q.data.checked_at).toLocaleTimeString()})` : q.isError ? "Pipeline health endpoint unreachable" : "Checking pipeline…"}
     >

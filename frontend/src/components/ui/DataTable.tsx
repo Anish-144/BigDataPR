@@ -61,10 +61,10 @@ export function DataTable<R>({
   if (!rows.length) return <>{empty ?? <EmptyState title="No rows" />}</>;
   const pad = dense ? "px-2 py-1" : "px-3 py-1.5";
   return (
-    <div className="overflow-auto rounded-md border border-line" style={{ maxHeight: maxHeight === "none" ? undefined : maxHeight }}>
-      <table className="w-full border-collapse text-left text-xs">
+    <div className="overflow-auto rounded-xl border border-line bg-surface shadow-sm" style={{ maxHeight: maxHeight === "none" ? undefined : maxHeight }}>
+      <table className="w-full border-collapse text-left text-[13px]">
         {caption && <caption className="sr-only">{caption}</caption>}
-        <thead className="sticky top-0 z-[1] bg-surface-2">
+        <thead className="sticky top-0 z-[1] bg-surface/90 backdrop-blur-md">
           <tr>
             {columns.map((c) => {
               const canSort = clientSort && c.sortable !== false;
@@ -75,7 +75,7 @@ export function DataTable<R>({
                   scope="col"
                   title={c.title}
                   aria-sort={active ? (sort!.dir === 1 ? "ascending" : "descending") : undefined}
-                  className={`whitespace-nowrap border-b border-line font-medium text-ink-2 ${pad} ${c.align === "right" ? "text-right" : c.align === "center" ? "text-center" : ""}`}
+                  className={`whitespace-nowrap border-b border-line font-semibold text-ink-2 tracking-wide uppercase text-[11px] ${pad} ${c.align === "right" ? "text-right" : c.align === "center" ? "text-center" : ""}`}
                 >
                   {canSort ? (
                     <button
@@ -114,7 +114,7 @@ export function DataTable<R>({
                 }
                 tabIndex={onRowClick ? 0 : undefined}
                 aria-selected={onRowClick ? selected : undefined}
-                className={`border-b border-line/70 last:border-b-0 ${onRowClick ? "cursor-pointer hover:bg-surface-2 focus:bg-surface-2 focus:outline-none" : ""} ${selected ? "bg-accent/10 hover:bg-accent/10" : ""}`}
+                className={`border-b border-line/50 last:border-b-0 transition-colors ${onRowClick ? "cursor-pointer hover:bg-surface-2/60 focus:bg-surface-2 focus:outline-none" : ""} ${selected ? "bg-accent/5 hover:bg-accent/10" : ""}`}
               >
                 {columns.map((c) => (
                   <td key={c.key} className={`${pad} align-top text-ink ${nowrap ? "whitespace-nowrap" : ""} ${c.align === "right" ? "num text-right" : c.align === "center" ? "text-center" : ""} ${c.className ?? ""}`}>

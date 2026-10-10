@@ -178,7 +178,7 @@ function FindingsTab() {
       header: "Trace",
       render: (r) =>
         r.trace_id ? (
-          <Link className="link whitespace-nowrap" to={`/runs/${r.trace_id}`} onClick={(e) => e.stopPropagation()}>
+          <Link className="link whitespace-nowrap" to={`/app/runs/${r.trace_id}`} onClick={(e) => e.stopPropagation()}>
             {r.run_id ?? "open"} →
           </Link>
         ) : (

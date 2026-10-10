@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAgents, useRuns, useTestRuns, type RunFilters } from "../api/hooks";
 import type { RunRow } from "../api/types";
 import { useDays } from "../lib/timeRange";
-import { Card, Field, PageHeader } from "../components/ui/Card";
+import { Field, PageHeader } from "../components/ui/Card";
 import { DataTable, Pagination, Select, type Column } from "../components/ui/DataTable";
 import { ErrorPanel, EmptyState, SkeletonRows } from "../components/ui/states";
 import { Badge, StatusBadge, SuccessBadge, Tag } from "../components/ui/Badge";
@@ -99,8 +99,11 @@ export default function RunExplorer() {
         title="Run Explorer"
         description="Search agent runs in the lakehouse and open any run's trace waterfall. Latency, tokens and costs are simulated by deterministic mock agents (costs are estimates)."
       />
-      <Card bodyClassName="p-3">
-        <form onSubmit={onSubmit} className="grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-9" aria-label="Run filters">
+      <div className="bg-surface rounded-2xl border border-line p-5 shadow-sm">
+        <div className="flex items-center gap-2 mb-4 text-sm font-bold text-ink-2 uppercase tracking-widest">
+          <Icon name="search" size={16} /> Search & Filter Runs
+        </div>
+        <form onSubmit={onSubmit} className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-9" aria-label="Run filters">
           <Field label="Agent">
             <Select value={draft.agent_id ?? ""} onChange={(v) => setDraft((d) => ({ ...d, agent_id: v, agent_version: "" }))} options={agentIds} placeholder="Any agent" />
           </Field>
@@ -141,18 +144,23 @@ export default function RunExplorer() {
               ]}
             />
           </Field>
-          <div className="col-span-2 flex items-end gap-2 md:col-span-4 xl:col-span-9">
-            <button type="submit" className="btn btn-primary">
-              <Icon name="search" size={14} /> Apply filters
+          <div className="col-span-2 flex items-end gap-3 md:col-span-4 xl:col-span-9 pt-2">
+            <button type="submit" className="btn btn-primary h-10 px-5 rounded-lg shadow-sm">
+              Apply Filters
             </button>
-            <button type="button" className="btn" onClick={() => apply({})}>
+            <button type="button" className="btn h-10 px-5 rounded-lg bg-surface hover:bg-surface-2 border border-line transition-colors shadow-sm" onClick={() => apply({})}>
               Reset
             </button>
-            <span className="text-xs text-muted">Time range: last {days} day{days > 1 ? "s" : ""} (top bar)</span>
+            <span className="text-[13px] font-medium text-muted ml-auto hidden sm:block">Time range: last {days} day{days > 1 ? "s" : ""}</span>
           </div>
         </form>
-      </Card>
-      <Card title="Runs" subtitle="Click a row to open its trace" bodyClassName="p-3">
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-ink tracking-tight">Run Results</h2>
+          <span className="text-sm text-ink-2">Click a row to open its trace</span>
+        </div>
         {q.isLoading ? (
           <SkeletonRows rows={10} />
         ) : q.isError && !q.data ? (
@@ -174,7 +182,7 @@ export default function RunExplorer() {
             <Pagination offset={offset} limit={LIMIT} count={q.data.rows.length} hasMore={q.data.has_more} fetching={q.isFetching} onChange={(o) => apply(applied, o)} />
           </>
         ) : null}
-      </Card>
+      </div>
       {q.isError && q.data && <Badge tone="critical">Refresh failed: {(q.error as Error).message}</Badge>}
     </div>
   );

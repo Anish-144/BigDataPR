@@ -1,10 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-// All colors resolve to CSS custom properties defined in src/index.css, so light/dark
-// switching happens in one place (prefers-color-scheme, or the data-theme override).
 const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
 
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
@@ -19,6 +18,7 @@ export default {
         accent: token("accent"),
         "accent-ink": token("accent-ink"),
         "accent-strong": token("accent-strong"),
+        secondary: token("secondary"),
         good: token("good"),
         warning: token("warning"),
         serious: token("serious"),
@@ -29,12 +29,16 @@ export default {
         "critical-ink": token("critical-ink"),
       },
       fontFamily: {
-        sans: ["system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        sans: ["Inter", "Manrope", "system-ui", "-apple-system", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "Cascadia Code", "Consolas", "monospace"],
       },
       fontSize: {
         "2xs": ["0.6875rem", { lineHeight: "1rem" }],
       },
+      boxShadow: {
+        'subtle': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        'elevated': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+      }
     },
   },
   plugins: [],

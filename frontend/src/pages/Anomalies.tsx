@@ -387,7 +387,7 @@ function AlertDetail({ id, onClose }: { id: string | null; onClose: () => void }
             ]}
           />
           {a.trace_id && (
-            <Link className="btn btn-sm self-start" to={`/runs/${a.trace_id}`}>
+            <Link className="btn btn-sm self-start" to={`/app/runs/${a.trace_id}`}>
               Open trace waterfall →
             </Link>
           )}
@@ -397,7 +397,7 @@ function AlertDetail({ id, onClose }: { id: string | null; onClose: () => void }
               <ul className="flex max-h-40 flex-col gap-0.5 overflow-auto">
                 {q.data!.related_runs.map((r) => (
                   <li key={String(r.run_id)} className="flex items-center justify-between gap-2 border-b border-line/60 py-0.5">
-                    <Link className="link mono" to={`/runs/${String(r.trace_id)}`}>
+                    <Link className="link mono" to={`/app/runs/${String(r.trace_id)}`}>
                       {String(r.run_id)}
                     </Link>
                     <span className="num text-ink-2">

@@ -2,129 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
- * Design tokens. UI tokens are RGB channels (so Tailwind opacity modifiers work);
- * chart tokens are plain hex from the validated dataviz reference palette
- * (categorical light/dark steps, blue ordinal ramp, fixed status scale).
- * Dark mode follows prefers-color-scheme unless the user pins a theme via data-theme.
- */
 :root {
   color-scheme: light;
-  --page: 243 243 240;
-  --surface: 252 252 251;
-  --surface-2: 241 240 236;
-  --line: 225 224 217;
-  --line-strong: 195 194 183;
-  --ink: 11 11 11;
-  --ink-2: 82 81 78;
-  --muted: 108 106 101;
-  --accent: 42 120 214;
-  --accent-ink: 28 92 171;
-  --accent-strong: 37 106 191;
-  --good: 12 163 12;
-  --warning: 250 178 25;
-  --serious: 236 131 90;
-  --critical: 208 59 59;
-  --good-ink: 0 99 0;
-  --warning-ink: 133 86 0;
-  --serious-ink: 163 69 30;
-  --critical-ink: 176 42 42;
+  --page: 247 246 242;
+  --surface: 255 255 255;
+  --surface-2: 250 249 246;
+  --line: 226 224 218;
+  --line-strong: 200 198 190;
+  --ink: 36 40 36;
+  --ink-2: 119 122 114;
+  --muted: 153 155 148;
+  --accent: 73 106 85;
+  --accent-ink: 56 82 66;
+  --accent-strong: 43 64 51;
+  --secondary: 197 138 67;
+  
+  --good: 65 143 96;
+  --warning: 219 155 52;
+  --serious: 212 110 65;
+  --critical: 194 72 72;
+  --good-ink: 38 92 59;
+  --warning-ink: 138 95 23;
+  --serious-ink: 145 66 31;
+  --critical-ink: 135 37 37;
 
-  --chart-surface: #fcfcfb;
-  --chart-grid: #e1e0d9;
-  --chart-axis: #c3c2b7;
-  --chart-tick: #6c6a65;
-  --series-1: #2a78d6;
-  --series-2: #eb6834;
-  --series-3: #1baf7a;
-  --series-4: #eda100;
-  --series-5: #e87ba4;
-  --series-6: #008300;
-  --series-7: #4a3aa7;
-  --series-8: #e34948;
-  --deemph: #c3c2b7;
-  --ord-1: #86b6ef;
-  --ord-2: #3987e5;
-  --ord-3: #1c5cab;
-  --ord-4: #0d366b;
-  --status-good: #0ca30c;
-  --status-warning: #fab219;
-  --status-serious: #ec835a;
-  --status-critical: #d03b3b;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --page: 13 13 13;
-    --surface: 26 26 25;
-    --surface-2: 35 35 34;
-    --line: 44 44 42;
-    --line-strong: 69 68 63;
-    --ink: 245 245 243;
-    --ink-2: 195 194 183;
-    --muted: 152 150 143;
-    --accent: 57 135 229;
-    --accent-ink: 109 167 236;
-    --good-ink: 63 202 63;
-    --warning-ink: 250 178 25;
-    --serious-ink: 236 131 90;
-    --critical-ink: 240 122 122;
-
-    --chart-surface: #1a1a19;
-    --chart-grid: #2c2c2a;
-    --chart-axis: #383835;
-    --chart-tick: #98968f;
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --series-3: #199e70;
-    --series-4: #c98500;
-    --series-5: #d55181;
-    --series-6: #008300;
-    --series-7: #9085e9;
-    --series-8: #e66767;
-    --deemph: #45443f;
-    --ord-1: #184f95;
-    --ord-2: #2a78d6;
-    --ord-3: #6da7ec;
-    --ord-4: #b7d3f6;
-  }
+  --chart-surface: #ffffff;
+  --chart-grid: #e2e0da;
+  --chart-axis: #999b94;
+  --chart-tick: #777a72;
+  
+  --series-1: #496a55;
+  --series-2: #c58a43;
+  --series-3: #c96b4c;
+  --series-4: #5a6b7d;
+  --series-5: #8c739b;
+  --series-6: #42825c;
+  --series-7: #d1a354;
+  --series-8: #d65959;
+  
+  --deemph: #c8c6be;
+  
+  --ord-1: #95b3a1;
+  --ord-2: #6c917a;
+  --ord-3: #496a55;
+  --ord-4: #2b4535;
+  
+  --status-good: #418f60;
+  --status-warning: #db9b34;
+  --status-serious: #d46e41;
+  --status-critical: #c24848;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --page: 13 13 13;
-  --surface: 26 26 25;
-  --surface-2: 35 35 34;
-  --line: 44 44 42;
-  --line-strong: 69 68 63;
-  --ink: 245 245 243;
-  --ink-2: 195 194 183;
-  --muted: 152 150 143;
-  --accent: 57 135 229;
-  --accent-ink: 109 167 236;
-  --good-ink: 63 202 63;
-  --warning-ink: 250 178 25;
-  --serious-ink: 236 131 90;
-  --critical-ink: 240 122 122;
+  --page: 23 25 22;
+  --surface: 32 35 31;
+  --surface-2: 39 42 37;
+  --line: 52 56 50;
+  --line-strong: 75 80 72;
+  --ink: 240 240 232;
+  --ink-2: 160 162 155;
+  --muted: 110 112 105;
+  --accent: 105 142 120;
+  --accent-ink: 139 177 155;
+  --accent-strong: 165 200 180;
+  --secondary: 212 155 85;
+  
+  --good: 76 166 112;
+  --warning: 232 170 70;
+  --serious: 230 131 87;
+  --critical: 224 99 99;
+  --good-ink: 103 204 144;
+  --warning-ink: 245 194 113;
+  --serious-ink: 242 158 121;
+  --critical-ink: 237 133 133;
 
-  --chart-surface: #1a1a19;
-  --chart-grid: #2c2c2a;
-  --chart-axis: #383835;
-  --chart-tick: #98968f;
-  --series-1: #3987e5;
-  --series-2: #d95926;
-  --series-3: #199e70;
-  --series-4: #c98500;
-  --series-5: #d55181;
-  --series-6: #008300;
-  --series-7: #9085e9;
-  --series-8: #e66767;
-  --deemph: #45443f;
-  --ord-1: #184f95;
-  --ord-2: #2a78d6;
-  --ord-3: #6da7ec;
-  --ord-4: #b7d3f6;
+  --chart-surface: #20231f;
+  --chart-grid: #343832;
+  --chart-axis: #6e7069;
+  --chart-tick: #a0a29b;
+  
+  --series-1: #698e78;
+  --series-2: #d49b55;
+  --series-3: #d97c5e;
+  --series-4: #758a9e;
+  --series-5: #a289b3;
+  --series-6: #509e6f;
+  --series-7: #e0b467;
+  --series-8: #e66f6f;
+  
+  --deemph: #454743;
+  
+  --ord-1: #3b5445;
+  --ord-2: #527561;
+  --ord-3: #698e78;
+  --ord-4: #9ebfb0;
+
+  --status-good: #4ca670;
+  --status-warning: #e8aa46;
+  --status-serious: #e68357;
+  --status-critical: #e06363;
 }
 
 html,
@@ -139,25 +116,25 @@ code, pre, kbd, samp {
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 @layer components {
   .card {
-    @apply rounded-lg border border-line bg-surface;
+    @apply rounded-xl border border-line bg-surface shadow-sm;
   }
   .card-pad {
-    @apply p-4;
+    @apply p-6;
   }
   .label {
-    @apply text-xs font-medium text-ink-2;
+    @apply text-[0.8125rem] font-semibold tracking-wide text-ink-2 uppercase;
   }
   .input {
-    @apply h-8 w-full rounded-md border border-line-strong bg-surface px-2 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-60;
+    @apply h-9 w-full rounded-md border border-line-strong bg-surface px-3 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:opacity-60 transition-shadow duration-200;
   }
   .btn {
-    @apply inline-flex h-8 items-center justify-center gap-1.5 rounded-md border border-line-strong bg-surface px-3 text-sm font-medium text-ink hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded-md border border-line-strong bg-surface px-4 text-sm font-medium text-ink hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200;
   }
   .btn-primary {
     @apply border-accent-strong bg-accent-strong text-white hover:bg-accent-strong/90;
@@ -166,21 +143,20 @@ body {
     @apply border-critical/60 text-critical-ink hover:bg-critical/10;
   }
   .btn-sm {
-    @apply h-7 px-2 text-xs;
+    @apply h-7 px-3 text-xs gap-1.5;
   }
   .link {
-    @apply text-accent-ink underline-offset-2 hover:underline;
+    @apply text-accent-ink underline-offset-4 hover:underline transition-all;
   }
   .num {
     font-variant-numeric: tabular-nums;
   }
   .mono {
-    @apply font-mono text-[12px];
+    @apply font-mono text-[13px];
     font-variant-ligatures: none;
   }
 }
 
-/* Recharts: keep focus outlines off the SVG wrapper, show them on marks instead. */
 .recharts-wrapper:focus,
 .recharts-surface:focus {
   outline: none;
@@ -194,7 +170,7 @@ body {
 .skeleton {
   animation: shimmer 1.4s ease-in-out infinite;
   background: rgb(var(--surface-2));
-  border-radius: 6px;
+  border-radius: 8px;
 }
 @media (prefers-reduced-motion: reduce) {
   .skeleton { animation: none; }

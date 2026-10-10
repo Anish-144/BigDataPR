@@ -53,7 +53,7 @@ export default function Reports() {
       key: "explore",
       header: "",
       render: (t) => (
-        <Link className="link whitespace-nowrap text-xs" to={`/runs?test_run_id=${encodeURIComponent(t.test_run_id)}`}>
+        <Link className="link whitespace-nowrap text-xs" to={`/app/runs?test_run_id=${encodeURIComponent(t.test_run_id)}`}>
           Runs →
         </Link>
       ),
