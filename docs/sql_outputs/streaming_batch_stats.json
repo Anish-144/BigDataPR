@@ -9,17 +9,17 @@
     "interpretation": "Lag = batch commit time - Kafka record timestamp (queueing + trigger interval + processing). rows_per_sec is per micro-batch (input rows / batch duration), measured, single-node local[4] Spark.",
     "params": "days=30"
   },
-  "elapsed_ms": 97.3,
+  "elapsed_ms": 151.7,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 78,
-    "cpuTimeMillis": 6,
-    "wallTimeMillis": 11,
-    "processedRows": 2,
-    "processedBytes": 9377,
-    "physicalInputBytes": 9377,
-    "peakMemoryBytes": 6992,
-    "totalSplits": 34
+    "elapsedTimeMillis": 151,
+    "cpuTimeMillis": 179,
+    "wallTimeMillis": 306,
+    "processedRows": 36,
+    "processedBytes": 169451,
+    "physicalInputBytes": 169451,
+    "peakMemoryBytes": 50104,
+    "totalSplits": 68
   },
   "columns": [
     "query_name",
@@ -36,15 +36,15 @@
   "rows": [
     [
       "lakehouse_fanout",
-      2,
-      592942,
-      446,
-      19736.0,
-      20390.0,
-      15022.2,
-      15721.5,
-      29876.0,
-      40872.0
+      36,
+      8961181,
+      11735,
+      20329.0,
+      42701.0,
+      12244.8,
+      21928.3,
+      4731560.0,
+      41779912.0
     ]
   ]
 }

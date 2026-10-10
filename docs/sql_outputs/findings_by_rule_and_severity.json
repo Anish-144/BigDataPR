@@ -9,17 +9,17 @@
     "interpretation": "'blocked' = the runtime guard denied the action before execution; 'flagged' = detected and recorded (content-based detections cannot be blocked retroactively).",
     "params": "days=30"
   },
-  "elapsed_ms": 143.5,
+  "elapsed_ms": 274.2,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 131,
-    "cpuTimeMillis": 41,
-    "wallTimeMillis": 64,
-    "processedRows": 2682,
-    "processedBytes": 244825,
-    "physicalInputBytes": 244825,
-    "peakMemoryBytes": 398960,
-    "totalSplits": 83
+    "elapsedTimeMillis": 285,
+    "cpuTimeMillis": 538,
+    "wallTimeMillis": 991,
+    "processedRows": 22496,
+    "processedBytes": 2097196,
+    "physicalInputBytes": 2097196,
+    "peakMemoryBytes": 2389276,
+    "totalSplits": 145
   },
   "columns": [
     "rule_id",
@@ -38,10 +38,10 @@
       "Prompt-injection indicator",
       "prompt_injection",
       "medium",
-      908,
+      10974,
       0,
-      908,
-      812,
+      10974,
+      9966,
       4
     ],
     [
@@ -49,10 +49,10 @@
       "Tool not on agent allowlist",
       "tool_not_allowlisted",
       "high",
-      429,
-      429,
+      3156,
+      3156,
       0,
-      371,
+      2836,
       4
     ],
     [
@@ -60,10 +60,10 @@
       "Prohibited action attempted",
       "policy_violation",
       "critical",
-      411,
-      411,
+      2711,
+      2711,
       0,
-      411,
+      2704,
       4
     ],
     [
@@ -71,10 +71,10 @@
       "Restricted data access",
       "restricted_data_access",
       "high",
-      240,
+      1395,
       0,
-      240,
-      240,
+      1395,
+      1395,
       2
     ],
     [
@@ -82,10 +82,10 @@
       "Sensitive data in output",
       "sensitive_data_output",
       "critical",
-      232,
+      1301,
       0,
-      232,
-      232,
+      1301,
+      1300,
       4
     ],
     [
@@ -93,10 +93,10 @@
       "Unexpected privilege transition",
       "privilege_escalation",
       "critical",
-      208,
+      1299,
       0,
-      208,
-      208,
+      1299,
+      1299,
       4
     ],
     [
@@ -104,10 +104,10 @@
       "Exfiltration-like sequence",
       "exfiltration_sequence",
       "critical",
-      177,
+      1060,
       0,
-      177,
-      177,
+      1060,
+      1060,
       3
     ],
     [
@@ -115,10 +115,10 @@
       "Tool-call budget exceeded",
       "excessive_tool_calls",
       "medium",
-      69,
-      69,
+      592,
+      592,
       0,
-      68,
+      590,
       2
     ]
   ]

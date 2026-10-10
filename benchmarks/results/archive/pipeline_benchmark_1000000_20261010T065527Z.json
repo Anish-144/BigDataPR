@@ -1,0 +1,233 @@
+{
+  "recorded_at": "2026-10-10T06:55:27.452156+00:00",
+  "target_events": 1000000,
+  "test_run_id": "TR-20261010-e9b86d",
+  "environment": {
+    "host": {
+      "platform": "Windows-11-10.0.26300-SP0",
+      "python": "3.12.10",
+      "cpu_logical": 24,
+      "cpu_physical": 16,
+      "ram_gb": 16.9,
+      "in_container": false
+    },
+    "docker": {
+      "cpus": 24,
+      "memory_gib": 7.61,
+      "server_version": "28.3.3",
+      "os": "Docker Desktop"
+    },
+    "python": "3.12.10",
+    "stack": "Kafka 3.9.0 (1 broker) | Spark 3.5.3 local[4] | Iceberg 1.7.1 | Trino 467 | MinIO (bitnamilegacy 2025.4.22)",
+    "note": "single machine, Docker Desktop; no multi-node scaling is claimed"
+  },
+  "workload": {
+    "scenario": "generator/scenarios/benchmark.yaml",
+    "seed": 31337,
+    "tasks": 68890,
+    "workers": 6,
+    "calibrated_events_per_task": 14.516,
+    "events_by_type": {
+      "span.completed": 451093,
+      "run.metrics": 68890,
+      "evaluation.result": 487158,
+      "security.finding": 2491,
+      "worker.resource": 18
+    },
+    "fault_profile": {
+      "slow_tool": 0.006,
+      "tool_timeout": 0.006,
+      "loop": 0.005,
+      "malformed_response": 0.004,
+      "high_token_usage": 0.004,
+      "failed_retrieval": 0.005,
+      "suspicious_tool_access": 0.003,
+      "policy_violation": 0.002,
+      "prompt_injection": 0.003,
+      "sensitive_data_leak": 0.002,
+      "exfiltration_sequence": 0.002,
+      "privilege_escalation": 0.002
+    },
+    "dirty_rate": 0.001
+  },
+  "producer": {
+    "events": 1009825,
+    "wall_seconds": 20.666,
+    "events_per_sec": 48862.9,
+    "delivered": 1009823,
+    "failed": 0
+  },
+  "end_to_end": {
+    "seconds_produce_start_to_all_in_lakehouse": 73.7,
+    "seconds_after_producer_finished": 52.3,
+    "events_per_sec_end_to_end": 13701.7,
+    "ingest_curve": [
+      {
+        "t_s": 23.6,
+        "lakehouse_rows_added": 267390
+      },
+      {
+        "t_s": 30.8,
+        "lakehouse_rows_added": 267390
+      },
+      {
+        "t_s": 37.9,
+        "lakehouse_rows_added": 267390
+      },
+      {
+        "t_s": 45.1,
+        "lakehouse_rows_added": 567379
+      },
+      {
+        "t_s": 52.3,
+        "lakehouse_rows_added": 567379
+      },
+      {
+        "t_s": 59.5,
+        "lakehouse_rows_added": 867371
+      },
+      {
+        "t_s": 66.6,
+        "lakehouse_rows_added": 867371
+      },
+      {
+        "t_s": 73.7,
+        "lakehouse_rows_added": 1009825
+      }
+    ]
+  },
+  "spark": {
+    "batches": 4,
+    "rows": 1009825,
+    "invalid_rows": 720,
+    "busy_seconds": 68.3,
+    "first_batch_start": "2026-10-10T06:53:40.084312+00:00",
+    "last_batch_end": "2026-10-10T06:54:49.439091+00:00",
+    "rows_per_sec_over_span": 14560.3,
+    "rows_per_sec_while_busy": 14794.3,
+    "largest_batch_rows": 299992,
+    "p95_batch_ms": 24437.6437664032,
+    "avg_ingest_lag_ms": 40092.6987047195,
+    "p95_batch_avg_lag_ms": 54175.44912484394,
+    "max_ingest_lag_ms": 55657.09090232849
+  },
+  "validation": {
+    "quarantined_by_reason": {
+      "unknown_event_type": 186,
+      "malformed_json": 186,
+      "missing_event_id": 173,
+      "invalid_event_time": 175
+    },
+    "injected_structural": {
+      "unknown_event_type": 186,
+      "bad_timestamp": 175,
+      "malformed_json": 186,
+      "missing_event_id": 173
+    },
+    "quarantine_matches_injected": true
+  },
+  "storage": {
+    "added_by_table": {
+      "raw_agent_events": {
+        "files": 14,
+        "bytes": 104619201,
+        "rows": 1009825
+      },
+      "agent_spans": {
+        "files": 11,
+        "bytes": 25692874,
+        "rows": 450881
+      },
+      "agent_run_metrics": {
+        "files": 11,
+        "bytes": 6582412,
+        "rows": 68844
+      },
+      "agent_evaluation_results": {
+        "files": 11,
+        "bytes": 18555087,
+        "rows": 486869
+      },
+      "agent_security_findings": {
+        "files": 11,
+        "bytes": 261464,
+        "rows": 2491
+      },
+      "dead_letter_events": {
+        "files": 4,
+        "bytes": 108295,
+        "rows": 720
+      },
+      "stream_agent_metrics_1m": {
+        "files": 2,
+        "bytes": 88553,
+        "rows": 3403
+      }
+    },
+    "added_mb_total": 148.7,
+    "bytes_per_event": 154.4
+  },
+  "agent_latency_this_run": {
+    "runs": 68844,
+    "success_rate": 0.8223084074138632,
+    "p50_ms": 1356.4222013716123,
+    "p95_ms": 4867.119393131752,
+    "p99_ms": 6703.931182225389
+  },
+  "query_latency_after_load": {
+    "p95_by_version_full_table_ms": 2176.3,
+    "p95_by_version_this_run_ms": 2165.0,
+    "count_raw_events_ms": 2133.7,
+    "trace_lookup_ms": 2278.9
+  },
+  "container_resources_at_completion": [
+    {
+      "CPUPerc": "0.00%",
+      "MemPerc": "0.25%",
+      "MemUsage": "19.15MiB / 7.608GiB",
+      "Name": "fe-integration"
+    },
+    {
+      "CPUPerc": "0.13%",
+      "MemPerc": "18.96%",
+      "MemUsage": "194.1MiB / 1GiB",
+      "Name": "agentshield-backend-1"
+    },
+    {
+      "CPUPerc": "0.00%",
+      "MemPerc": "17.31%",
+      "MemUsage": "22.15MiB / 128MiB",
+      "Name": "agentshield-frontend-1"
+    },
+    {
+      "CPUPerc": "279.00%",
+      "MemPerc": "88.36%",
+      "MemUsage": "2.651GiB / 3GiB",
+      "Name": "agentshield-spark-streaming-1"
+    },
+    {
+      "CPUPerc": "17.55%",
+      "MemPerc": "75.53%",
+      "MemUsage": "1.699GiB / 2.25GiB",
+      "Name": "agentshield-trino-1"
+    },
+    {
+      "CPUPerc": "0.17%",
+      "MemPerc": "10.36%",
+      "MemUsage": "53.04MiB / 512MiB",
+      "Name": "agentshield-postgres-1"
+    },
+    {
+      "CPUPerc": "2.28%",
+      "MemPerc": "58.18%",
+      "MemUsage": "595.7MiB / 1GiB",
+      "Name": "agentshield-kafka-1"
+    },
+    {
+      "CPUPerc": "2.99%",
+      "MemPerc": "63.18%",
+      "MemUsage": "485.2MiB / 768MiB",
+      "Name": "agentshield-minio-1"
+    }
+  ]
+}

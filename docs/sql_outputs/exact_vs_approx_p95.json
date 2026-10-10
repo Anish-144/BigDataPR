@@ -9,17 +9,17 @@
     "interpretation": "The exact p95 is the value at rank ceil(0.95 * n) within each version (nearest-rank method). The difference column quantifies the approximation; small relative error justifies approx_percentile for dashboards.",
     "params": "days=30"
   },
-  "elapsed_ms": 163.7,
+  "elapsed_ms": 1914.7,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 168,
-    "cpuTimeMillis": 131,
-    "wallTimeMillis": 163,
-    "processedRows": 91960,
-    "processedBytes": 8705642,
-    "physicalInputBytes": 8705642,
-    "peakMemoryBytes": 5790891,
-    "totalSplits": 96
+    "elapsedTimeMillis": 2050,
+    "cpuTimeMillis": 10931,
+    "wallTimeMillis": 13100,
+    "processedRows": 1219756,
+    "processedBytes": 113679930,
+    "physicalInputBytes": 113679930,
+    "peakMemoryBytes": 54562934,
+    "totalSplits": 220
   },
   "columns": [
     "agent_name",
@@ -33,66 +33,66 @@
     [
       "Planner Agent",
       "2.0.0",
-      5688,
-      6537.8,
-      6567.5,
-      0.454
-    ],
-    [
-      "Planner Agent",
-      "1.0.0",
-      5724,
-      5835.9,
-      5808.9,
-      -0.463
-    ],
-    [
-      "RAG Helpdesk",
-      "2.1.0",
-      5788,
-      2164.9,
-      2181.4,
-      0.766
-    ],
-    [
-      "QA Assistant",
-      "1.1.0",
-      5752,
-      1582.1,
-      1594.8,
-      0.802
-    ],
-    [
-      "Ops Tool Agent",
-      "1.1.0",
-      5654,
-      2182.7,
-      2191.8,
-      0.415
-    ],
-    [
-      "Ops Tool Agent",
-      "1.0.0",
-      5793,
-      1854.2,
-      1848.0,
-      -0.337
+      76200,
+      6359.5,
+      6354.5,
+      -0.079
     ],
     [
       "RAG Helpdesk",
       "2.0.0",
-      5827,
-      2615.3,
-      2619.3,
+      76146,
+      2492.6,
+      2496.4,
       0.152
+    ],
+    [
+      "Ops Tool Agent",
+      "1.0.0",
+      75572,
+      1785.7,
+      1789.1,
+      0.189
+    ],
+    [
+      "RAG Helpdesk",
+      "2.1.0",
+      76869,
+      2156.3,
+      2158.9,
+      0.123
+    ],
+    [
+      "Ops Tool Agent",
+      "1.1.0",
+      76396,
+      2116.4,
+      2118.3,
+      0.092
     ],
     [
       "QA Assistant",
       "1.0.0",
-      5754,
-      1206.3,
-      1206.9,
-      0.048
+      76456,
+      1212.6,
+      1214.5,
+      0.154
+    ],
+    [
+      "QA Assistant",
+      "1.1.0",
+      76493,
+      1563.3,
+      1563.7,
+      0.024
+    ],
+    [
+      "Planner Agent",
+      "1.0.0",
+      75746,
+      5708.6,
+      5708.8,
+      0.004
     ]
   ]
 }

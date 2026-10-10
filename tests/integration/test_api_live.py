@@ -9,7 +9,7 @@ import httpx
 import pytest
 
 pytestmark = pytest.mark.integration
-BASE = "http://localhost:8000"
+BASE = "http://127.0.0.1:8000"
 
 
 @pytest.fixture(scope="module")

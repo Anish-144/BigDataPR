@@ -7,19 +7,19 @@
     "concept": "GROUP BY ... HAVING count(*) > 1",
     "question": "Which event IDs were ingested more than once, and on which topics?",
     "interpretation": "Duplicates are expected under at-least-once delivery. Analytical queries that must be exact can de-duplicate with ROW_NUMBER() OVER (PARTITION BY event_id ...).",
-    "params": "days=30"
+    "params": "days=2"
   },
-  "elapsed_ms": 461.4,
+  "elapsed_ms": 1963.7,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 470,
-    "cpuTimeMillis": 2260,
-    "wallTimeMillis": 3116,
-    "processedRows": 676374,
-    "processedBytes": 18872488,
-    "physicalInputBytes": 18872488,
-    "peakMemoryBytes": 1112670,
-    "totalSplits": 89
+    "elapsedTimeMillis": 2115,
+    "cpuTimeMillis": 9259,
+    "wallTimeMillis": 31751,
+    "processedRows": 3338539,
+    "processedBytes": 88657262,
+    "physicalInputBytes": 88657262,
+    "peakMemoryBytes": 342409923,
+    "totalSplits": 138
   },
   "columns": [
     "kafka_topic",
@@ -31,20 +31,26 @@
     [
       "agent-evaluations",
       "evaluation.result",
-      48,
-      48
+      262,
+      262
     ],
     [
       "agent-traces",
       "span.completed",
-      33,
-      33
+      196,
+      196
     ],
     [
       "agent-metrics",
       "run.metrics",
-      9,
-      9
+      49,
+      49
+    ],
+    [
+      "agent-security-events",
+      "security.finding",
+      5,
+      5
     ]
   ]
 }

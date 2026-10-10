@@ -9,17 +9,17 @@
     "interpretation": "Joining the registry dimension adds release dates, enabling \"what changed\" narratives.",
     "params": "days=30"
   },
-  "elapsed_ms": 169.7,
+  "elapsed_ms": 674.4,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 157,
-    "cpuTimeMillis": 171,
-    "wallTimeMillis": 192,
-    "processedRows": 45996,
-    "processedBytes": 4385646,
-    "physicalInputBytes": 4384632,
-    "peakMemoryBytes": 141692,
-    "totalSplits": 82
+    "elapsedTimeMillis": 719,
+    "cpuTimeMillis": 9798,
+    "wallTimeMillis": 19043,
+    "processedRows": 609894,
+    "processedBytes": 56872790,
+    "physicalInputBytes": 56871776,
+    "peakMemoryBytes": 11795830,
+    "totalSplits": 144
   },
   "columns": [
     "prompt_version",
@@ -36,81 +36,81 @@
       "qa-p1",
       "mock-small",
       "2026-08-03",
-      5754,
-      0.8227,
-      644.3,
-      509.4,
-      0.032
+      76456,
+      0.8215,
+      650.5,
+      508.4,
+      0.035
     ],
     [
       "rag-p3",
       "mock-medium",
       "2026-08-10",
-      5827,
-      0.8764,
-      1477.5,
-      1937.6,
-      0.033
+      76146,
+      0.8777,
+      1471.6,
+      1914.7,
+      0.032
     ],
     [
       "ops-p1",
       "mock-small",
       "2026-08-17",
-      5793,
-      0.9009,
-      1215.3,
-      792.7,
-      0.111
+      75572,
+      0.9135,
+      1208.5,
+      785.4,
+      0.099
     ],
     [
       "plan-p1",
       "mock-large",
       "2026-08-24",
-      5724,
-      0.6265,
-      3501.0,
-      2594.8,
-      0.231
+      75746,
+      0.6276,
+      3509.1,
+      2551.2,
+      0.221
     ],
     [
       "qa-p2",
       "mock-medium",
       "2026-09-14",
-      5752,
-      0.9166,
-      916.7,
-      621.2,
-      0.019
+      76493,
+      0.9196,
+      910.2,
+      616.6,
+      0.014
     ],
     [
       "rag-p4",
       "mock-medium",
       "2026-09-21",
-      5788,
-      0.7998,
-      1284.3,
-      1432.8,
+      76869,
+      0.8079,
+      1277.6,
+      1412.1,
       0.034
     ],
     [
       "ops-p2",
       "mock-small",
       "2026-09-28",
-      5654,
-      0.8573,
-      1383.2,
-      1021.8,
-      0.175
+      76396,
+      0.8599,
+      1377.2,
+      1006.3,
+      0.171
     ],
     [
       "plan-p2",
       "mock-large",
       "2026-10-01",
-      5688,
-      0.7387,
-      4128.4,
-      3527.6,
-      0.21
+      76200,
+      0.7411,
+      4112.0,
+      3472.2,
+      0.209
     ]
   ]
 }

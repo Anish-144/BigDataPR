@@ -8,16 +8,16 @@
     "question": "How much object storage does each table use, and how many bytes per row?",
     "interpretation": "Sizes are compressed Parquet bytes reported by Iceberg metadata (actual files on MinIO)."
   },
-  "elapsed_ms": 197.6,
+  "elapsed_ms": 448.6,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 196,
-    "cpuTimeMillis": 86,
-    "wallTimeMillis": 165,
-    "processedRows": 39,
-    "processedBytes": 324836,
-    "physicalInputBytes": 324836,
-    "peakMemoryBytes": 4246,
+    "elapsedTimeMillis": 473,
+    "cpuTimeMillis": 552,
+    "wallTimeMillis": 935,
+    "processedRows": 390,
+    "processedBytes": 3289943,
+    "physicalInputBytes": 3289943,
+    "peakMemoryBytes": 2916,
     "totalSplits": 238
   },
   "columns": [
@@ -30,45 +30,45 @@
   "rows": [
     [
       "raw_agent_events",
-      7,
-      676374,
-      66.91,
-      103.7
+      103,
+      8961181,
+      882.52,
+      103.3
     ],
     [
       "agent_spans",
-      7,
-      302580,
-      16.41,
-      56.9
+      70,
+      3999817,
+      217.89,
+      57.1
     ],
     [
       "agent_evaluation_results",
-      7,
-      324686,
-      11.79,
-      38.1
+      70,
+      4313012,
+      157.55,
+      38.3
     ],
     [
       "agent_run_metrics",
-      7,
-      45980,
-      4.15,
-      94.7
+      69,
+      609878,
+      54.21,
+      93.2
     ],
     [
       "agent_security_findings",
-      7,
-      2674,
-      0.22,
-      87.2
+      69,
+      22488,
+      1.99,
+      92.7
     ],
     [
       "daily_agent_summary",
-      4,
-      32,
-      0.01,
-      447.4
+      9,
+      72,
+      0.03,
+      448.6
     ]
   ]
 }

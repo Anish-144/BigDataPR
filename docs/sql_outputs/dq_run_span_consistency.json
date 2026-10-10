@@ -7,19 +7,19 @@
     "concept": "Join an aggregate of child facts back to the parent fact",
     "question": "Does each run's reported span_count match the spans actually stored?",
     "interpretation": "Mismatches indicate lost or duplicated span events (e.g. a quarantined span or a duplicate).",
-    "params": "days=30"
+    "params": "days=2"
   },
-  "elapsed_ms": 433.1,
+  "elapsed_ms": 1315.9,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 434,
-    "cpuTimeMillis": 674,
-    "wallTimeMillis": 2565,
-    "processedRows": 394560,
-    "processedBytes": 19003789,
-    "physicalInputBytes": 16978717,
-    "peakMemoryBytes": 17520619,
-    "totalSplits": 145
+    "elapsedTimeMillis": 1398,
+    "cpuTimeMillis": 5194,
+    "wallTimeMillis": 19791,
+    "processedRows": 1941685,
+    "processedBytes": 67196170,
+    "physicalInputBytes": 57207098,
+    "peakMemoryBytes": 72917170,
+    "totalSplits": 202
   },
   "columns": [
     "test_run_id",
@@ -31,15 +31,39 @@
   ],
   "rows": [
     [
-      "TR-20261009-315910",
-      19980,
-      19818,
-      162,
+      "TR-20261010-69ab72",
+      112659,
+      112267,
+      392,
       0,
-      99.189
+      99.652
     ],
     [
-      "TR-20261009-12eb56",
+      "TR-20261010-2fa7eb",
+      22528,
+      22461,
+      67,
+      0,
+      99.703
+    ],
+    [
+      "TR-20261010-e9b86d",
+      22500,
+      22433,
+      67,
+      0,
+      99.702
+    ],
+    [
+      "TR-20261009-34bcb1",
+      17728,
+      17676,
+      52,
+      0,
+      99.707
+    ],
+    [
+      "TR-20261009-a92ac1",
       12000,
       12000,
       0,
@@ -47,7 +71,23 @@
       100.0
     ],
     [
-      "TR-20261009-23c1c6",
+      "TR-20261009-5b93e7",
+      12000,
+      12000,
+      0,
+      0,
+      100.0
+    ],
+    [
+      "TR-20261009-83cb19",
+      11985,
+      11882,
+      103,
+      0,
+      99.141
+    ],
+    [
+      "TR-20261009-9b5cf2",
       8000,
       8000,
       0,
@@ -55,12 +95,20 @@
       100.0
     ],
     [
-      "TR-20261009-9b7e8a",
+      "TR-20261009-6312db",
       6000,
       6000,
       0,
       0,
       100.0
+    ],
+    [
+      "TR-20261010-fb4df8",
+      1142,
+      195,
+      947,
+      0,
+      17.075
     ]
   ]
 }

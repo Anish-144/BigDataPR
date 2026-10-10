@@ -9,17 +9,17 @@
     "interpretation": "Measured with psutil inside each generator worker process (sampled every 5 s).",
     "params": "days=30"
   },
-  "elapsed_ms": 130.5,
+  "elapsed_ms": 217.7,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 132,
-    "cpuTimeMillis": 15,
-    "wallTimeMillis": 34,
-    "processedRows": 0,
-    "processedBytes": 0,
-    "physicalInputBytes": 0,
-    "peakMemoryBytes": 133904,
-    "totalSplits": 70
+    "elapsedTimeMillis": 200,
+    "cpuTimeMillis": 199,
+    "wallTimeMillis": 476,
+    "processedRows": 240,
+    "processedBytes": 199131,
+    "physicalInputBytes": 197930,
+    "peakMemoryBytes": 191674,
+    "totalSplits": 132
   },
   "columns": [
     "test_run_id",
@@ -30,5 +30,51 @@
     "peak_memory_mb",
     "avg_events_per_sec_per_worker"
   ],
-  "rows": []
+  "rows": [
+    [
+      "TR-20261010-69ab72",
+      "benchmark_5000000",
+      6,
+      162,
+      104.7,
+      78.6,
+      6091.4
+    ],
+    [
+      "TR-20261009-34bcb1",
+      "benchmark_1000000",
+      6,
+      18,
+      105.9,
+      76.8,
+      9430.3
+    ],
+    [
+      "TR-20261010-2fa7eb",
+      "benchmark_1000000",
+      6,
+      18,
+      102.3,
+      78.2,
+      8633.2
+    ],
+    [
+      "TR-20261010-e9b86d",
+      "benchmark_1000000",
+      6,
+      18,
+      105.3,
+      77.2,
+      8865.0
+    ],
+    [
+      "TR-20261009-83cb19",
+      "baseline",
+      4,
+      4,
+      108.9,
+      52.0,
+      10056.9
+    ]
+  ]
 }

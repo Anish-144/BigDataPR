@@ -74,7 +74,8 @@ EXPLAIN ANALYZE text is stored with the results.
 
 - **Repeated runs.** One warm-up run, then the median of N runs. Min and max are kept in the JSON.
 - **Measured, not assumed.** No speed-up is promised. Where a measurement shows no gain, the result is reported as-is.
-  - Partition pruning halved the rows and bytes read but did not change latency at this data size.
+  - Partition pruning to one day read ~29x fewer rows and bytes, but latency barely changed (91 vs 101 ms) at
+    this data size.
   - Compaction reduced file counts about 3x without a latency gain.
   - Sorting alone did not reduce rows read.
 - **Held-out evaluation.** Detector thresholds are not tuned on labels. The Isolation Forest threshold is a
@@ -94,3 +95,8 @@ EXPLAIN ANALYZE text is stored with the results.
   It describes backlog drain, not steady-state latency.
 - `approx_percentile` is approximate. sql/02 `exact_vs_approx_p95` measures the error, which was below 1%.
 - Container memory is a point-in-time snapshot at completion, not a peak (except where noted).
+- **Client name resolution matters.** Host tools must connect to `127.0.0.1`, not `localhost`. Published ports
+  are bound to IPv4 loopback only, and on Windows `localhost` resolves to `::1` first, so every new connection
+  waited ~2 s before falling back (measured: 2,150 ms vs 75 ms for the same query; Trino's own timing was ~80 ms
+  in both cases). One 1M-event run whose query timings were inflated this way is kept in
+  `benchmarks/results/archive/` and was repeated.

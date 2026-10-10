@@ -9,17 +9,17 @@
     "interpretation": "Metrics are deterministic and computed against ground-truth relevant documents. MRR is the mean of per-run reciprocal ranks. Retrieval regressions usually precede answer-quality regressions.",
     "params": "days=30"
   },
-  "elapsed_ms": 372.0,
+  "elapsed_ms": 3574.5,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 385,
-    "cpuTimeMillis": 206,
-    "wallTimeMillis": 239,
-    "processedRows": 416646,
-    "processedBytes": 14315590,
-    "physicalInputBytes": 13193612,
-    "peakMemoryBytes": 4989402,
-    "totalSplits": 113
+    "elapsedTimeMillis": 3836,
+    "cpuTimeMillis": 35079,
+    "wallTimeMillis": 92892,
+    "processedRows": 5532768,
+    "processedBytes": 164958179,
+    "physicalInputBytes": 150141413,
+    "peakMemoryBytes": 168202363,
+    "totalSplits": 238
   },
   "columns": [
     "agent_name",
@@ -36,46 +36,46 @@
     [
       "Planner Agent",
       "1.0.0",
-      3736,
-      0.993,
-      0.2483,
-      0.9896,
-      0.993,
-      0.3073,
-      0.5795
+      50520,
+      0.9938,
+      0.2485,
+      0.9905,
+      0.9938,
+      0.2975,
+      0.5785
     ],
     [
       "Planner Agent",
       "2.0.0",
-      3766,
-      0.9973,
-      0.2493,
-      0.9957,
-      0.9973,
-      0.3392,
-      0.6903
+      50769,
+      0.9982,
+      0.2496,
+      0.9967,
+      0.9982,
+      0.3434,
+      0.6997
     ],
     [
       "RAG Helpdesk",
       "2.0.0",
-      5825,
-      0.9926,
+      76129,
+      0.9925,
       0.1985,
-      0.9081,
-      0.9561,
-      0.7898,
-      0.8764
+      0.9069,
+      0.9593,
+      0.7856,
+      0.8777
     ],
     [
       "RAG Helpdesk",
       "2.1.0",
-      5787,
-      0.8876,
-      0.2959,
-      0.7944,
-      0.8309,
-      0.7172,
-      0.7997
+      76848,
+      0.8997,
+      0.2999,
+      0.8055,
+      0.8393,
+      0.7232,
+      0.8079
     ]
   ]
 }

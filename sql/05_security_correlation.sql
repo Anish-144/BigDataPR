@@ -215,3 +215,62 @@ SELECT
 FROM per_label p
 LEFT JOIN unlabelled u ON u.category = p.category
 ORDER BY p.label;
+
+-- @query: security_residuals_vs_quarantine
+-- @title: Are detection residuals explained by quarantined (corrupted) events?
+-- @concept: Residual analysis: anti-joins, regexp_extract on raw dead-letter payloads, equi-join to explain each residual
+-- @question: For labelled runs that lack the expected finding, and for findings on runs without labels, was one of the
+--   run's own events quarantined by the stream processor?
+-- @interpretation: Volume benchmarks inject ~0.1% corrupt records on purpose (and the truncation test 25%). A quarantined
+--   security.finding event looks like a missed detection; a quarantined run.metrics event drops the run's labels so its
+--   findings look unlabelled. Residuals with explained_by_quarantine = residual_runs are data-quality effects, not
+--   detector errors; unexplained residuals would need investigation.
+-- @params: days=30
+WITH labels AS (
+    SELECT m.run_id, f AS label
+    FROM lakehouse.analytics.agent_run_metrics m
+    CROSS JOIN UNNEST(m.injected_faults) AS t(f)
+    WHERE m.event_date >= current_date - (:days * INTERVAL '1' DAY)
+),
+expected AS (
+    SELECT * FROM (VALUES
+        ('suspicious_tool_access', 'tool_not_allowlisted'),
+        ('policy_violation', 'policy_violation'),
+        ('prompt_injection', 'prompt_injection'),
+        ('poisoned_document_retrieved', 'prompt_injection'),
+        ('sensitive_data_leak', 'sensitive_data_output'),
+        ('exfiltration_sequence', 'exfiltration_sequence'),
+        ('privilege_escalation', 'privilege_escalation')
+    ) AS e(label, category)
+),
+found AS (
+    SELECT DISTINCT run_id, category FROM lakehouse.analytics.agent_security_findings
+    WHERE event_date >= current_date - (:days * INTERVAL '1' DAY)
+),
+missed AS (
+    SELECT DISTINCT l.run_id, 'missed_detection' AS residual
+    FROM labels l
+    JOIN expected e ON e.label = l.label
+    LEFT JOIN found f ON f.run_id = l.run_id AND f.category = e.category
+    WHERE f.run_id IS NULL
+),
+unlabelled AS (
+    SELECT DISTINCT f.run_id, 'finding_on_unlabelled_run' AS residual
+    FROM found f
+    WHERE f.category IN (SELECT category FROM expected)
+      AND NOT EXISTS (SELECT 1 FROM labels l JOIN expected e ON e.label = l.label WHERE l.run_id = f.run_id)
+),
+quarantined_runs AS (
+    SELECT DISTINCT regexp_extract(raw_value, '"run_id":"(R-[0-9a-f]{6}-[0-9]{6})"', 1) AS run_id
+    FROM lakehouse.analytics.dead_letter_events
+    WHERE ingest_date >= current_date - (:days * INTERVAL '1' DAY)
+)
+SELECT
+    r.residual,
+    count(*)                       AS residual_runs,
+    count(q.run_id)                AS explained_by_quarantine,
+    count(*) - count(q.run_id)     AS unexplained
+FROM (SELECT * FROM missed UNION ALL SELECT * FROM unlabelled) r
+LEFT JOIN quarantined_runs q ON q.run_id = r.run_id
+GROUP BY r.residual
+ORDER BY r.residual;

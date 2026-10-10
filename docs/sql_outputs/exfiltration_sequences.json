@@ -9,17 +9,17 @@
     "interpretation": "Reconstructs the exfiltration pattern in SQL from span facts independently of the runtime detector (SEC-007), which is a useful cross-check of the detector.",
     "params": "days=30"
   },
-  "elapsed_ms": 230.9,
+  "elapsed_ms": 2006.5,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 239,
-    "cpuTimeMillis": 527,
-    "wallTimeMillis": 595,
-    "processedRows": 302580,
-    "processedBytes": 12266659,
-    "physicalInputBytes": 12266659,
-    "peakMemoryBytes": 21821505,
-    "totalSplits": 73
+    "elapsedTimeMillis": 2146,
+    "cpuTimeMillis": 17683,
+    "wallTimeMillis": 48423,
+    "processedRows": 3999817,
+    "processedBytes": 106890722,
+    "physicalInputBytes": 106890722,
+    "peakMemoryBytes": 273301270,
+    "totalSplits": 136
   },
   "columns": [
     "trace_id",
@@ -31,204 +31,204 @@
   ],
   "rows": [
     [
-      "3f85860f9b5298c4e9040bba88cde1c7",
-      "R-9b7e8a-005979",
-      "ops-tool-agent",
-      "2026-10-09T15:20:29.411514+00:00",
-      "2026-10-09T15:20:29.417436+00:00",
-      "read_resource,send_external_email,get_order_status"
-    ],
-    [
-      "b51a7908730ec2483bfe847192f64256",
-      "R-9b7e8a-005858",
+      "2918544822be318e24cc4d200d1278bd",
+      "R-2fa7eb-068882",
       "rag-helpdesk",
-      "2026-10-09T15:06:00.971470+00:00",
-      "2026-10-09T15:06:01.136796+00:00",
-      "document_lookup,http_post"
-    ],
-    [
-      "eef0bdefdb5e60f909ad4fc6b9df23e3",
-      "R-9b7e8a-005839",
-      "rag-helpdesk",
-      "2026-10-09T15:03:42.306654+00:00",
-      "2026-10-09T15:03:42.420055+00:00",
+      "2026-10-10T06:55:54.319875+00:00",
+      "2026-10-10T06:55:54.436058+00:00",
       "document_lookup,send_external_email"
     ],
     [
-      "ba8a7ed1e106c76b8079e7918bd54bf8",
-      "R-9b7e8a-005833",
-      "ops-tool-agent",
-      "2026-10-09T15:03:04.344376+00:00",
-      "2026-10-09T15:03:04.348976+00:00",
-      "read_resource,send_external_email,get_order_status"
-    ],
-    [
-      "64387842af75fd888e3ca9dd28427477",
-      "R-9b7e8a-005784",
+      "ad07dede857d9aea4b92e10d64fafaa2",
+      "R-e9b86d-068882",
       "rag-helpdesk",
-      "2026-10-09T14:57:11.432137+00:00",
-      "2026-10-09T14:57:11.773881+00:00",
-      "document_lookup,http_post"
-    ],
-    [
-      "d7d7d0cb0075dccc126ea630910789c8",
-      "R-9b7e8a-005670",
-      "rag-helpdesk",
-      "2026-10-09T14:43:25.460854+00:00",
-      "2026-10-09T14:43:25.565882+00:00",
-      "document_lookup,http_post"
-    ],
-    [
-      "313ebb2723888bf8e09589ed87600a90",
-      "R-9b7e8a-005661",
-      "rag-helpdesk",
-      "2026-10-09T14:42:26.403238+00:00",
-      "2026-10-09T14:42:26.505071+00:00",
-      "document_lookup,http_post"
-    ],
-    [
-      "551233d1fe538378b9151611af4e7ea4",
-      "R-9b7e8a-005533",
-      "planner-agent",
-      "2026-10-09T14:27:00.175758+00:00",
-      "2026-10-09T14:27:00.335592+00:00",
-      "document_lookup,http_post,search_kb,calculator"
-    ],
-    [
-      "fe769b3d2e8307d2b9ddf9ff3429ba02",
-      "R-9b7e8a-005260",
-      "rag-helpdesk",
-      "2026-10-09T13:54:16.122464+00:00",
-      "2026-10-09T13:54:16.256653+00:00",
-      "document_lookup,http_post"
-    ],
-    [
-      "c573468ab2d0074602b6442fe706f53f",
-      "R-9b7e8a-005236",
-      "planner-agent",
-      "2026-10-09T13:51:26.821760+00:00",
-      "2026-10-09T13:51:26.950224+00:00",
-      "document_lookup,send_external_email,get_order_status"
-    ],
-    [
-      "bfd2edf210f4193b28b403f1868f52e1",
-      "R-9b7e8a-005222",
-      "ops-tool-agent",
-      "2026-10-09T13:49:41.173768+00:00",
-      "2026-10-09T13:49:41.179223+00:00",
-      "read_resource,http_post,search_kb"
-    ],
-    [
-      "306b9c0495f036929f314712c1142b92",
-      "R-9b7e8a-005216",
-      "planner-agent",
-      "2026-10-09T13:48:57.131245+00:00",
-      "2026-10-09T13:48:57.348658+00:00",
-      "document_lookup,send_external_email,search_kb,calculator"
-    ],
-    [
-      "56dce137c0d95cebbbc5431da6bc620a",
-      "R-9b7e8a-005068",
-      "planner-agent",
-      "2026-10-09T13:31:16.934796+00:00",
-      "2026-10-09T13:31:17.041112+00:00",
-      "document_lookup,send_external_email,search_kb,calculator"
-    ],
-    [
-      "61ff7e52890ec3abb36b2647523858af",
-      "R-9b7e8a-005027",
-      "ops-tool-agent",
-      "2026-10-09T13:26:16.115663+00:00",
-      "2026-10-09T13:26:16.120581+00:00",
-      "read_resource,send_external_email,get_order_status"
-    ],
-    [
-      "b43d19be50c0b874509c3c0d1ef8df72",
-      "R-9b7e8a-005002",
-      "rag-helpdesk",
-      "2026-10-09T13:23:18.168475+00:00",
-      "2026-10-09T13:23:18.328576+00:00",
+      "2026-10-10T06:51:54.319873+00:00",
+      "2026-10-10T06:51:54.436057+00:00",
       "document_lookup,send_external_email"
     ],
     [
-      "dd842fa878e83a165f5a5b4ea934ffb6",
-      "R-9b7e8a-004941",
-      "planner-agent",
-      "2026-10-09T13:15:59.075151+00:00",
-      "2026-10-09T13:15:59.241034+00:00",
-      "document_lookup,http_post,get_order_status,create_ticket"
+      "92550036b0a67f13256587c713de3734",
+      "R-69ab72-343996",
+      "rag-helpdesk",
+      "2026-10-10T06:45:48.250024+00:00",
+      "2026-10-10T06:45:48.377506+00:00",
+      "document_lookup,send_external_email"
     ],
     [
-      "0b40cbb0b2805dd59b21c3cac635d4c1",
-      "R-9b7e8a-004908",
+      "67e93ccfdf3d610a8c9e6b683a33ad55",
+      "R-69ab72-343586",
+      "ops-tool-agent",
+      "2026-10-10T06:33:48.072425+00:00",
+      "2026-10-10T06:33:48.076743+00:00",
+      "read_resource,http_post,calculator"
+    ],
+    [
+      "380769aa074775012ca723eaa359fff8",
+      "R-69ab72-343573",
       "planner-agent",
-      "2026-10-09T13:12:05.915727+00:00",
-      "2026-10-09T13:12:06.021934+00:00",
+      "2026-10-10T06:33:25.271352+00:00",
+      "2026-10-10T06:33:25.363453+00:00",
       "document_lookup,send_external_email,delegate_subtask,search_kb,calculator"
     ],
     [
-      "868e033cf68601a02bc5094c8c7b4257",
-      "R-9b7e8a-004888",
-      "ops-tool-agent",
-      "2026-10-09T13:09:34.927931+00:00",
-      "2026-10-09T13:09:34.931574+00:00",
-      "read_resource,http_post,search_kb"
-    ],
-    [
-      "2914c7d95c969a0e7507c2e6abfee768",
-      "R-9b7e8a-004862",
+      "80dc5766f2f29914120f4e0c3d31e20d",
+      "R-69ab72-343168",
       "planner-agent",
-      "2026-10-09T13:06:34.195073+00:00",
-      "2026-10-09T13:06:34.350673+00:00",
-      "document_lookup,http_post,get_order_status"
-    ],
-    [
-      "993c4689569160a91f3853864b402471",
-      "R-9b7e8a-004804",
-      "ops-tool-agent",
-      "2026-10-09T12:59:31.519477+00:00",
-      "2026-10-09T12:59:31.522576+00:00",
-      "read_resource,http_post,search_kb"
-    ],
-    [
-      "1f26de909896c82f6c40a08e72e7138e",
-      "R-9b7e8a-004637",
-      "planner-agent",
-      "2026-10-09T12:39:31.072414+00:00",
-      "2026-10-09T12:39:31.182569+00:00",
+      "2026-10-10T06:21:34.981297+00:00",
+      "2026-10-10T06:21:35.118797+00:00",
       "document_lookup,send_external_email,get_order_status,create_ticket"
     ],
     [
-      "b8ccd05fdb28f30d639a6303a2e36c78",
-      "R-9b7e8a-004636",
+      "53db0e0ff7b486f172ef1eb607ab5309",
+      "R-69ab72-342670",
+      "ops-tool-agent",
+      "2026-10-10T06:07:00.180069+00:00",
+      "2026-10-10T06:07:00.182781+00:00",
+      "read_resource,send_external_email,create_ticket"
+    ],
+    [
+      "919e1237e6a29e73f39e2d02ee0bf083",
+      "R-69ab72-342557",
+      "ops-tool-agent",
+      "2026-10-10T06:03:40.188307+00:00",
+      "2026-10-10T06:03:40.193231+00:00",
+      "read_resource,send_external_email,create_ticket"
+    ],
+    [
+      "b350806b0c86a21187b60b901865619f",
+      "R-69ab72-342404",
       "rag-helpdesk",
-      "2026-10-09T12:39:21.624806+00:00",
-      "2026-10-09T12:39:21.719537+00:00",
+      "2026-10-10T05:59:13.056824+00:00",
+      "2026-10-10T05:59:13.187357+00:00",
       "document_lookup,send_external_email"
     ],
     [
-      "285970aa6943d09a6606098ad476e2b4",
-      "R-9b7e8a-004635",
+      "98b507622f7471c0b03a896f487758c0",
+      "R-69ab72-342214",
       "ops-tool-agent",
-      "2026-10-09T12:39:13.935752+00:00",
-      "2026-10-09T12:39:13.938878+00:00",
-      "read_resource,send_external_email,calculator"
+      "2026-10-10T05:53:38.339254+00:00",
+      "2026-10-10T05:53:38.344295+00:00",
+      "read_resource,send_external_email,search_kb"
     ],
     [
-      "b95810eb3ed3999635dd59dc286b9555",
-      "R-9b7e8a-004578",
+      "1222e73fb5f9fe2c0577f536c6e89dc2",
+      "R-69ab72-342041",
+      "planner-agent",
+      "2026-10-10T05:48:35.776368+00:00",
+      "2026-10-10T05:48:35.910284+00:00",
+      "document_lookup,send_external_email,get_order_status"
+    ],
+    [
+      "2a9140cbf2385f98292225f5cb3ea488",
+      "R-69ab72-341815",
       "rag-helpdesk",
-      "2026-10-09T12:32:25.655951+00:00",
-      "2026-10-09T12:32:25.751869+00:00",
+      "2026-10-10T05:41:57.887730+00:00",
+      "2026-10-10T05:41:58.009000+00:00",
       "document_lookup,http_post"
     ],
     [
-      "416f4cf4f33bd0e60e51237f300f3fa2",
-      "R-9b7e8a-004531",
+      "727d831f32e65980fa0df796d58941c3",
+      "R-69ab72-341728",
       "rag-helpdesk",
-      "2026-10-09T12:26:45.409054+00:00",
-      "2026-10-09T12:26:45.515217+00:00",
+      "2026-10-10T05:39:26.086188+00:00",
+      "2026-10-10T05:39:26.186048+00:00",
+      "document_lookup,send_external_email"
+    ],
+    [
+      "3afcf41a8cf0261d4bad6df3b55c3c08",
+      "R-69ab72-341258",
+      "planner-agent",
+      "2026-10-10T05:25:40.707224+00:00",
+      "2026-10-10T05:25:40.869200+00:00",
+      "document_lookup,send_external_email,create_ticket"
+    ],
+    [
+      "6f6cf24ef67373ebcf6923f68a764275",
+      "R-69ab72-340567",
+      "ops-tool-agent",
+      "2026-10-10T05:05:27.295232+00:00",
+      "2026-10-10T05:05:27.300757+00:00",
+      "read_resource,send_external_email,get_order_status"
+    ],
+    [
+      "18a213f9a4a35fdaa8808fe7f36b5baf",
+      "R-69ab72-340561",
+      "planner-agent",
+      "2026-10-10T05:05:17.637147+00:00",
+      "2026-10-10T05:05:17.837288+00:00",
+      "document_lookup,http_post,delegate_subtask,search_kb"
+    ],
+    [
+      "fb69e0307bce9d9466fc3b4cdac05323",
+      "R-69ab72-340374",
+      "planner-agent",
+      "2026-10-10T04:59:49.368396+00:00",
+      "2026-10-10T04:59:49.533952+00:00",
+      "document_lookup,http_post,get_order_status"
+    ],
+    [
+      "784d0d9b6d724c26e604b5eaedd4d6dc",
+      "R-69ab72-339766",
+      "rag-helpdesk",
+      "2026-10-10T04:42:00.827360+00:00",
+      "2026-10-10T04:42:01.036908+00:00",
       "document_lookup,http_post"
+    ],
+    [
+      "852d989324c913105a1ed58bdfe61a08",
+      "R-69ab72-338997",
+      "planner-agent",
+      "2026-10-10T04:19:31.641005+00:00",
+      "2026-10-10T04:19:31.804932+00:00",
+      "document_lookup,http_post,search_kb,create_ticket"
+    ],
+    [
+      "e30719c6f35701a15c55e80024177394",
+      "R-2fa7eb-067763",
+      "planner-agent",
+      "2026-10-10T04:12:08.476803+00:00",
+      "2026-10-10T04:12:08.571022+00:00",
+      "document_lookup,http_post,get_order_status"
+    ],
+    [
+      "ceb53db24dc0c83097499e818b7b8081",
+      "R-e9b86d-067763",
+      "planner-agent",
+      "2026-10-10T04:08:08.476803+00:00",
+      "2026-10-10T04:08:08.571022+00:00",
+      "document_lookup,http_post,get_order_status"
+    ],
+    [
+      "39168763d01a2d898ad3587caada2109",
+      "R-2fa7eb-067697",
+      "rag-helpdesk",
+      "2026-10-10T04:02:33.444588+00:00",
+      "2026-10-10T04:02:33.558220+00:00",
+      "document_lookup,http_post"
+    ],
+    [
+      "14cd977bf35542ad86fe81b8fdf44d07",
+      "R-2fa7eb-067691",
+      "planner-agent",
+      "2026-10-10T04:01:35.608768+00:00",
+      "2026-10-10T04:01:35.776849+00:00",
+      "document_lookup,http_post,get_order_status"
+    ],
+    [
+      "c53ececac6a3c1cea804225aa6440aae",
+      "R-e9b86d-067697",
+      "rag-helpdesk",
+      "2026-10-10T03:58:33.444588+00:00",
+      "2026-10-10T03:58:33.558220+00:00",
+      "document_lookup,http_post"
+    ],
+    [
+      "213350b2be543e9bbdaa3d2791ca0c8b",
+      "R-e9b86d-067691",
+      "planner-agent",
+      "2026-10-10T03:57:35.608768+00:00",
+      "2026-10-10T03:57:35.776849+00:00",
+      "document_lookup,http_post,get_order_status"
     ]
   ]
 }

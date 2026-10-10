@@ -7,19 +7,19 @@
     "concept": "CTE per check + UNION ALL into a single scorecard",
     "question": "How healthy is the curated data overall?",
     "interpretation": "issue_rate_pct is issues / rows checked. Non-zero counts are expected when a scenario injects dirty data (dirty_rate > 0); compare them with the generator's dirty_injected summary.",
-    "params": "days=30"
+    "params": "days=2"
   },
-  "elapsed_ms": 581.7,
+  "elapsed_ms": 2915.7,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 619,
-    "cpuTimeMillis": 3856,
-    "wallTimeMillis": 6718,
-    "processedRows": 3773355,
-    "processedBytes": 120528316,
-    "physicalInputBytes": 103565956,
-    "peakMemoryBytes": 63744371,
-    "totalSplits": 426
+    "elapsedTimeMillis": 3146,
+    "cpuTimeMillis": 12807,
+    "wallTimeMillis": 87095,
+    "processedRows": 18582266,
+    "processedBytes": 378896909,
+    "physicalInputBytes": 295531029,
+    "peakMemoryBytes": 403586401,
+    "totalSplits": 689
   },
   "columns": [
     "check_name",
@@ -31,50 +31,50 @@
   "rows": [
     [
       "quarantined_records",
-      446,
-      676374,
-      0.0659,
+      9611,
+      3338779,
+      0.2879,
       "REVIEW"
     ],
     [
       "orphan_spans",
-      205,
-      256611,
-      0.0799,
+      2183,
+      1261585,
+      0.173,
       "REVIEW"
     ],
     [
       "duplicate_event_ids",
-      90,
-      675928,
-      0.0133,
+      512,
+      3329168,
+      0.0154,
       "REVIEW"
     ],
     [
       "negative_span_durations",
-      36,
-      302580,
+      177,
+      1488143,
       0.0119,
       "REVIEW"
     ],
     [
       "future_event_times",
       0,
-      302580,
+      1488143,
       0.0,
       "PASS"
     ],
     [
       "end_before_start",
       0,
-      302580,
+      1488143,
       0.0,
       "PASS"
     ],
     [
       "null_trace_ids_in_spans",
       0,
-      302580,
+      1488143,
       0.0,
       "PASS"
     ]

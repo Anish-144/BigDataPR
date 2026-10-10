@@ -9,17 +9,17 @@
     "interpretation": "A cheaper-per-request version can be more expensive per *successful* task if it fails more often. All monetary values are estimates from config/pricing.yaml (local, illustrative, not provider pricing).",
     "params": "days=30"
   },
-  "elapsed_ms": 103.3,
+  "elapsed_ms": 341.0,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 86,
-    "cpuTimeMillis": 18,
-    "wallTimeMillis": 32,
-    "processedRows": 45980,
-    "processedBytes": 4352821,
-    "physicalInputBytes": 4352821,
-    "peakMemoryBytes": 11232,
-    "totalSplits": 57
+    "elapsedTimeMillis": 356,
+    "cpuTimeMillis": 4113,
+    "wallTimeMillis": 8764,
+    "processedRows": 609878,
+    "processedBytes": 56839965,
+    "physicalInputBytes": 56839965,
+    "peakMemoryBytes": 31104,
+    "totalSplits": 119
   },
   "columns": [
     "agent_name",
@@ -34,74 +34,74 @@
     [
       "QA Assistant",
       "1.0.0",
-      0.7423,
-      4734,
+      9.829,
+      62805,
       0.000129,
-      0.000157,
-      619.1
+      0.000156,
+      618.9
     ],
     [
       "Ops Tool Agent",
       "1.0.0",
-      1.0777,
-      5219,
-      0.000186,
-      0.000206,
-      879.9
+      13.9074,
+      69036,
+      0.000184,
+      0.000201,
+      859.7
     ],
     [
       "Ops Tool Agent",
       "1.1.0",
-      1.3923,
-      4847,
-      0.000246,
-      0.000287,
-      1191.9
+      18.4745,
+      65694,
+      0.000242,
+      0.000281,
+      1170.3
     ],
     [
       "QA Assistant",
       "1.1.0",
-      4.9097,
-      5272,
-      0.000854,
-      0.000931,
-      677.7
+      64.5548,
+      70344,
+      0.000844,
+      0.000918,
+      670.5
     ],
     [
       "RAG Helpdesk",
       "2.1.0",
-      9.8056,
-      4629,
-      0.001694,
-      0.002118,
-      1791.5
+      127.6578,
+      62102,
+      0.001661,
+      0.002056,
+      1747.8
     ],
     [
       "RAG Helpdesk",
       "2.0.0",
-      12.4853,
-      5107,
-      0.002143,
-      0.002445,
-      2210.7
+      160.9002,
+      66830,
+      0.002113,
+      0.002408,
+      2181.6
     ],
     [
       "Planner Agent",
       "1.0.0",
-      56.6208,
-      3586,
-      0.009892,
-      0.015789,
-      4141.9
+      733.9003,
+      47536,
+      0.009689,
+      0.015439,
+      4065.2
     ],
     [
       "Planner Agent",
       "2.0.0",
-      74.5003,
-      4202,
-      0.013098,
-      0.01773,
-      4775.1
+      978.3717,
+      56472,
+      0.01284,
+      0.017325,
+      4685.2
     ]
   ]
 }

@@ -68,7 +68,9 @@ def explain_input(sql: str, params: list | None) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", type=int, default=5)
-    ap.add_argument("--days", type=int, default=60)
+    ap.add_argument("--days", type=int, default=60, help="full scope (event_date window) for the tier experiment")
+    ap.add_argument("--compare-days", type=int, default=3, help="smaller scope where every tier fits the memory budget")
+    ap.add_argument("--layout-days", type=int, default=1, help="event_date window for the table-layout experiment")
     args = ap.parse_args()
     stmts = {s.name: s for s in load_file(SQL_DIR / "08_query_plan_experiments.sql") if s.name}
 
@@ -82,12 +84,23 @@ def main() -> None:
         "tiers": [], "pruning": [], "layout": {},
     }
 
-    # 1) three-tier experiment
-    for name in ("exp_tier_raw_json", "exp_tier_curated", "exp_tier_summary"):
-        sql, params = stmts[name].bind({"days": args.days})
-        r = measure(name, sql, params, args.runs)
-        results["tiers"].append(r)
-        print(f"{name:28s} median {r['wall_ms_median']:8.1f} ms  rows {r['processed_rows']}  bytes {r['physical_input_bytes']}")
+    # 1) three-tier experiment at two scopes: a window where every tier fits the per-query memory budget, and
+    #    the full dataset. A query Trino kills (e.g. EXCEEDED_LOCAL_MEMORY_LIMIT) is recorded as a result.
+    from trino.exceptions import TrinoQueryError
+
+    for scope in sorted({args.compare_days, args.days}):
+        for name in ("exp_tier_raw_json", "exp_tier_curated", "exp_tier_summary"):
+            sql, params = stmts[name].bind({"days": scope})
+            try:
+                r = measure(name, sql, params, args.runs)
+            except TrinoQueryError as exc:
+                r = {"query": name, "error": exc.error_name, "error_message": exc.message[:300]}
+                print(f"{name:28s} scope {scope:>3} days: FAILED {exc.error_name}")
+            else:
+                print(f"{name:28s} scope {scope:>3} days: median {r['wall_ms_median']:8.1f} ms  rows {r['processed_rows']}  "
+                      f"bytes {r['physical_input_bytes']}")
+            r["scope_days"] = scope
+            results["tiers"].append(r)
 
     # 2) partition pruning (one day vs everything)
     base = f"SELECT agent_id, count(*), approx_percentile(latency_ms, 0.95) FROM {T}.agent_run_metrics"
@@ -100,15 +113,19 @@ def main() -> None:
         results["pruning"].append(r)
         print(f"{label:28s} median {r['wall_ms_median']:8.1f} ms  rows {r['processed_rows']}  bytes {r['physical_input_bytes']}")
 
-    # 3) layout: unsorted (streaming-written) vs sorted vs sorted + small Parquet row groups
+    # 3) layout: unsorted (streaming-written) vs sorted vs sorted + small Parquet row groups, all on the SAME
+    #    event_date window. Copies are built with low writer concurrency so the sorted write fits the per-query
+    #    memory budget (the copy is a maintenance step; only the lookups are measured).
     from lakehouse.trino_client import connect
 
+    window = f"event_date >= current_date - INTERVAL '{int(args.layout_days)}' DAY"
+    build_props = {"task_concurrency": "4", "task_max_writer_count": "1"}
     variants = {
         "unsorted": ("agent_spans", None),
-        "sorted": ("agent_spans_sorted_by_trace", {}),
-        "sorted_small_rowgroups": ("agent_spans_sorted_small_rg", {"lakehouse.parquet_writer_block_size": "1MB"}),
+        "sorted": ("agent_spans_sorted_by_trace", dict(build_props)),
+        "sorted_small_rowgroups": ("agent_spans_sorted_small_rg", {**build_props, "lakehouse.parquet_writer_block_size": "1MB"}),
     }
-    layout: dict = {"variants": {}, "lookups": []}
+    layout: dict = {"variants": {}, "lookups": [], "window": window}
     for label, (table, props) in variants.items():
         if props is None:
             continue
@@ -117,25 +134,26 @@ def main() -> None:
         run_query(f"DROP TABLE IF EXISTS {T}.{table}", conn=conn)
         run_query(f"""CREATE TABLE {T}.{table}
                       WITH (format = 'PARQUET', format_version = 2, partitioning = ARRAY['event_date'], sorted_by = ARRAY['trace_id'])
-                      AS SELECT * FROM {T}.agent_spans""", conn=conn)
+                      AS SELECT * FROM {T}.agent_spans WHERE {window}""", conn=conn)
         layout["variants"][label] = {"table": table, "session_properties": props,
                                      "build_ms": round((time.perf_counter() - t0) * 1000, 1)}
         conn.close()
     for label, (table, _) in variants.items():
-        f = run_query(f'SELECT count(*), sum(file_size_in_bytes) FROM {T}."{table}$files"').rows[0]
+        f = run_query(f'SELECT count(*), sum(file_size_in_bytes) FROM {T}."{table}$files" WHERE {window.replace("event_date", "partition.event_date")}').rows[0]
         layout["variants"].setdefault(label, {"table": table})
         layout["variants"][label].update(data_files=f[0], bytes=f[1])
     traces = [r[0] for r in run_query(
-        f"SELECT trace_id FROM {T}.agent_run_metrics ORDER BY xxhash64(to_utf8(run_id)) LIMIT 5").rows]
+        f"SELECT trace_id FROM {T}.agent_run_metrics WHERE {window} ORDER BY xxhash64(to_utf8(run_id)) LIMIT 5").rows]
     for tid in traces:
         row = {"trace_id": tid}
         for label, (table, _) in variants.items():
-            m = measure(f"lookup_{label}", f"SELECT span_id, span_kind, duration_ms FROM {T}.{table} WHERE trace_id = ?", [tid], args.runs)
+            m = measure(f"lookup_{label}", f"SELECT span_id, span_kind, duration_ms FROM {T}.{table} WHERE {window} AND trace_id = ?",
+                        [tid], args.runs)
             row[label] = {k: m[k] for k in ("wall_ms_median", "processed_rows", "physical_input_bytes", "splits")}
         layout["lookups"].append(row)
         print(f"lookup {tid[:8]}: rows read " + ", ".join(f"{l}={row[l]['processed_rows']}" for l in variants))
     for label, (table, _) in variants.items():
-        layout[f"explain_{label}"] = explain_input(f"SELECT span_id FROM {T}.{table} WHERE trace_id = ?", [traces[0]])
+        layout[f"explain_{label}"] = explain_input(f"SELECT span_id FROM {T}.{table} WHERE {window} AND trace_id = ?", [traces[0]])
     results["layout"] = layout
 
     out_dir = get_settings().results_dir
@@ -147,7 +165,11 @@ def main() -> None:
         w.writerow(["experiment", "query", "wall_ms_median", "processed_rows", "physical_input_bytes", "splits"])
         for exp in ("tiers", "pruning"):
             for r in results[exp]:
-                w.writerow([exp, r["query"], r["wall_ms_median"], r["processed_rows"], r["physical_input_bytes"], r["splits"]])
+                label = f"{exp}:{r['scope_days']}d" if "scope_days" in r else exp
+                if "error" in r:
+                    w.writerow([label, r["query"], "", "", "", r["error"]])
+                else:
+                    w.writerow([label, r["query"], r["wall_ms_median"], r["processed_rows"], r["physical_input_bytes"], r["splits"]])
         for row in layout["lookups"]:
             for label in ("unsorted", "sorted", "sorted_small_rowgroups"):
                 w.writerow(["layout", f"lookup_{label}:{row['trace_id']}", row[label]["wall_ms_median"],

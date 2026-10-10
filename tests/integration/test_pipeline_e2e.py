@@ -31,7 +31,7 @@ def _stack_available() -> bool:
         run_query("SELECT 1")
         from confluent_kafka.admin import AdminClient
 
-        AdminClient({"bootstrap.servers": "localhost:9094", "socket.timeout.ms": 3000}).list_topics(timeout=5)
+        AdminClient({"bootstrap.servers": "127.0.0.1:9094", "socket.timeout.ms": 3000}).list_topics(timeout=5)
         return True
     except Exception:
         return False
@@ -65,7 +65,7 @@ def wait_for_rows(test_run_id: str, expected: int, timeout_s: float = 240) -> in
 def clean_run():
     cfg = TestRunConfig(name="it_clean", seed=101, tasks=150, workers=2, sim_days=0.2, workload_mix=MIX,
                         fault_profile={"slow_tool": 0.05, "loop": 0.05, "policy_violation": 0.05, "prompt_injection": 0.05})
-    summary = run_test(cfg, "kafka", "localhost:9094", write_results=False)
+    summary = run_test(cfg, "kafka", "127.0.0.1:9094", write_results=False)
     assert summary["status"] == "completed" and summary["delivery"]["failed"] == 0
     wait_for_rows(summary["test_run_id"], summary["events_emitted"])
     return summary
@@ -74,7 +74,7 @@ def clean_run():
 def _dirty(name: str, seed: int, kinds: tuple[str, ...]) -> dict:
     cfg = TestRunConfig(name=name, seed=seed, tasks=200, workers=2, sim_days=0.2, workload_mix=MIX,
                         dirty_rate=0.05, dirty_kinds=list(kinds))
-    summary = run_test(cfg, "kafka", "localhost:9094", write_results=False)
+    summary = run_test(cfg, "kafka", "127.0.0.1:9094", write_results=False)
     assert sum(summary["dirty_injected"].values()) > 20
     wait_for_rows(summary["test_run_id"], summary["events_emitted"])
     return summary
@@ -167,3 +167,17 @@ def test_streaming_batch_metrics_recorded(clean_run):
     n = scalar(f"""SELECT count(*) FROM {T}.pipeline_batch_metrics
                    WHERE batch_end >= from_iso8601_timestamp(?) AND input_rows > 0""", [clean_run["started_at"]])
     assert n >= 1
+
+
+def test_truncated_json_always_labelled_malformed():
+    """Truncation can cut a record inside "payload" after a complete envelope. Spark's PERMISSIVE parser then
+    returns partial results; the corrupt-record column must still classify every such record as malformed_json."""
+    cfg = TestRunConfig(name="it_truncation", seed=404, tasks=1500, workers=2, sim_days=0.2, workload_mix=MIX,
+                        dirty_rate=0.25, dirty_kinds=["malformed_json"])
+    summary = run_test(cfg, "kafka", "127.0.0.1:9094", write_results=False)
+    injected = summary["dirty_injected"]["malformed_json"]
+    assert injected > 1000
+    wait_for_rows(summary["test_run_id"], summary["events_emitted"])
+    reasons = dict(run_query(f"""SELECT validation_error, count(*) FROM {T}.dead_letter_events
+                                WHERE raw_value LIKE ? GROUP BY 1""", [f"%{summary['test_run_id']}%"]).rows)
+    assert reasons == {"malformed_json": injected}

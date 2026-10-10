@@ -1,0 +1,44 @@
+{
+  "query": "security_residuals_vs_quarantine",
+  "file": "05_security_correlation.sql",
+  "tags": {
+    "query": "security_residuals_vs_quarantine",
+    "title": "Are detection residuals explained by quarantined (corrupted) events?",
+    "concept": "Residual analysis: anti-joins, regexp_extract on raw dead-letter payloads, equi-join to explain each residual",
+    "question": "For labelled runs that lack the expected finding, and for findings on runs without labels, was one of the run's own events quarantined by the stream processor?",
+    "interpretation": "Volume benchmarks inject ~0.1% corrupt records on purpose (and the truncation test 25%). A quarantined security.finding event looks like a missed detection; a quarantined run.metrics event drops the run's labels so its findings look unlabelled. Residuals with explained_by_quarantine = residual_runs are data-quality effects, not detector errors; unexplained residuals would need investigation.",
+    "params": "days=30"
+  },
+  "elapsed_ms": 759.6,
+  "stats": {
+    "state": "FINISHED",
+    "elapsedTimeMillis": 767,
+    "cpuTimeMillis": 2449,
+    "wallTimeMillis": 6898,
+    "processedRows": 1297631,
+    "processedBytes": 119879463,
+    "physicalInputBytes": 119013656,
+    "peakMemoryBytes": 17280929,
+    "totalSplits": 670
+  },
+  "columns": [
+    "residual",
+    "residual_runs",
+    "explained_by_quarantine",
+    "unexplained"
+  ],
+  "rows": [
+    [
+      "finding_on_unlabelled_run",
+      10,
+      10,
+      0
+    ],
+    [
+      "missed_detection",
+      10,
+      10,
+      0
+    ]
+  ]
+}

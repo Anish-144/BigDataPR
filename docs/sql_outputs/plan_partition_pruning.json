@@ -8,16 +8,16 @@
     "question": "Does a filter on the partition column limit which data files Trino scans?",
     "interpretation": "Look for the event_date constraint pushed into the TableScan (connector-level constraint). Iceberg prunes whole partitions (and files by min/max stats) before any Parquet is read. (Literal filter: Trino does not bind prepared-statement parameters inside EXPLAIN (TYPE ...).)"
   },
-  "elapsed_ms": 84.9,
+  "elapsed_ms": 93.1,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 57,
+    "elapsedTimeMillis": 62,
     "cpuTimeMillis": 0,
     "wallTimeMillis": 0,
     "processedRows": 0,
     "processedBytes": 0,
     "physicalInputBytes": 0,
-    "peakMemoryBytes": 2561,
+    "peakMemoryBytes": 2557,
     "totalSplits": 1
   },
   "columns": [
@@ -25,7 +25,7 @@
   ],
   "rows": [
     [
-      "Trino version: 467\nFragment 0 [HASH]\n    Output layout: [agent_id, count, approx_percentile]\n    Output partitioning: SINGLE []\n    Output[columnNames = [agent_id, runs, p95]]\n    \u2502   Layout: [agent_id:varchar, count:bigint, approx_percentile:double]\n    \u2502   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}\n    \u2502   runs := count\n    \u2502   p95 := approx_percentile\n    \u2514\u2500 Aggregate[type = FINAL, keys = [agent_id]]\n       \u2502   Layout: [agent_id:varchar, count:bigint, approx_percentile:double]\n       \u2502   Estimates: {rows: ? (?), cpu: 2.46M, memory: ?, network: 0B}\n       \u2502   count := count(count_1)\n       \u2502   approx_percentile := approx_percentile(approx_percentile_2)\n       \u2514\u2500 LocalExchange[partitioning = HASH, arguments = [agent_id::varchar]]\n          \u2502   Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n          \u2502   Estimates: {rows: 36929 (2.46MB), cpu: 2.46M, memory: 0B, network: 0B}\n          \u2514\u2500 RemoteSource[sourceFragmentIds = [1]]\n                 Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n\nFragment 1 [SOURCE]\n    Output layout: [agent_id, count_1, approx_percentile_2]\n    Output partitioning: HASH [agent_id]\n    Aggregate[type = PARTIAL, keys = [agent_id]]\n    \u2502   Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n    \u2502   Estimates: {rows: 36929 (2.46MB), cpu: ?, memory: ?, network: ?}\n    \u2502   count_1 := count(*)\n    \u2502   approx_percentile_2 := approx_percentile(latency_ms, expr_0)\n    \u2514\u2500 ScanProject[table = lakehouse:analytics.agent_run_metrics$data@1920632619667562006 constraint on [event_date]]\n           Layout: [latency_ms:double, expr_0:double, agent_id:varchar]\n           Estimates: {rows: 36929 (855.85kB), cpu: 531.28k, memory: 0B, network: 0B}/{rows: 36929 (855.85kB), cpu: 855.85k, memory: 0B, network: 0B}\n           expr_0 := double '0.95'\n           latency_ms := 21:latency_ms:double\n           agent_id := 5:agent_id:varchar\n           20:event_date:date\n               :: [[2026-10-08, <max>)]\n\n"
+      "Trino version: 467\nFragment 0 [HASH]\n    Output layout: [agent_id, count, approx_percentile]\n    Output partitioning: SINGLE []\n    Output[columnNames = [agent_id, runs, p95]]\n    \u2502   Layout: [agent_id:varchar, count:bigint, approx_percentile:double]\n    \u2502   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}\n    \u2502   runs := count\n    \u2502   p95 := approx_percentile\n    \u2514\u2500 Aggregate[type = FINAL, keys = [agent_id]]\n       \u2502   Layout: [agent_id:varchar, count:bigint, approx_percentile:double]\n       \u2502   Estimates: {rows: ? (?), cpu: 9.07M, memory: ?, network: 0B}\n       \u2502   count := count(count_1)\n       \u2502   approx_percentile := approx_percentile(approx_percentile_2)\n       \u2514\u2500 LocalExchange[partitioning = HASH, arguments = [agent_id::varchar]]\n          \u2502   Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n          \u2502   Estimates: {rows: 136387 (9.07MB), cpu: 9.07M, memory: 0B, network: 0B}\n          \u2514\u2500 RemoteSource[sourceFragmentIds = [1]]\n                 Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n\nFragment 1 [SOURCE]\n    Output layout: [agent_id, count_1, approx_percentile_2]\n    Output partitioning: HASH [agent_id]\n    Aggregate[type = PARTIAL, keys = [agent_id]]\n    \u2502   Layout: [agent_id:varchar, count_1:bigint, approx_percentile_2:varbinary]\n    \u2502   Estimates: {rows: 136387 (9.07MB), cpu: ?, memory: ?, network: ?}\n    \u2502   count_1 := count(*)\n    \u2502   approx_percentile_2 := approx_percentile(latency_ms, expr_0)\n    \u2514\u2500 ScanProject[table = lakehouse:analytics.agent_run_metrics$data@7580205589668344724 constraint on [event_date]]\n           Layout: [latency_ms:double, expr_0:double, agent_id:varchar]\n           Estimates: {rows: 136387 (3.09MB), cpu: 1.92M, memory: 0B, network: 0B}/{rows: 136387 (3.09MB), cpu: 3.09M, memory: 0B, network: 0B}\n           expr_0 := double '0.95'\n           agent_id := 5:agent_id:varchar\n           latency_ms := 21:latency_ms:double\n           20:event_date:date\n               :: [[2026-10-09, <max>)]\n\n"
     ]
   ]
 }

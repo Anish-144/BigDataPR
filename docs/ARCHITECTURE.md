@@ -74,7 +74,7 @@ detectors (rules + Isolation Forest) read Trino and publish alerts back to Kafka
 | Retrieval | scikit-learn TF-IDF (default); Sentence Transformers + FAISS optional | Investigation assistant knowledge retrieval |
 | LLM (optional) | anthropic 1.13.0, model `claude-opus-5-5` | Rephrases evidence-grounded answers; optional groundedness judge |
 | Orchestration | Apache Airflow 2.10.5 (LocalExecutor, optional profile) | lakehouse_maintenance, daily_agent_regression, anomaly_model_refresh |
-| Frontend | React 18, Vite, TypeScript, Tailwind, Recharts | 12-page workbench |
+| Frontend | React 18, Vite, TypeScript, Tailwind, Recharts, framer-motion, lucide-react | Landing page (`/`) + 12-page workbench (`/app/*`) served by nginx |
 | Packaging | Docker Compose | Single-node local deployment with health checks and named volumes |
 
 ## 3. Event contract and topics

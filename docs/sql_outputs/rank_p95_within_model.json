@@ -9,17 +9,17 @@
     "interpretation": "Ranking inside a PARTITION BY model_name compares like with like (same model cost/latency profile), isolating the effect of agent logic and prompts.",
     "params": "days=30"
   },
-  "elapsed_ms": 114.2,
+  "elapsed_ms": 228.8,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 94,
-    "cpuTimeMillis": 30,
-    "wallTimeMillis": 36,
-    "processedRows": 45980,
-    "processedBytes": 4352821,
-    "physicalInputBytes": 4352821,
-    "peakMemoryBytes": 1543230,
-    "totalSplits": 90
+    "elapsedTimeMillis": 236,
+    "cpuTimeMillis": 1870,
+    "wallTimeMillis": 4059,
+    "processedRows": 609878,
+    "processedBytes": 56839965,
+    "physicalInputBytes": 56839965,
+    "peakMemoryBytes": 45714088,
+    "totalSplits": 152
   },
   "columns": [
     "model_name",
@@ -36,8 +36,8 @@
       "mock-large",
       "Planner Agent",
       "2.0.0",
-      5688,
-      6549.7,
+      76200,
+      6362.3,
       1,
       1,
       1.0
@@ -46,8 +46,8 @@
       "mock-large",
       "Planner Agent",
       "1.0.0",
-      5724,
-      5802.6,
+      75746,
+      5717.8,
       2,
       2,
       0.857
@@ -56,8 +56,8 @@
       "mock-medium",
       "RAG Helpdesk",
       "2.0.0",
-      5827,
-      2625.1,
+      76146,
+      2490.7,
       1,
       3,
       0.714
@@ -66,18 +66,18 @@
       "mock-medium",
       "RAG Helpdesk",
       "2.1.0",
-      5788,
-      2173.9,
+      76869,
+      2156.6,
       2,
       4,
-      0.429
+      0.571
     ],
     [
       "mock-medium",
       "QA Assistant",
       "1.1.0",
-      5752,
-      1593.9,
+      76493,
+      1565.0,
       3,
       5,
       0.143
@@ -86,18 +86,18 @@
       "mock-small",
       "Ops Tool Agent",
       "1.1.0",
-      5654,
-      2174.8,
+      76396,
+      2116.3,
       1,
       6,
-      0.571
+      0.429
     ],
     [
       "mock-small",
       "Ops Tool Agent",
       "1.0.0",
-      5793,
-      1854.0,
+      75572,
+      1786.1,
       2,
       7,
       0.286
@@ -106,8 +106,8 @@
       "mock-small",
       "QA Assistant",
       "1.0.0",
-      5754,
-      1203.3,
+      76456,
+      1211.4,
       3,
       8,
       0.0

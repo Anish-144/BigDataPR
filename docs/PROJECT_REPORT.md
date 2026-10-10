@@ -39,9 +39,9 @@ with documented gaps; **Not done** = not implemented.
 | 2.6 Investigation assistant with evidence, declines without evidence, no arbitrary SQL | Done | `investigation/`; TF-IDF retrieval by default; Sentence Transformers + FAISS optional (not installed by default) |
 | 3.3 Kafka topics, stable ids, DLQ | Done | 6 topics; `agent-events-dlq`; Spark quarantine table |
 | 3.4 Lakehouse tables, partitioning, schema evolution, time travel / rollback | Done | sql/01, sql/09, `lakehouse/` |
-| 4 SQL showcase 01-08 + SQL_SHOWCASE.md with real outputs | Done | `sql/` (plus 09), docs/SQL_SHOWCASE.md generated from exports |
+| 4 SQL showcase 01-08 + SQL_SHOWCASE.md with real outputs | Done | `sql/` (plus 09; 52 queries), docs/SQL_SHOWCASE.md generated from exports |
 | 5.1 OpenTelemetry-inspired traces; no raw prompts by default | Done | Span model; `CAPTURE_CONTENT=false` default with redaction |
-| 6 Frontend: 12 pages | Done | `frontend/` (React + Vite + TS + Tailwind), served by nginx at :3000 |
+| 6 Frontend: 12 pages | Done | `frontend/` (React + Vite + TS + Tailwind): landing page at `/`, 12-page workbench at `/app/*`, served by nginx at :3000; UI/UX redesign and landing page by Tapan (branch `tapan`) |
 | 7 API endpoints | Done | 34 paths; docs/API.md generated from OpenAPI |
 | 9 Benchmarks 100k / 1M / 5M with methodology | Done | `benchmarks/`, docs/BENCHMARK_METHODOLOGY.md, BENCHMARK_REPORT.md |
 | 9 10M events | Not done | Machine/schedule budget; not claimed |
@@ -57,8 +57,10 @@ THREAT_MODEL.md):
 
 1. **Contract-first design.** Pydantic models are the single source of truth. Contract tests make the Spark DDL
    and Trino tables fail CI if they drift.
-2. **Nothing silently lost.** The bronze table stores every record. Quarantine reasons were reconciled exactly
-   against injected corruption in integration tests and in every benchmark.
+2. **Nothing silently lost.** The bronze table stores every record. Quarantined record counts matched the injected
+   corruption exactly in every benchmark. In the 5M run one record truncated inside its payload was labelled
+   `missing_payload` instead of `malformed_json`; a corrupt-record column fixed the label and a test over 1,000
+   truncated records now asserts exact reasons.
 3. **Effectively-once ingestion.** Snapshot-tagged commits skip already-committed tables on replay. Measured
    result: 0 duplicated Kafka offsets after several restarts.
 4. **Data quality caught real bugs.** The DQ checks surfaced several of the problems below:
@@ -75,12 +77,32 @@ THREAT_MODEL.md):
 
 ## 3. Results
 
-See docs/BENCHMARK_REPORT.md (generated from `benchmarks/results/`). Headline numbers are in README.md.
+All numbers are generated into docs/BENCHMARK_REPORT.md from `benchmarks/results/`. Headlines:
+
+- **Pipeline.** 1,009,825 events landed in the lakehouse 78 s after production started (producer 47.9k events/s,
+  Spark 12.2k rows/s). 5,051,950 events landed after 364.5 s (13.9k events/s end to end). Storage was ~154 bytes
+  per event across all tables.
+- **SQL tiers** (same question over 3 days of a 9M-event dataset): raw JSON 1,070 ms, curated Iceberg 114 ms,
+  summary table 55 ms. Over the full history the raw-JSON query exceeds the per-query memory limit and is stopped by
+  Trino, while the curated (108 ms) and summary (66 ms) tiers still answer it.
+- **Layout.** Sorting by `trace_id` alone did not reduce rows read; adding 1 MB row groups cut a trace lookup from
+  ~681k to ~3.8k rows read.
+- **Detectors** (held-out scenario): rules precision 1.0 / recall 0.63; Isolation Forest ROC-AUC 0.91; combined
+  F1 0.78 at a 0.78% false-positive rate. Window rules found 1 of 2 incidents with no false window alerts.
+- **Security rules.** 99.9-100% detection per labelled scenario. All 20 residual runs (10 misses, 10 findings on
+  unlabelled runs) are explained by deliberately corrupted, quarantined events (sql/05
+  `security_residuals_vs_quarantine`).
 
 ## 4. Limitations and future work
 
 - **Single node.** One Kafka broker (replication factor 1), Spark `local[4]`, one Trino node. Next steps:
   multi-node deployment, then a scaling study.
+- **Measured memory ceilings on one Trino node** (512 MB per query; raising it to 1 GB crashed the server under
+  the 2.25 GiB container limit):
+  - schema-on-read over all raw JSON (~9M events) is stopped with `EXCEEDED_LOCAL_MEMORY_LIMIT`;
+  - exact duplicate checks fit about 3.3M events per query, so data-quality checks run incrementally over the last
+    2 days (the API caps the window);
+  - building sorted layout copies is limited to one day of data at a time.
 - **Simulated agent latency and tokens.** A real-LLM workload adapter would measure provider latency and TTFT.
 - **Heuristic security rules.** They can be evaded by obfuscated injections. Future work: a classifier-based
   detector, evaluated on a public injection dataset.

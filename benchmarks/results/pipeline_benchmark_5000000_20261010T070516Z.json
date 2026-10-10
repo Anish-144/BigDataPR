@@ -1,0 +1,382 @@
+{
+  "recorded_at": "2026-10-10T07:05:16.572033+00:00",
+  "target_events": 5000000,
+  "test_run_id": "TR-20261010-69ab72",
+  "environment": {
+    "host": {
+      "platform": "Windows-11-10.0.26300-SP0",
+      "python": "3.12.10",
+      "cpu_logical": 24,
+      "cpu_physical": 16,
+      "ram_gb": 16.9,
+      "in_container": false
+    },
+    "docker": {
+      "cpus": 24,
+      "memory_gib": 7.61,
+      "server_version": "28.3.3",
+      "os": "Docker Desktop"
+    },
+    "python": "3.12.10",
+    "stack": "Kafka 3.9.0 (1 broker) | Spark 3.5.3 local[4] | Iceberg 1.7.1 | Trino 467 | MinIO (bitnamilegacy 2025.4.22)",
+    "note": "single machine, Docker Desktop; no multi-node scaling is claimed"
+  },
+  "workload": {
+    "scenario": "generator/scenarios/benchmark.yaml",
+    "seed": 31337,
+    "tasks": 344448,
+    "workers": 6,
+    "calibrated_events_per_task": 14.516,
+    "events_by_type": {
+      "span.completed": 2257643,
+      "run.metrics": 344448,
+      "evaluation.result": 2436698,
+      "security.finding": 12126,
+      "worker.resource": 162
+    },
+    "fault_profile": {
+      "slow_tool": 0.006,
+      "tool_timeout": 0.006,
+      "loop": 0.005,
+      "malformed_response": 0.004,
+      "high_token_usage": 0.004,
+      "failed_retrieval": 0.005,
+      "suspicious_tool_access": 0.003,
+      "policy_violation": 0.002,
+      "prompt_injection": 0.003,
+      "sensitive_data_leak": 0.002,
+      "exfiltration_sequence": 0.002,
+      "privilege_escalation": 0.002
+    },
+    "dirty_rate": 0.001
+  },
+  "producer": {
+    "events": 5051950,
+    "wall_seconds": 139.685,
+    "events_per_sec": 36166.7,
+    "delivered": 5051948,
+    "failed": 0
+  },
+  "end_to_end": {
+    "seconds_produce_start_to_all_in_lakehouse": 364.5,
+    "seconds_after_producer_finished": 224.7,
+    "events_per_sec_end_to_end": 13859.9,
+    "ingest_curve": [
+      {
+        "t_s": 140.0,
+        "lakehouse_rows_added": 899967
+      },
+      {
+        "t_s": 145.1,
+        "lakehouse_rows_added": 899967
+      },
+      {
+        "t_s": 150.1,
+        "lakehouse_rows_added": 1199957
+      },
+      {
+        "t_s": 155.2,
+        "lakehouse_rows_added": 1199957
+      },
+      {
+        "t_s": 160.3,
+        "lakehouse_rows_added": 1199957
+      },
+      {
+        "t_s": 165.4,
+        "lakehouse_rows_added": 1199957
+      },
+      {
+        "t_s": 170.5,
+        "lakehouse_rows_added": 1499950
+      },
+      {
+        "t_s": 175.6,
+        "lakehouse_rows_added": 1499950
+      },
+      {
+        "t_s": 180.7,
+        "lakehouse_rows_added": 1499950
+      },
+      {
+        "t_s": 185.8,
+        "lakehouse_rows_added": 1799940
+      },
+      {
+        "t_s": 190.9,
+        "lakehouse_rows_added": 1799940
+      },
+      {
+        "t_s": 196.0,
+        "lakehouse_rows_added": 1799940
+      },
+      {
+        "t_s": 201.1,
+        "lakehouse_rows_added": 2099931
+      },
+      {
+        "t_s": 206.3,
+        "lakehouse_rows_added": 2099931
+      },
+      {
+        "t_s": 211.3,
+        "lakehouse_rows_added": 2099931
+      },
+      {
+        "t_s": 216.4,
+        "lakehouse_rows_added": 2399920
+      },
+      {
+        "t_s": 221.5,
+        "lakehouse_rows_added": 2399920
+      },
+      {
+        "t_s": 226.6,
+        "lakehouse_rows_added": 2399920
+      },
+      {
+        "t_s": 231.8,
+        "lakehouse_rows_added": 2699909
+      },
+      {
+        "t_s": 236.9,
+        "lakehouse_rows_added": 2699909
+      },
+      {
+        "t_s": 242.0,
+        "lakehouse_rows_added": 2699909
+      },
+      {
+        "t_s": 247.1,
+        "lakehouse_rows_added": 2999898
+      },
+      {
+        "t_s": 252.2,
+        "lakehouse_rows_added": 2999898
+      },
+      {
+        "t_s": 257.3,
+        "lakehouse_rows_added": 2999898
+      },
+      {
+        "t_s": 262.3,
+        "lakehouse_rows_added": 2999898
+      },
+      {
+        "t_s": 267.5,
+        "lakehouse_rows_added": 3299888
+      },
+      {
+        "t_s": 272.5,
+        "lakehouse_rows_added": 3299888
+      },
+      {
+        "t_s": 277.7,
+        "lakehouse_rows_added": 3299888
+      },
+      {
+        "t_s": 282.8,
+        "lakehouse_rows_added": 3599878
+      },
+      {
+        "t_s": 287.9,
+        "lakehouse_rows_added": 3599878
+      },
+      {
+        "t_s": 293.0,
+        "lakehouse_rows_added": 3599878
+      },
+      {
+        "t_s": 298.2,
+        "lakehouse_rows_added": 3899870
+      },
+      {
+        "t_s": 303.2,
+        "lakehouse_rows_added": 3899870
+      },
+      {
+        "t_s": 308.4,
+        "lakehouse_rows_added": 3899870
+      },
+      {
+        "t_s": 313.5,
+        "lakehouse_rows_added": 4199861
+      },
+      {
+        "t_s": 318.6,
+        "lakehouse_rows_added": 4199861
+      },
+      {
+        "t_s": 323.6,
+        "lakehouse_rows_added": 4199861
+      },
+      {
+        "t_s": 328.7,
+        "lakehouse_rows_added": 4499852
+      },
+      {
+        "t_s": 333.8,
+        "lakehouse_rows_added": 4499852
+      },
+      {
+        "t_s": 338.9,
+        "lakehouse_rows_added": 4499852
+      },
+      {
+        "t_s": 344.0,
+        "lakehouse_rows_added": 4499852
+      },
+      {
+        "t_s": 349.2,
+        "lakehouse_rows_added": 4799844
+      },
+      {
+        "t_s": 354.3,
+        "lakehouse_rows_added": 4799844
+      },
+      {
+        "t_s": 359.4,
+        "lakehouse_rows_added": 4799844
+      },
+      {
+        "t_s": 364.5,
+        "lakehouse_rows_added": 5051950
+      }
+    ]
+  },
+  "spark": {
+    "batches": 16,
+    "rows": 4799844,
+    "invalid_rows": 3413,
+    "busy_seconds": 336.1,
+    "first_batch_start": "2026-10-10T06:59:10.067255+00:00",
+    "last_batch_end": "2026-10-10T07:04:54.409542+00:00",
+    "rows_per_sec_over_span": 13939.2,
+    "rows_per_sec_while_busy": 14279.3,
+    "largest_batch_rows": 299993,
+    "p95_batch_ms": 43628.93795967102,
+    "avg_ingest_lag_ms": 158783.8313943939,
+    "p95_batch_avg_lag_ms": 220474.185530789,
+    "max_ingest_lag_ms": 225285.542011261
+  },
+  "validation": {
+    "quarantined_by_reason": {
+      "missing_payload": 1,
+      "unknown_event_type": 945,
+      "invalid_event_time": 868,
+      "missing_event_id": 887,
+      "malformed_json": 891
+    },
+    "injected_structural": {
+      "missing_event_id": 887,
+      "unknown_event_type": 945,
+      "malformed_json": 892,
+      "bad_timestamp": 868
+    },
+    "quarantine_matches_injected": false
+  },
+  "storage": {
+    "added_by_table": {
+      "raw_agent_events": {
+        "files": 41,
+        "bytes": 520181681,
+        "rows": 5051950
+      },
+      "agent_spans": {
+        "files": 25,
+        "bytes": 129035218,
+        "rows": 2256702
+      },
+      "agent_run_metrics": {
+        "files": 25,
+        "bytes": 31452509,
+        "rows": 344224
+      },
+      "agent_evaluation_results": {
+        "files": 25,
+        "bytes": 93522693,
+        "rows": 2435140
+      },
+      "agent_security_findings": {
+        "files": 25,
+        "bytes": 1018993,
+        "rows": 12128
+      },
+      "dead_letter_events": {
+        "files": 17,
+        "bytes": 511221,
+        "rows": 3592
+      },
+      "stream_agent_metrics_1m": {
+        "files": 1,
+        "bytes": 6674,
+        "rows": 16
+      }
+    },
+    "added_mb_total": 739.8,
+    "bytes_per_event": 153.6
+  },
+  "agent_latency_this_run": {
+    "runs": 344224,
+    "success_rate": 0.8213866552012643,
+    "p50_ms": 1353.4317217517569,
+    "p95_ms": 4892.583788824857,
+    "p99_ms": 6715.475945174063
+  },
+  "query_latency_after_load": {
+    "p95_by_version_full_table_ms": 273.4,
+    "p95_by_version_this_run_ms": 131.3,
+    "count_raw_events_ms": 81.6,
+    "trace_lookup_ms": 252.2
+  },
+  "container_resources_at_completion": [
+    {
+      "CPUPerc": "4.80%",
+      "MemPerc": "69.18%",
+      "MemUsage": "708.4MiB / 1GiB",
+      "Name": "agentshield-kafka-1"
+    },
+    {
+      "CPUPerc": "0.00%",
+      "MemPerc": "0.23%",
+      "MemUsage": "18.2MiB / 7.608GiB",
+      "Name": "fe-integration"
+    },
+    {
+      "CPUPerc": "0.11%",
+      "MemPerc": "14.72%",
+      "MemUsage": "150.8MiB / 1GiB",
+      "Name": "agentshield-backend-1"
+    },
+    {
+      "CPUPerc": "0.00%",
+      "MemPerc": "14.11%",
+      "MemUsage": "18.07MiB / 128MiB",
+      "Name": "agentshield-frontend-1"
+    },
+    {
+      "CPUPerc": "225.65%",
+      "MemPerc": "88.42%",
+      "MemUsage": "2.653GiB / 3GiB",
+      "Name": "agentshield-spark-streaming-1"
+    },
+    {
+      "CPUPerc": "8.46%",
+      "MemPerc": "78.30%",
+      "MemUsage": "1.762GiB / 2.25GiB",
+      "Name": "agentshield-trino-1"
+    },
+    {
+      "CPUPerc": "0.14%",
+      "MemPerc": "9.95%",
+      "MemUsage": "50.95MiB / 512MiB",
+      "Name": "agentshield-postgres-1"
+    },
+    {
+      "CPUPerc": "11.03%",
+      "MemPerc": "60.57%",
+      "MemUsage": "465.2MiB / 768MiB",
+      "Name": "agentshield-minio-1"
+    }
+  ]
+}
