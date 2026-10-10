@@ -145,10 +145,16 @@ export const useComparison = (days: number, versions: string[]) =>
     placeholderData: keepPreviousData,
   });
 
+// The API caps data-quality checks to recent partitions and reports the applied window next to the results.
+export type DqWindow = { requested_days: number; applied_days: number; note: string };
+
 export const useDataQuality = (days: number, enabled = true) =>
   useQuery({
     queryKey: ["data-quality", days],
-    queryFn: () => api<Record<string, QR>>(`/api/v1/analytics/data-quality${qs({ days })}`),
+    queryFn: async () => {
+      const { window, ...results } = await api<Record<string, unknown>>(`/api/v1/analytics/data-quality${qs({ days })}`);
+      return { window: window as DqWindow | undefined, results: results as Record<string, QR> };
+    },
     enabled,
     staleTime: 5 * 60_000,
     placeholderData: keepPreviousData,
