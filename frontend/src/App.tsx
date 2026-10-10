@@ -1,7 +1,8 @@
 import { lazy, Suspense, type ReactNode } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, Navigate } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import { LoadingBlock, EmptyState } from "./components/ui/states";
+import Landing from "./pages/Landing";
 
 const Overview = lazy(() => import("./pages/Overview"));
 const TestingLab = lazy(() => import("./pages/TestingLab"));
@@ -22,7 +23,8 @@ const page = (el: ReactNode) => <Suspense fallback={<LoadingBlock height={240} /
 export default function App() {
   return (
     <Routes>
-      <Route element={<Layout />}>
+      <Route path="/" element={<Landing />} />
+      <Route path="/app" element={<Layout />}>
         <Route index element={page(<Overview />)} />
         <Route path="testing" element={page(<TestingLab />)} />
         <Route path="runs" element={page(<RunExplorer />)} />
@@ -40,13 +42,15 @@ export default function App() {
           path="*"
           element={
             <EmptyState title="Page not found">
-              <Link className="link" to="/">
+              <Link className="link" to="/app">
                 Back to overview
               </Link>
             </EmptyState>
           }
         />
       </Route>
+      {/* Catch-all redirect to landing */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

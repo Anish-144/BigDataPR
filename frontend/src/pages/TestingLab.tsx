@@ -375,7 +375,7 @@ function RunDetail({ id, activeIds }: { id: string | null; activeIds: string[] }
             <span className="text-ink-2">Security findings:</span>
             {d.security_findings.length ? d.security_findings.map((s) => <span key={s.severity} className="inline-flex items-center gap-1"><SeverityBadge severity={s.severity} /> <span className="num">{fmtInt(s.n)}</span></span>) : <span className="text-muted">none</span>}
             <span className="ml-3 text-ink-2">Anomaly alerts:</span> <span className="num font-medium">{fmtInt(d.anomaly_alerts)}</span>
-            <Link to={`/runs?test_run_id=${encodeURIComponent(id)}`} className="link ml-auto">
+            <Link to={`/app/runs?test_run_id=${encodeURIComponent(id)}`} className="link ml-auto">
               Explore runs →
             </Link>
           </div>

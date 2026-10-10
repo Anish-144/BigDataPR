@@ -9,6 +9,7 @@ import { ErrorPanel, EmptyState, SkeletonRows } from "../components/ui/states";
 import { Badge, Tag } from "../components/ui/Badge";
 import { Icon } from "../components/ui/Icon";
 import { Markdown, idHref } from "../lib/markdown";
+import { appPath } from "../lib/nav";
 import { fmtDateTime } from "../lib/format";
 
 interface Exchange {
@@ -249,14 +250,14 @@ function evidenceHref(e: Evidence): string | null {
   switch (e.kind) {
     case "trace":
     case "run":
-      return idHref(ref) ?? `/runs/${encodeURIComponent(ref)}`;
+      return idHref(ref) ?? appPath(`/runs/${encodeURIComponent(ref)}`);
     case "alert":
-      return `/anomalies?alert=${encodeURIComponent(ref)}`;
+      return appPath(`/anomalies?alert=${encodeURIComponent(ref)}`);
     case "sql":
-      return /^[a-z0-9_]+$/.test(ref) ? `/sql?q=${encodeURIComponent(ref)}` : null;
+      return /^[a-z0-9_]+$/.test(ref) ? appPath(`/sql?q=${encodeURIComponent(ref)}`) : null;
     case "policy":
     case "finding":
-      return `/security?tab=${e.kind === "policy" ? "policy" : "findings"}`;
+      return appPath(`/security?tab=${e.kind === "policy" ? "policy" : "findings"}`);
     default:
       return idHref(ref);
   }

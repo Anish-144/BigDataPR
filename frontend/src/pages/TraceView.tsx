@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTrace } from "../api/hooks";
 import type { Evaluation, Span, Trace, TraceAlert, TraceFinding } from "../api/types";
-import { Card, KeyValues, KpiTile, Note, PageHeader } from "../components/ui/Card";
+import { Card, KeyValues, Note, PageHeader } from "../components/ui/Card";
 import { ErrorPanel, EmptyState, LoadingBlock } from "../components/ui/states";
 import { Badge, SeverityBadge, StatusBadge, SuccessBadge, Tag } from "../components/ui/Badge";
 import { DataTable, Tabs, type Column } from "../components/ui/DataTable";
@@ -18,10 +18,10 @@ export default function TraceView() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <button type="button" className="btn btn-sm" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/runs"))}>
+        <button type="button" className="btn btn-sm" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate("/app/runs"))}>
           <Icon name="chevronLeft" size={14} /> Back
         </button>
-        <Link to="/runs" className="link">
+        <Link to="/app/runs" className="link">
           Run Explorer
         </Link>
         <span className="text-muted">/</span>
@@ -29,7 +29,7 @@ export default function TraceView() {
         {q.data?.run && (
           <Link
             className="btn btn-sm ml-auto"
-            to={`/assistant?run_id=${encodeURIComponent(q.data.run.run_id)}&trace_id=${encodeURIComponent(q.data.trace_id)}&agent_id=${encodeURIComponent(q.data.run.agent_id)}&agent_version=${encodeURIComponent(q.data.run.agent_version)}&q=${encodeURIComponent(`Why did run ${q.data.run.run_id} ${q.data.run.task_success ? "behave this way" : "fail"}?`)}`}
+            to={`/app/assistant?run_id=${encodeURIComponent(q.data.run.run_id)}&trace_id=${encodeURIComponent(q.data.trace_id)}&agent_id=${encodeURIComponent(q.data.run.agent_id)}&agent_version=${encodeURIComponent(q.data.run.agent_version)}&q=${encodeURIComponent(`Why did run ${q.data.run.run_id} ${q.data.run.task_success ? "behave this way" : "fail"}?`)}`}
           >
             <Icon name="assistant" size={14} /> Ask the assistant about this run
           </Link>
@@ -80,15 +80,44 @@ function TraceBody({ trace }: { trace: Trace }) {
         }
       />
       {run && (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 2xl:grid-cols-8">
-          <KpiTile label="Latency" value={fmtMs(run.latency_ms)} tag={<Tag>simulated</Tag>} />
-          <KpiTile label="Time to first token" value={fmtMs(run.ttft_ms)} />
-          <KpiTile label="Tokens" value={fmtInt(run.total_tokens)} sub={`${fmtInt(run.input_tokens)} in · ${fmtInt(run.output_tokens)} out`} />
-          <KpiTile label="Est. cost" value={fmtUsd(run.estimated_cost_usd)} sub="est., local pricing table" />
-          <KpiTile label="Spans" value={fmtInt(trace.spans.length)} sub={`${problems} with errors/denials`} />
-          <KpiTile label="Tool calls" value={fmtInt(run.tool_calls)} sub={`${fmtInt(run.tool_errors)} errors · ${fmtInt(run.tool_timeouts)} timeouts`} />
-          <KpiTile label="Retries" value={fmtInt(run.retries)} />
-          <KpiTile label="Policy denials" value={fmtInt(run.policy_denials)} />
+        <div className="bg-surface rounded-2xl border border-line p-5 shadow-sm mb-2">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-8">
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest flex justify-between">Latency <Tag>simulated</Tag></span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtMs(run.latency_ms)}</span>
+            </div>
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest">TTFT</span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtMs(run.ttft_ms)}</span>
+            </div>
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest">Tokens</span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtInt(run.total_tokens)}</span>
+              <span className="text-[10px] font-semibold text-muted uppercase">{fmtInt(run.input_tokens)} in · {fmtInt(run.output_tokens)} out</span>
+            </div>
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest">Est. Cost</span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtUsd(run.estimated_cost_usd)}</span>
+            </div>
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest">Spans</span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtInt(trace.spans.length)}</span>
+              <span className={`text-[10px] font-bold uppercase ${problems > 0 ? 'text-critical-ink' : 'text-muted'}`}>{problems} problems</span>
+            </div>
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest">Tools</span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtInt(run.tool_calls)}</span>
+              <span className={`text-[10px] font-bold uppercase ${run.tool_errors > 0 ? 'text-warning-ink' : 'text-muted'}`}>{fmtInt(run.tool_errors)} errs</span>
+            </div>
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest">Retries</span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtInt(run.retries)}</span>
+            </div>
+            <div className="flex flex-col gap-1 pr-4 border-r border-line-strong/30 last:border-0">
+              <span className="text-[11px] font-bold text-ink-2 uppercase tracking-widest">Denials</span>
+              <span className="text-xl font-extrabold text-ink tracking-tight mt-1">{fmtInt(run.policy_denials)}</span>
+            </div>
+          </div>
         </div>
       )}
       {run && (run.injected_faults?.length ?? 0) > 0 && (
@@ -97,10 +126,16 @@ function TraceBody({ trace }: { trace: Trace }) {
           detector precision/recall - they are not visible to the detectors.
         </Note>
       )}
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <Card title="Trace waterfall" subtitle={`${trace.spans.length} spans · trace ${trace.trace_id}`}>
-          {trace.spans.length ? <Waterfall spans={trace.spans} selectedId={selected} onSelect={setSelected} /> : <EmptyState title="No spans" />}
-        </Card>
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
+        <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden flex flex-col">
+          <div className="border-b border-line px-5 py-4">
+             <h2 className="text-base font-bold text-ink tracking-tight">Trace Waterfall</h2>
+             <div className="text-[13px] text-ink-2 mt-0.5">{trace.spans.length} spans · trace {trace.trace_id}</div>
+          </div>
+          <div className="p-4 overflow-hidden">
+            {trace.spans.length ? <Waterfall spans={trace.spans} selectedId={selected} onSelect={setSelected} /> : <EmptyState title="No spans" />}
+          </div>
+        </div>
         <SpanPanel span={span} t0={t0} findings={trace.security_findings.filter((f) => f.span_id && f.span_id === span?.span_id)} />
       </div>
       <Card bodyClassName="p-0">
@@ -278,7 +313,7 @@ function AlertsList({ alerts }: { alerts: TraceAlert[] }) {
             <span className="font-semibold text-ink">{a.anomaly_type}</span>
             <span className="text-ink-2">{a.detector}</span>
             <span className="num text-muted">score {fmtNum(a.score, 3)}</span>
-            <Link className="link ml-auto" to={`/anomalies?alert=${encodeURIComponent(a.alert_id)}`}>
+            <Link className="link ml-auto" to={`/app/anomalies?alert=${encodeURIComponent(a.alert_id)}`}>
               Open in Anomaly Center
             </Link>
           </div>
