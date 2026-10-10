@@ -1,5 +1,9 @@
 import type { IconName } from "../components/ui/Icon";
 
+/** Base path of the workbench (the landing page owns "/"). Build every in-app link with appPath(). */
+export const APP_BASE = "/app";
+export const appPath = (path = ""): string => `${APP_BASE}${path}`;
+
 export interface NavItem {
   path: string;
   label: string;
