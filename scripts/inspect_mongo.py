@@ -44,10 +44,10 @@ def inspect_mongodb(case_id: str | null = None, verbose: bool = False) -> None:
         )
         # Verify server connection
         client.admin.command("ping")
-        print("✓ Connected to MongoDB server successfully!\n")
+        print("[OK] Connected to MongoDB server successfully!\n")
     except PyMongoError as err:
-        print(f"✗ Failed to connect to MongoDB: {err}")
-        print("  Ensure the MongoDB container is running: docker compose up -d mongodb")
+        print(f"[ERROR] Failed to connect to MongoDB: {err}")
+        print("  Ensure the MongoDB service or container is running: docker compose up -d mongodb")
         sys.exit(1)
 
     db = client[settings.mongo_db]

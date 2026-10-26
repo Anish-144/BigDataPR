@@ -74,7 +74,13 @@ class InvestigationLog(Base):
 
 @lru_cache(maxsize=1)
 def engine() -> Engine:
-    return create_engine(get_settings().postgres_dsn, pool_pre_ping=True, pool_size=5, max_overflow=5)
+    return create_engine(
+        get_settings().postgres_dsn,
+        pool_pre_ping=True,
+        pool_size=5,
+        max_overflow=5,
+        connect_args={"connect_timeout": 3},
+    )
 
 
 @lru_cache(maxsize=1)
