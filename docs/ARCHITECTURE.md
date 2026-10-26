@@ -46,6 +46,7 @@ flowchart LR
   T --> RG
   AF --> ML & RG & T
   PG[(PostgreSQL<br/>operational state)] --- B
+  MDB[(MongoDB 7.0<br/>operational security cases)] --- B
 ```
 
 Plain-text view of the main path:
@@ -53,7 +54,7 @@ Plain-text view of the main path:
 ```
 generator --(Kafka, 6 topics)--> Spark Structured Streaming --(Iceberg commits)--> Parquet on MinIO
                                                                                   |
-                       React UI <-- FastAPI (catalog queries only) <-- Trino SQL --+
+      React UI <-- FastAPI (Trino catalog & MongoDB cases) <-- Trino SQL & Mongo -+
 detectors (rules + Isolation Forest) read Trino and publish alerts back to Kafka --> lakehouse
 ```
 
@@ -69,7 +70,8 @@ detectors (rules + Isolation Forest) read Trino and publish alerts back to Kafka
 | Object storage | MinIO (bitnamilegacy/minio:2025.4.22) | S3-compatible storage for Parquet data and Iceberg metadata |
 | SQL engine | Trino 467 (single node) | All analytics, summary tables, maintenance (optimize, expire_snapshots) |
 | Operational DB | PostgreSQL 16 | Iceberg JDBC catalog, test-run requests, alert feedback, investigation log, Airflow metadata |
-| Backend | FastAPI 0.115.8, SQLAlchemy 2.0.38, trino 0.333.0 | REST API, test-run orchestration, curated query catalog |
+| Operational Case Store | MongoDB 7.0 (mongo:7.0-jammy), PyMongo 4.10.1 | Mutable operational security findings, investigation cases, collaborative analyst timelines, polymorphic evidence bundles, and remediation tracking |
+| Backend | FastAPI 0.115.8, SQLAlchemy 2.0.38, trino 0.333.0, pymongo 4.10.1 | REST API, test-run orchestration, curated query catalog, security case management |
 | ML | scikit-learn 1.6.1, SciPy | Isolation Forest, robust baselines, binomial window tests |
 | Retrieval | scikit-learn TF-IDF (default); Sentence Transformers + FAISS optional | Investigation assistant knowledge retrieval |
 | LLM (optional) | anthropic 1.13.0, model `claude-opus-5-5` | Rephrases evidence-grounded answers; optional groundedness judge |
@@ -154,8 +156,14 @@ See DATA_DICTIONARY.md (generated from the live schema) and SQL_SHOWCASE.md.
   from `sql/*.sql`. Parameters are validated against each query's declared types and bound as prepared-statement
   parameters. Trino enforces a query timeout and a per-query memory limit, and a resource group caps
   concurrency at 6.
-- PostgreSQL holds mutable application state only: test-run requests, alert feedback, investigations, and the
+- PostgreSQL holds mutable relational application state: test-run requests, alert feedback, investigations, and the
   API agent registry.
+- **MongoDB Operational Case Store (Polyglot Persistence)**: While raw telemetry, spans, and security findings are stored immutably in Iceberg (Parquet on MinIO) for scalable OLAP analytics via Trino, operational incident management requires flexible, rapidly mutating, collaborative documents. MongoDB 7.0 backs the Security Case Management system (`security_cases` collection):
+  - Strict `$jsonSchema` validation enforces lifecycle integrity (`OPEN`, `TRIAGED`, `IN_REVIEW`, `REMEDIATION_PENDING`, `RESOLVED`, `DISMISSED`) and SLA deadlines.
+  - Multikey indexes on `linked_findings.finding_id` and `linked_findings.trace_id` allow instant lookup from lakehouse telemetry to active cases without table scans.
+  - Polymorphic evidence bundles (`tool_trace`, `canary_leak`, `policy_denial`, `prompt_injection`, `custom`) allow analysts to attach arbitrary structured forensic artifacts.
+  - Atomic `$push` operations guarantee immutable, collaborative timeline audits as analysts triage findings and record forensic observations.
+  - Real-time MongoDB aggregation pipelines compute operational KPIs (open caseload, P1/critical SLA breaches, unassigned queues, and Mean Time to Remediation - MTTR).
 
 ## 7. Evaluation, detection and governance
 

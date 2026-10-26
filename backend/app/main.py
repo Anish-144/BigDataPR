@@ -11,8 +11,19 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.app import db
-from backend.app.routers import agents, analytics, anomalies, health, investigations, reports, runs, security, test_runs
+from backend.app import db, mongo
+from backend.app.routers import (
+    agents,
+    analytics,
+    anomalies,
+    cases,
+    health,
+    investigations,
+    reports,
+    runs,
+    security,
+    test_runs,
+)
 from backend.app.services.test_runner import manager as test_run_manager
 
 log = logging.getLogger("agentshield.api")
@@ -58,6 +69,11 @@ def startup() -> None:
     except Exception as exc:  # degraded mode: API still serves lakehouse analytics
         log.error("postgres unavailable at startup: %s", exc)
 
+    try:
+        mongo.init_mongo()
+    except Exception as exc:  # degraded mode: case management handles unavailable store
+        log.error("mongodb unavailable at startup: %s", exc)
+
 
 app.include_router(health.router)
 app.include_router(analytics.router)
@@ -68,3 +84,4 @@ app.include_router(anomalies.router)
 app.include_router(security.router)
 app.include_router(reports.router)
 app.include_router(investigations.router)
+app.include_router(cases.router)

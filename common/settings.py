@@ -37,6 +37,13 @@ class Settings:
             "POSTGRES_DSN", "postgresql+psycopg://agentshield:agentshield@localhost:5433/agentshield"
         )
     )
+    mongo_uri: str = field(
+        default_factory=lambda: _env(
+            "MONGO_URI",
+            "mongodb://agentshield:agentshield-mongo-secret@localhost:27017/agentshield?authSource=admin",
+        )
+    )
+    mongo_db: str = field(default_factory=lambda: _env("MONGO_DB", "agentshield"))
     config_dir: Path = field(default_factory=lambda: Path(_env("AGENTSHIELD_CONFIG_DIR", str(REPO_ROOT / "config"))))
     capture_content: bool = field(default_factory=lambda: _env_bool("CAPTURE_CONTENT", False))
     results_dir: Path = field(

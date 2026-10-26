@@ -588,3 +588,117 @@ export interface InvestigationHistoryItem {
   answer?: string;
   [k: string]: unknown;
 }
+
+// ---------- security cases (MongoDB) ----------
+export type CaseStatus = "OPEN" | "TRIAGED" | "IN_REVIEW" | "REMEDIATION_PENDING" | "RESOLVED" | "DISMISSED";
+export type CaseSeverity = "low" | "medium" | "high" | "critical";
+export type CasePriority = "P1" | "P2" | "P3" | "P4";
+
+export interface TargetAgent {
+  agent_id: string;
+  agent_version: string;
+  workload_type?: string | null;
+  model_name?: string | null;
+}
+
+export interface LinkedFinding {
+  finding_id: string;
+  rule_id: string;
+  rule_name?: string | null;
+  severity: CaseSeverity;
+  trace_id: string;
+  span_id?: string | null;
+  event_time?: string | null;
+}
+
+export interface LinkedAlert {
+  alert_id: string;
+  anomaly_type: string;
+  score: number;
+  detector: string;
+}
+
+export interface CaseEvidenceItem {
+  evidence_id: string;
+  kind: "canary_leak" | "policy_denial" | "prompt_injection" | "tool_trace" | "log_diff" | "custom" | string;
+  title: string;
+  detail: string;
+  ref?: string | null;
+  metadata?: Record<string, unknown>;
+  attached_at?: string;
+  attached_by?: string;
+}
+
+export interface TimelineEntry {
+  entry_id: string;
+  timestamp: string;
+  author: string;
+  action: string;
+  notes: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface CaseRemediation {
+  recommended_action: string;
+  policy_file?: string | null;
+  target_tool?: string | null;
+  requires_code_freeze?: boolean;
+  completed: boolean;
+  completed_at?: string | null;
+  completed_by?: string | null;
+}
+
+export interface SecurityCase {
+  id?: string;
+  case_id: string;
+  title: string;
+  status: CaseStatus;
+  severity: CaseSeverity;
+  priority: CasePriority;
+  target_agent: TargetAgent;
+  assigned_analyst?: { username: string; email?: string | null } | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  resolved_at?: string | null;
+  triage_deadline?: string | null;
+  resolution_deadline?: string | null;
+  linked_findings: LinkedFinding[];
+  linked_anomaly_alerts: LinkedAlert[];
+  evidence_bundle: CaseEvidenceItem[];
+  timeline: TimelineEntry[];
+  remediation?: CaseRemediation | null;
+  tags: string[];
+}
+
+export interface CaseAnalytics {
+  total_open_cases: number;
+  status_breakdown: Record<string, number>;
+  severity_breakdown: Record<string, number>;
+  priority_breakdown: Record<string, number>;
+  by_agent: {
+    agent_id: string;
+    agent_version: string;
+    open_cases: number;
+    critical_or_high: number;
+    p1_cases: number;
+  }[];
+  top_breached_rules: {
+    rule_id: string;
+    count: number;
+  }[];
+  mttr_hours: number | null;
+  unassigned_cases: number;
+  sla_breached_cases: number;
+}
+
+export interface CaseFilters {
+  status?: string;
+  severity?: string;
+  priority?: string;
+  agent_id?: string;
+  assigned_to?: string;
+  rule_id?: string;
+  search?: string;
+  sort?: string;
+}

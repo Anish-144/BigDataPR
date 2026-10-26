@@ -120,3 +120,33 @@ export function Tag({ children, title }: { children: ReactNode; title?: string }
     </span>
   );
 }
+
+export function CaseStatusBadge({ status }: { status: string | null | undefined }) {
+  const s = (status ?? "OPEN").toUpperCase();
+  const map: Record<string, { tone: Tone; icon: IconName; label: string }> = {
+    OPEN: { tone: "serious", icon: "alert", label: "Open" },
+    TRIAGED: { tone: "warning", icon: "info", label: "Triaged" },
+    IN_REVIEW: { tone: "accent", icon: "info", label: "In Review" },
+    REMEDIATION_PENDING: { tone: "warning", icon: "diamond", label: "Remediation Pending" },
+    RESOLVED: { tone: "good", icon: "check", label: "Resolved" },
+    DISMISSED: { tone: "neutral", icon: "minus", label: "Dismissed" },
+  };
+  const m = map[s] ?? { tone: "neutral", icon: "minus", label: s };
+  return (
+    <Badge tone={m.tone} icon={m.icon}>
+      {m.label}
+    </Badge>
+  );
+}
+
+export function PriorityBadge({ priority }: { priority: string | null | undefined }) {
+  const p = (priority ?? "P2").toUpperCase();
+  const map: Record<string, { tone: Tone; label: string }> = {
+    P1: { tone: "critical", label: "P1 · Blocker" },
+    P2: { tone: "serious", label: "P2 · High" },
+    P3: { tone: "warning", label: "P3 · Medium" },
+    P4: { tone: "neutral", label: "P4 · Low" },
+  };
+  const m = map[p] ?? { tone: "neutral", label: p };
+  return <Badge tone={m.tone}>{m.label}</Badge>;
+}

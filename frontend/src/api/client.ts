@@ -63,7 +63,7 @@ export function parseError(status: number, body: Json, fallback: string): ApiErr
 }
 
 export interface RequestOpts {
-  method?: "GET" | "POST";
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
   signal?: AbortSignal;
 }

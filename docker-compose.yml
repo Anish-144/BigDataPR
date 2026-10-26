@@ -14,6 +14,8 @@ x-python-env: &python-env
   TRINO_PORT: "8080"
   TRINO_USER: agentshield
   POSTGRES_DSN: postgresql+psycopg://${POSTGRES_USER:-agentshield}:${POSTGRES_PASSWORD:-agentshield}@postgres:5432/${POSTGRES_DB:-agentshield}
+  MONGO_URI: mongodb://${MONGO_USER:-agentshield}:${MONGO_PASSWORD:-agentshield-mongo-secret}@mongodb:27017/${MONGO_DB:-agentshield}?authSource=admin
+  MONGO_DB: ${MONGO_DB:-agentshield}
   CAPTURE_CONTENT: ${CAPTURE_CONTENT:-false}
   TRINO_QUERY_TIMEOUT_S: ${TRINO_QUERY_TIMEOUT_S:-60}
   LLM_PROVIDER: ${LLM_PROVIDER:-none}
@@ -52,6 +54,27 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+    mem_limit: 512m
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0-jammy
+    hostname: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-agentshield}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-agentshield-mongo-secret}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-agentshield}
+    ports: ["${BIND_ADDRESS:-127.0.0.1}:${MONGO_HOST_PORT:-27017}:27017"]
+    volumes:
+      - mongo-data:/data/db
+      - ./infra/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    command: ["mongod", "--wiredTigerCacheSizeGB", "0.25"]
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --eval 'db.adminCommand(\"ping\")' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
     mem_limit: 512m
     restart: unless-stopped
 
@@ -198,6 +221,7 @@ services:
       postgres: {condition: service_healthy}
       kafka: {condition: service_healthy}
       trino: {condition: service_healthy}
+      mongodb: {condition: service_healthy}
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health >/dev/null"]
       interval: 10s
@@ -258,6 +282,7 @@ services:
 
 volumes:
   pg-data:
+  mongo-data:
   minio-data:
   kafka-data:
   spark-checkpoints:

@@ -84,7 +84,7 @@ Open these browser tabs:
   outage (retries mask it). Explain the Bonferroni-corrected window tests.
 - Open an alert, follow it to its trace, and mark it *useful*. Feedback is stored and never auto-applied.
 
-## 7. Security and governance (2 min)
+## 7. Security and governance (2-3 min)
 
 **Security & Governance**:
 - Findings by rule. Open an SEC-007 exfiltration finding to see the restricted read followed by an egress attempt
@@ -93,6 +93,19 @@ Open these browser tabs:
 - Detection vs ground truth: every injected scenario type is detected.
 - Story: the v1 prompt-injection rule produced 732 false positives on a benign document. The rule was fixed to
   require a destination, and a regression test was added (docs/THREAT_MODEL.md).
+
+**Operational Security Cases & Polyglot Persistence (MongoDB)**:
+1. In **Findings**: click **"Escalate"** on any high/critical finding (e.g. `SEC-007` exfiltration).
+   - Point out the instant feedback: a mutable incident document is created in MongoDB with links back to the immutable lakehouse trace. Click **"View Case →"**.
+2. Switch to **Investigation Cases (MongoDB)**:
+   - Point out the top live KPI tiles: Total Open Cases, P1/Critical Incidents, Unassigned Cases, Breached SLAs, and live MTTR (Mean Time to Remediation) computed via MongoDB aggregation pipelines.
+   - Open the case detail drawer:
+     - **Triage**: Transition status from `OPEN` to `IN_REVIEW`.
+     - **Assignee**: Assign an analyst (e.g. `@sarah.chen`).
+     - **Remediation Action Plan**: View target tool (`curl_egress`) and policy file (`config/policies.yaml`). Click **"Mark Remediation Complete"** to verify human signoff.
+     - **Analyst Collaboration Timeline**: Post an observation note (e.g., *"Inspected trace waterfall. Egress call attempted exfiltration of synthetic canary AGSH-CANARY-5F1E"*). Show that timeline events are atomically recorded with timestamps and author signatures.
+     - **Evidence Attachments**: Demonstrate polymorphic attachments (`canary_leak`, `tool_trace`).
+   - Mention the architectural rationale: *Big Data architectures need Polyglot Persistence. Iceberg stores immutable analytical facts at scale, while MongoDB manages the collaborative, rapidly mutating incident files.*
 
 ## 8. Investigation assistant (2 min)
 

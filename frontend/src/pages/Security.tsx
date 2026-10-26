@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { useAgents, useFindings, useSecurityPolicy, useSecuritySummary, type FindingFilters } from "../api/hooks";
+import {
+  useAgents,
+  useFindings,
+  useSecurityPolicy,
+  useSecuritySummary,
+  useEscalateFinding,
+  type FindingFilters,
+} from "../api/hooks";
 import type { FindingRow, Row, SecurityPolicy, SecuritySummary } from "../api/types";
 import { useDays } from "../lib/timeRange";
 import { Card, Field, KpiTile, Note, PageHeader, QueryMeta } from "../components/ui/Card";
@@ -10,9 +17,11 @@ import { ResultCard, tableColumns } from "../components/ui/ResultCard";
 import { Badge, SeverityBadge, Tag } from "../components/ui/Badge";
 import { ChartFrame } from "../components/charts/ChartFrame";
 import { BarsChart } from "../components/charts/Charts";
+import { Icon } from "../components/ui/Icon";
 import { fmtDateTime, fmtInt, fmtPctRaw } from "../lib/format";
+import { CaseManagement } from "../components/cases/CaseManagement";
 
-type TabId = "summary" | "findings" | "policy";
+type TabId = "summary" | "findings" | "cases" | "policy";
 const LIMIT = 25;
 
 export default function Security() {
@@ -40,11 +49,18 @@ export default function Security() {
         tabs={[
           { id: "summary", label: "Summary" },
           { id: "findings", label: "Findings" },
+          { id: "cases", label: "Investigation Cases (MongoDB)" },
           { id: "policy", label: "Policy configuration" },
         ]}
       />
       {tab === "summary" && <SummaryTab />}
-      {tab === "findings" && <FindingsTab />}
+      {tab === "findings" && <FindingsTab onOpenCase={(caseId) => {
+        const n = new URLSearchParams(sp);
+        n.set("tab", "cases");
+        n.set("caseId", caseId);
+        setSp(n, { replace: true });
+      }} />}
+      {tab === "cases" && <CaseManagement />}
       {tab === "policy" && <PolicyTab />}
     </div>
   );
@@ -125,18 +141,38 @@ function SummaryBody({ s, dimmed }: { s: SecuritySummary; dimmed: boolean }) {
   );
 }
 
-function FindingsTab() {
+function FindingsTab({ onOpenCase }: { onOpenCase: (caseId: string) => void }) {
   const { days } = useDays();
   const [filters, setFilters] = useState<FindingFilters>({});
   const [offset, setOffset] = useState(0);
+  const [escalatedInfo, setEscalatedInfo] = useState<{ findingId: string; caseId: string } | null>(null);
+  const [escalatingId, setEscalatingId] = useState<string | null>(null);
+
   useEffect(() => setOffset(0), [filters, days]);
   const q = useFindings(days, filters, LIMIT, offset);
+  const escalate = useEscalateFinding();
   const policy = useSecurityPolicy();
   const agents = useAgents();
   const rules = policy.data?.policy.rules ?? [];
   const categories = useMemo(() => Array.from(new Set(rules.map((r) => r.category))), [rules]);
   const agentIds = useMemo(() => Array.from(new Set(agents.data?.agents.map((a) => a.agent_id) ?? [])), [agents.data]);
   const set = (k: keyof FindingFilters) => (v: string) => setFilters((f) => ({ ...f, [k]: v || undefined }));
+
+  const handleEscalate = async (finding: FindingRow) => {
+    try {
+      setEscalatingId(finding.finding_id);
+      const res = await escalate.mutateAsync({
+        finding_id: finding.finding_id,
+        priority: finding.severity === "critical" ? "P1" : "P2",
+        created_by: "analyst",
+      });
+      setEscalatedInfo({ findingId: finding.finding_id, caseId: res.case_id });
+    } catch (err: any) {
+      alert(`Escalation failed: ${err.message || err}`);
+    } finally {
+      setEscalatingId(null);
+    }
+  };
 
   const cols: Column<FindingRow>[] = [
     { key: "event_time", header: "Time", render: (r) => <span className="whitespace-nowrap text-ink-2">{fmtDateTime(r.event_time)}</span> },
@@ -172,7 +208,7 @@ function FindingsTab() {
         </span>
       ),
     },
-    { key: "evidence", header: "Evidence", className: "max-w-[360px] break-words text-ink-2" },
+    { key: "evidence", header: "Evidence", className: "max-w-[320px] break-words text-ink-2" },
     {
       key: "trace",
       header: "Trace",
@@ -185,10 +221,45 @@ function FindingsTab() {
           "—"
         ),
     },
+    {
+      key: "escalate",
+      header: "Case",
+      align: "center",
+      render: (r) => (
+        <button
+          type="button"
+          className="btn btn-sm text-2xs h-6 px-2"
+          title="Escalate finding to mutable MongoDB security case"
+          disabled={escalatingId === r.finding_id}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEscalate(r);
+          }}
+        >
+          <Icon name="alert" size={11} />
+          {escalatingId === r.finding_id ? "..." : "Escalate"}
+        </button>
+      ),
+    },
   ];
 
   return (
     <Card title="Security findings" subtitle="Each finding links to the span evidence in its trace" bodyClassName="p-3">
+      {escalatedInfo && (
+        <div className="mb-3 flex items-center justify-between rounded-md border border-good/40 bg-good/10 px-3 py-2 text-xs text-good-ink">
+          <span>
+            Finding <span className="mono font-semibold">{escalatedInfo.findingId}</span> escalated to MongoDB case{" "}
+            <span className="mono font-semibold">{escalatedInfo.caseId}</span>.
+          </span>
+          <button
+            type="button"
+            className="link font-semibold"
+            onClick={() => onOpenCase(escalatedInfo.caseId)}
+          >
+            View Case →
+          </button>
+        </div>
+      )}
       <div className="mb-3 grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
         <Field label="Severity">
           <Select value={filters.severity ?? ""} onChange={set("severity")} options={["low", "medium", "high", "critical"]} placeholder="Any" />

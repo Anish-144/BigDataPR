@@ -165,14 +165,26 @@ def check_airflow() -> dict[str, Any]:
     return {"status": "ok" if sched == "healthy" else "degraded", "details": data}
 
 
+def check_mongodb() -> dict[str, Any]:
+    from backend.app.mongo import check_mongo_health
+    return check_mongo_health()
+
+
 def pipeline_health(engine) -> dict[str, Any]:
-    with ThreadPoolExecutor(max_workers=4) as pool:
+    with ThreadPoolExecutor(max_workers=5) as pool:
         f_kafka = pool.submit(_timed, check_kafka)
         f_trino = pool.submit(_timed, check_trino)
         f_pg = pool.submit(_timed, lambda: check_postgres(engine))
         f_air = pool.submit(_timed, check_airflow)
+        f_mongo = pool.submit(_timed, check_mongodb)
         kafka = f_kafka.result()
-        components = {"kafka": kafka, "trino": f_trino.result(), "postgres": f_pg.result(), "airflow": f_air.result()}
+        components = {
+            "kafka": kafka,
+            "trino": f_trino.result(),
+            "postgres": f_pg.result(),
+            "airflow": f_air.result(),
+            "mongodb": f_mongo.result(),
+        }
     watermarks = kafka.pop("_watermarks", None)
     components["spark"] = _timed(lambda: check_spark(watermarks))
     core = ("kafka", "trino", "postgres", "spark")

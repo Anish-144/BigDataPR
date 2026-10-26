@@ -6,24 +6,30 @@ import type {
   AnomalyRow,
   AnomalySummary,
   Comparison,
+  CaseAnalytics,
+  CaseEvidenceItem,
+  CaseFilters,
   FindingRow,
   GateLive,
   GateStored,
   InvestigationContext,
   InvestigationHistoryItem,
   InvestigationResponse,
+  LinkedFinding,
   Overview,
   Paged,
   PipelineHealth,
   QueryResult,
   RunRow,
   Scenario,
+  SecurityCase,
   SecurityPolicy,
   SecuritySummary,
   SqlShowcase,
   StartTestRunResponse,
   TestRunDetail,
   TestRunList,
+  TimelineEntry,
   Trace,
 } from "./types";
 
@@ -225,5 +231,122 @@ export const useInvestigate = () => {
     mutationFn: (body: { question: string; context: InvestigationContext }) =>
       api<InvestigationResponse>("/api/v1/investigations", { method: "POST", body }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["inv-history"] }),
+  });
+};
+
+// ---------- security cases (MongoDB) ----------
+export const useCases = (filters: CaseFilters, limit = 25, offset = 0) =>
+  useQuery({
+    queryKey: ["cases", filters, limit, offset],
+    queryFn: () => api<Paged<SecurityCase>>(`/api/v1/cases${qs({ ...filters, limit, offset })}`),
+    placeholderData: keepPreviousData,
+  });
+
+export const useCase = (caseId: string | null) =>
+  useQuery({
+    queryKey: ["case", caseId],
+    queryFn: () => api<SecurityCase>(`/api/v1/cases/${encodeURIComponent(caseId!)}`),
+    enabled: !!caseId,
+  });
+
+export const useCaseAnalytics = (refetchMs?: number) =>
+  useQuery({
+    queryKey: ["case-analytics"],
+    queryFn: () => api<CaseAnalytics>("/api/v1/cases/summary/analytics"),
+    refetchInterval: refetchMs,
+    staleTime: refetchMs ? Math.min(refetchMs, 30_000) : 30_000,
+  });
+
+export const useCreateCase = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: Record<string, unknown>) => api<SecurityCase>("/api/v1/cases", { method: "POST", body }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["case-analytics"] });
+    },
+  });
+};
+
+export const useUpdateCase = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ caseId, body }: { caseId: string; body: Record<string, unknown> }) =>
+      api<SecurityCase>(`/api/v1/cases/${encodeURIComponent(caseId)}`, { method: "PATCH", body }),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["case", vars.caseId] });
+      qc.invalidateQueries({ queryKey: ["case-analytics"] });
+    },
+  });
+};
+
+export const useAddTimelineNote = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ caseId, body }: { caseId: string; body: { action: string; notes: string; author?: string; metadata?: Record<string, unknown> } }) =>
+      api<{ case_id: string; timeline_entry: TimelineEntry }>(`/api/v1/cases/${encodeURIComponent(caseId)}/timeline`, { method: "POST", body }),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["case", vars.caseId] });
+    },
+  });
+};
+
+export const useAttachEvidence = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      caseId,
+      body,
+    }: {
+      caseId: string;
+      body: { kind: string; title: string; detail: string; ref?: string; metadata?: Record<string, unknown>; author?: string };
+    }) => api<{ case_id: string; evidence_id: string; evidence_item: CaseEvidenceItem }>(`/api/v1/cases/${encodeURIComponent(caseId)}/evidence`, { method: "POST", body }),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["case", vars.caseId] });
+    },
+  });
+};
+
+export const useLinkFinding = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      caseId,
+      body,
+    }: {
+      caseId: string;
+      body: { finding_id: string; rule_id: string; rule_name?: string; severity: string; trace_id: string; span_id?: string; author?: string };
+    }) => api<{ case_id: string; linked_findings: LinkedFinding[]; message: string }>(`/api/v1/cases/${encodeURIComponent(caseId)}/findings`, { method: "POST", body }),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["case", vars.caseId] });
+      qc.invalidateQueries({ queryKey: ["case-analytics"] });
+    },
+  });
+};
+
+export const useEscalateFinding = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { finding_id: string; initial_notes?: string; priority?: string; created_by?: string }) =>
+      api<SecurityCase>("/api/v1/cases/escalate-finding", { method: "POST", body }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["case-analytics"] });
+    },
+  });
+};
+
+export const useDeleteCase = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (caseId: string) => api<{ deleted: boolean; case_id: string }>(`/api/v1/cases/${encodeURIComponent(caseId)}`, { method: "DELETE" }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["case-analytics"] });
+    },
   });
 };
