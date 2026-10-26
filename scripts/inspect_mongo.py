@@ -73,8 +73,8 @@ def inspect_mongodb(case_id: str | null = None, verbose: bool = False) -> None:
         status = doc.get("status", "N/A")
         sev = doc.get("severity", "N/A")
         pri = doc.get("priority", "N/A")
-        agent = doc.get("target_agent", {}).get("agent_id", "N/A")
-        analyst = doc.get("assigned_analyst", {}).get("username", "Unassigned")
+        agent = (doc.get("target_agent") or {}).get("agent_id", "N/A")
+        analyst = (doc.get("assigned_analyst") or {}).get("username", "Unassigned")
         print(f"{cid:<20} {status:<14} {sev:<10} {pri:<6} {agent:<18} {analyst}")
     print("-" * 70)
 

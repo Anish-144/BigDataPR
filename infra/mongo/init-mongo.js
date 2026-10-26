@@ -41,8 +41,8 @@ const casesSchema = {
         bsonType: ["object", "null"],
         properties: {
           username: { bsonType: "string" },
-          email: { bsonType: "string" },
-          assigned_at: { bsonType: "date" }
+          email: { bsonType: ["string", "null"] },
+          assigned_at: { bsonType: ["date", "null"] }
         }
       },
       target_agent: {
@@ -51,8 +51,8 @@ const casesSchema = {
         properties: {
           agent_id: { bsonType: "string" },
           agent_version: { bsonType: "string" },
-          workload_type: { bsonType: "string" },
-          model_name: { bsonType: "string" }
+          workload_type: { bsonType: ["string", "null"] },
+          model_name: { bsonType: ["string", "null"] }
         }
       },
       linked_findings: {
@@ -116,8 +116,8 @@ const casesSchema = {
         bsonType: ["object", "null"],
         properties: {
           recommended_action: { bsonType: "string" },
-          policy_file: { bsonType: "string" },
-          target_tool: { bsonType: "string" },
+          policy_file: { bsonType: ["string", "null"] },
+          target_tool: { bsonType: ["string", "null"] },
           requires_code_freeze: { bsonType: "bool" },
           completed: { bsonType: "bool" },
           completed_at: { bsonType: ["date", "null"] },
