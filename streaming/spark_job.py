@@ -216,7 +216,13 @@ def parse_and_validate(batch: DataFrame, ingested_at: datetime) -> DataFrame:
         F.col("offset").alias("kafka_offset"),
         F.col("timestamp").alias("kafka_timestamp"),
         F.col("value").cast("string").alias("raw_value"),
-    ).withColumn("e", F.from_json("raw_value", ENVELOPE_DDL))
+    ).withColumn(
+        # The corrupt-record column flags any document that is not valid JSON as a whole. Without it,
+        # PERMISSIVE parsing returns *partial* results (e.g. a record truncated inside "payload" kept its
+        # envelope fields) and was mislabelled missing_payload instead of malformed_json.
+        "e", F.from_json("raw_value", ENVELOPE_DDL + ", _corrupt_record STRING",
+                         {"columnNameOfCorruptRecord": "_corrupt_record"}),
+    )
     df = df.withColumn("ingested_at", F.lit(ingested_at).cast("timestamp")).withColumn(
         "event_time_ts", fe.ts(F.col("e.event_time"))
     )
@@ -251,7 +257,8 @@ def parse_and_validate(batch: DataFrame, ingested_at: datetime) -> DataFrame:
         ).otherwise(payload_err)
 
     error = (
-        F.when(F.col("e").isNull() | (F.col("e.event_type").isNull() & F.col("e.event_id").isNull()), "malformed_json")
+        F.when(F.col("e").isNull() | F.col("e._corrupt_record").isNotNull()
+               | (F.col("e.event_type").isNull() & F.col("e.event_id").isNull()), "malformed_json")
         .when(F.col("e.event_id").isNull(), "missing_event_id")
         .when(~F.col("e.event_type").isin(known_types), "unknown_event_type")
         .when(F.col("e.event_time").isNull() | F.col("event_time_ts").isNull(), "invalid_event_time")

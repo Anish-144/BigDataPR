@@ -16,7 +16,7 @@ Generated from the running API's OpenAPI document (AgentShield API 0.1.0). Inter
 | GET | `/api/v1/agents` | List Agents |
 | POST | `/api/v1/agents` | Register an agent version in the operational registry (Postgres). Config agents are read-only. |
 | GET | `/api/v1/analytics/comparison` | Side-by-side comparison of 2-6 agent versions across quality, latency, cost, anomalies and security. |
-| GET | `/api/v1/analytics/data-quality` | Data Quality |
+| GET | `/api/v1/analytics/data-quality` | Data-quality checks run incrementally over recent partitions. Exact distinct counts and anti-joins over the |
 | GET | `/api/v1/analytics/performance` | Performance |
 | GET | `/api/v1/analytics/quality` | Quality |
 | GET | `/api/v1/analytics/regressions` | Regressions |
@@ -28,6 +28,9 @@ Generated from the running API's OpenAPI document (AgentShield API 0.1.0). Inter
 | GET | `/api/v1/anomalies/summary` | Summary |
 | GET | `/api/v1/anomalies/{alert_id}` | Get Alert |
 | POST | `/api/v1/anomalies/{alert_id}/feedback` | Record whether an alert was useful or noisy (kept for detector review; never auto-applied). |
+| POST | `/api/v1/investigations` | Answer an investigation question from lakehouse evidence and local runbooks. |
+| GET | `/api/v1/investigations/examples` | Examples |
+| GET | `/api/v1/investigations/history` | History |
 | GET | `/api/v1/ml/detector-evaluation` | Detector Evaluation |
 | GET | `/api/v1/overview` | Headline KPIs computed live from the lakehouse. |
 | GET | `/api/v1/pipeline/health` | Measured status of Kafka, Spark, Trino/lakehouse, PostgreSQL and (optional) Airflow. |
@@ -98,6 +101,12 @@ Generated from the running API's OpenAPI document (AgentShield API 0.1.0). Inter
 ### POST /api/v1/anomalies/{alert_id}/feedback
 - `alert_id` (path, required) pattern=^A-[0-9a-f]{16}$
 - JSON body: `Feedback`
+
+### POST /api/v1/investigations
+- JSON body: `InvestigationIn`
+
+### GET /api/v1/investigations/history
+- `limit` (query) maximum=200, minimum=1, default=20
 
 ### GET /api/v1/overview
 - `days` (query) maximum=3650, minimum=1, default=30

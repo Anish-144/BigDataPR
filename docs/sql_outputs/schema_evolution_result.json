@@ -8,17 +8,17 @@
     "question": "After adding routing_strategy, what do old and new rows contain?",
     "interpretation": "Iceberg tracks columns by ID, so adding a column is a metadata operation; no file rewrite."
   },
-  "elapsed_ms": 132.1,
+  "elapsed_ms": 110.3,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 103,
-    "cpuTimeMillis": 8,
-    "wallTimeMillis": 14,
-    "processedRows": 1200,
-    "processedBytes": 11622,
-    "physicalInputBytes": 11622,
-    "peakMemoryBytes": 2808,
-    "totalSplits": 34
+    "elapsedTimeMillis": 82,
+    "cpuTimeMillis": 11,
+    "wallTimeMillis": 16,
+    "processedRows": 1400,
+    "processedBytes": 14971,
+    "physicalInputBytes": 14971,
+    "peakMemoryBytes": 3252,
+    "totalSplits": 35
   },
   "columns": [
     "routing_strategy",
@@ -31,7 +31,7 @@
     ],
     [
       "cost_aware",
-      200
+      400
     ]
   ]
 }

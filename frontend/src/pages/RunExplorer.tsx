@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAgents, useRuns, useTestRuns, type RunFilters } from "../api/hooks";
 import type { RunRow } from "../api/types";
 import { useDays } from "../lib/timeRange";
+import { appPath } from "../lib/nav";
 import { Field, PageHeader } from "../components/ui/Card";
 import { DataTable, Pagination, Select, type Column } from "../components/ui/DataTable";
 import { ErrorPanel, EmptyState, SkeletonRows } from "../components/ui/states";
@@ -172,7 +173,7 @@ export default function RunExplorer() {
                 columns={cols}
                 rows={q.data.rows}
                 rowKey={(r) => r.run_id}
-                onRowClick={(r) => navigate(`/runs/${r.trace_id}`)}
+                onRowClick={(r) => navigate(appPath(`/runs/${r.trace_id}`))}
                 maxHeight={620}
                 dense
                 caption="Agent runs"

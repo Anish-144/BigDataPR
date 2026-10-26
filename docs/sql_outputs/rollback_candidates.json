@@ -8,16 +8,16 @@
     "question": "Which snapshot would restore the scratch table to before the last INSERT?",
     "interpretation": "To roll back (scratch table only): CALL lakehouse.system.rollback_to_snapshot('analytics', 'demo_evolution', <parent snapshot_id>) benchmarks/lakehouse_features_demo.py performs and verifies this rollback."
   },
-  "elapsed_ms": 57.8,
+  "elapsed_ms": 69.1,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 39,
-    "cpuTimeMillis": 3,
-    "wallTimeMillis": 5,
-    "processedRows": 2,
-    "processedBytes": 1690,
-    "physicalInputBytes": 1690,
-    "peakMemoryBytes": 1428,
+    "elapsedTimeMillis": 48,
+    "cpuTimeMillis": 4,
+    "wallTimeMillis": 20,
+    "processedRows": 3,
+    "processedBytes": 2535,
+    "physicalInputBytes": 2535,
+    "peakMemoryBytes": 1560,
     "totalSplits": 19
   },
   "columns": [
@@ -30,20 +30,28 @@
   ],
   "rows": [
     [
-      "2026-10-09T15:24:51.676000+00:00",
-      6952394289294953375,
+      "2026-10-10T07:14:28.295000+00:00",
+      6025042864331053899,
       null,
       "append",
       "1000",
       "1000"
     ],
     [
-      "2026-10-09T15:24:52.059000+00:00",
-      7689789007103398000,
-      6952394289294953375,
+      "2026-10-10T07:14:30.185000+00:00",
+      6654493009828756411,
+      6025042864331053899,
       "append",
       "200",
       "1200"
+    ],
+    [
+      "2026-10-10T07:19:55.853000+00:00",
+      2691945376669891251,
+      6654493009828756411,
+      "append",
+      "200",
+      "1400"
     ]
   ]
 }

@@ -179,7 +179,7 @@ def showcase() -> None:
 def api() -> None:
     import httpx
 
-    spec = httpx.get("http://localhost:8000/openapi.json", timeout=30).json()
+    spec = httpx.get("http://127.0.0.1:8000/openapi.json", timeout=30).json()
     out = ["# API reference", "",
            f"Generated from the running API's OpenAPI document ({spec['info']['title']} {spec['info']['version']}). "
            "Interactive docs: http://localhost:8000/docs.", "",
@@ -228,15 +228,27 @@ def benchmarks() -> None:
     if pipes:
         out += ["## End-to-end pipeline runs", "",
                 "| Events | Producer events/s | Produce start -> all in lakehouse (s) | End-to-end events/s | Spark rows/s (span) | "
-                "Max batch rows | Avg / max ingest lag (ms) | Quarantine = injected | Storage MB | Bytes/event | Source |",
+                "Max batch rows | Avg / max ingest lag (ms) | Quarantined / injected (reasons match) | Storage MB | Bytes/event | Source |",
                 "|---|---|---|---|---|---|---|---|---|---|---|"]
+        notes = []
         for f in pipes:
             r = json.loads(f.read_text())
             p, e, s, st, v = r["producer"], r["end_to_end"], r["spark"], r["storage"], r["validation"]
+            q_total, i_total = sum(v["quarantined_by_reason"].values()), sum(v["injected_structural"].values())
+            if not v["quarantine_matches_injected"]:
+                notes.append(f"`{f.name}`: {q_total:,} records quarantined for {i_total:,} injected; reason labels differed "
+                             f"(quarantined {v['quarantined_by_reason']} vs injected {v['injected_structural']}).")
             out.append(f"| {p['events']:,} | {p['events_per_sec']:,} | {e['seconds_produce_start_to_all_in_lakehouse']} | "
                        f"{e['events_per_sec_end_to_end']:,} | {s['rows_per_sec_over_span']:,} | {s['largest_batch_rows']:,} | "
-                       f"{s['avg_ingest_lag_ms']:.0f} / {s['max_ingest_lag_ms']:.0f} | {v['quarantine_matches_injected']} | "
+                       f"{s['avg_ingest_lag_ms']:.0f} / {s['max_ingest_lag_ms']:.0f} | {q_total:,} / {i_total:,} "
+                       f"({'yes' if v['quarantine_matches_injected'] else 'no - see note'}) | "
                        f"{st['added_mb_total']} | {st['bytes_per_event']} | `{f.name}` |")
+        if notes:
+            out += ["", "Notes on quarantine reasons:", ""] + [f"- {n}" for n in notes] + [
+                "- Root cause: a record truncated inside `payload` (after a complete envelope) was parsed partially by "
+                "Spark's PERMISSIVE JSON mode and labelled `missing_payload`. Every such record was still quarantined. Fixed by "
+                "adding a corrupt-record column to the envelope parse; `test_truncated_json_always_labelled_malformed` "
+                "(over 1,000 truncated records) now asserts exact labels."]
         last = json.loads(pipes[-1].read_text())
         env = last["environment"]
         out += ["", f"Environment: {env['host']['cpu_logical']} logical CPUs / {env['host']['ram_gb']} GB host RAM; Docker "
@@ -250,11 +262,22 @@ def benchmarks() -> None:
     if sql:
         out += ["", f"## SQL performance experiment (`{sql['_file']}`)", "",
                 f"Dataset at measurement time: {json.dumps(sql['dataset'])}. Median of {sql['tiers'][0]['runs']} runs after a warm-up.", "",
-                "| Experiment | Query | Median ms | Rows read | Physical bytes read |", "|---|---|---|---|---|"]
+                "| Experiment | Scope | Query | Median ms | Rows read | Physical bytes read |", "|---|---|---|---|---|---|"]
         for exp in ("tiers", "pruning"):
-            out += [f"| {exp} | {r['query']} | {r['wall_ms_median']} | {r['processed_rows']:,} | {r['physical_input_bytes']:,} |" for r in sql[exp]]
+            for r in sql[exp]:
+                scope = f"{r['scope_days']} days" if "scope_days" in r else ("1 day" if "with_" in r["query"] else "all")
+                if "error" in r:
+                    out.append(f"| {exp} | {scope} | {r['query']} | killed by Trino: `{r['error']}` | - | - |")
+                else:
+                    out.append(f"| {exp} | {scope} | {r['query']} | {r['wall_ms_median']} | {r['processed_rows']:,} | "
+                               f"{r['physical_input_bytes']:,} |")
+        if any("error" in r for r in sql["tiers"]):
+            out += ["", "A killed query is a measured outcome. Over the full dataset, schema-on-read over raw JSON needs "
+                    "more than the 512 MB per-query memory budget (infra/trino/etc/config.properties), so Trino stops it "
+                    "instead of risking the server, while the curated and summary tiers answer the same question."]
         lay = sql["layout"]
-        out += ["", "Point lookup by `trace_id` (rows read per lookup):", "", "| trace_id | unsorted | sorted | sorted + 1 MB row groups |", "|---|---|---|---|"]
+        out += ["", f"Point lookup by `trace_id` (rows read per lookup), all variants on the same window "
+                f"(`{lay.get('window', 'all data')}`):", "", "| trace_id | unsorted | sorted | sorted + 1 MB row groups |", "|---|---|---|---|"]
         for row in lay["lookups"]:
             out.append(f"| {row['trace_id'][:12]}... | {row['unsorted']['processed_rows']:,} | {row['sorted']['processed_rows']:,} | "
                        f"{row['sorted_small_rowgroups']['processed_rows']:,} |")
@@ -282,6 +305,12 @@ def benchmarks() -> None:
         r = json.loads(sec.read_text())
         out += ["", "## Security rules vs synthetic ground truth (`docs/sql_outputs/security_detection_vs_ground_truth.json`)", "",
                 _md_table(r["columns"], r["rows"], limit=20)]
+    res = OUTPUTS / "security_residuals_vs_quarantine.json"
+    if res.exists():
+        r = json.loads(res.read_text())
+        out += ["", "Residual analysis (`docs/sql_outputs/security_residuals_vs_quarantine.json`): are misses and findings on "
+                "unlabelled runs explained by deliberately corrupted, quarantined events?", "",
+                _md_table(r["columns"], r["rows"], limit=10)]
     v1 = RESULTS / "detector_iteration_v1_measurement.json"
     if v1.exists():
         d = json.loads(v1.read_text())

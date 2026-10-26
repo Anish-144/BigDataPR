@@ -9,17 +9,17 @@
     "interpretation": "Combines run-level error categories with evaluation failures ('wrong_answer' = completed run whose answer did not match the reference).",
     "params": "days=30"
   },
-  "elapsed_ms": 96.7,
+  "elapsed_ms": 342.8,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 83,
-    "cpuTimeMillis": 21,
-    "wallTimeMillis": 32,
-    "processedRows": 45980,
-    "processedBytes": 4352821,
-    "physicalInputBytes": 4352821,
-    "peakMemoryBytes": 18120,
-    "totalSplits": 89
+    "elapsedTimeMillis": 337,
+    "cpuTimeMillis": 4011,
+    "wallTimeMillis": 8456,
+    "processedRows": 609878,
+    "processedBytes": 56839965,
+    "physicalInputBytes": 56839965,
+    "peakMemoryBytes": 19856,
+    "totalSplits": 151
   },
   "columns": [
     "agent_name",
@@ -32,67 +32,67 @@
       "Ops Tool Agent",
       1,
       "wrong_answer",
-      904
+      11996
     ],
     [
       "Ops Tool Agent",
       2,
-      "malformed_response",
-      152
+      "tool_error",
+      1770
     ],
     [
       "Ops Tool Agent",
       3,
-      "tool_error",
-      145
+      "malformed_response",
+      1701
     ],
     [
       "Planner Agent",
       1,
       "wrong_answer",
-      3188
+      42377
     ],
     [
       "Planner Agent",
       2,
       "invalid_tool_args",
-      161
+      2246
     ],
     [
       "Planner Agent",
       3,
       "tool_error",
-      139
+      1643
     ],
     [
       "QA Assistant",
       1,
       "wrong_answer",
-      1401
+      18420
     ],
     [
       "QA Assistant",
       2,
       "malformed_response",
-      99
+      1380
     ],
     [
       "RAG Helpdesk",
       1,
       "wrong_answer",
-      1729
+      22342
     ],
     [
       "RAG Helpdesk",
       2,
       "malformed_response",
-      101
+      1266
     ],
     [
       "RAG Helpdesk",
       3,
       "retrieval_error",
-      49
+      475
     ]
   ]
 }

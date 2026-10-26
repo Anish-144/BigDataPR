@@ -9,16 +9,16 @@
     "interpretation": "Streaming micro-batches write files whose trace_id ranges overlap, so little can be skipped.",
     "params": "trace_id='00000000000000000000000000000000'"
   },
-  "elapsed_ms": 204.3,
+  "elapsed_ms": 223.9,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 209,
-    "cpuTimeMillis": 4,
-    "wallTimeMillis": 109,
+    "elapsedTimeMillis": 208,
+    "cpuTimeMillis": 3,
+    "wallTimeMillis": 107,
     "processedRows": 0,
     "processedBytes": 0,
     "physicalInputBytes": 0,
-    "peakMemoryBytes": 1478,
+    "peakMemoryBytes": 1475,
     "totalSplits": 18
   },
   "columns": [
@@ -26,7 +26,7 @@
   ],
   "rows": [
     [
-      "Trino version: 467\nQueued: 860.83us, Analysis: 23.57ms, Planning: 36.32ms, Execution: 175.63ms\nFragment 1 [SOURCE]\n    CPU: 159.29us, Scheduled: 179.53us, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 0 rows (0B); per task: avg.: 0.00 std.dev.: 0.00, Output: 0 rows (0B)\n    Peak Memory: 0B, Tasks count: 1; per task: max: 0B\n    Output layout: [span_id, span_kind, duration_ms]\n    Output partitioning: SINGLE []\n    ScanFilterProject[table = lakehouse:analytics.agent_spans$data@8907210680098053594, filterPredicate = (trace_id = varchar '00000000000000000000000000000000')]\n        Layout: [span_id:varchar, span_kind:varchar, duration_ms:double]\n        Estimates: {rows: 0 (0B), cpu: 0, memory: 0B, network: 0B}/{rows: 0 (0B), cpu: 0, memory: 0B, network: 0B}/{rows: 0 (0B), cpu: 0, memory: 0B, network: 0B}\n        CPU: 0.00ns (?%), Scheduled: 0.00ns (?%), Blocked: 0.00ns (?%), Output: 0 rows (0B)\n        Input avg.: 0.00 rows, Input std.dev.: ?%\n        duration_ms := 16:duration_ms:double\n        span_id := 5:span_id:varchar\n        span_kind := 10:span_kind:varchar\n        trace_id := 4:trace_id:varchar\n        Input: 0 rows (0B), Filtered: ?%\n\n"
+      "Trino version: 467\nQueued: 277.95us, Analysis: 23.21ms, Planning: 49.00ms, Execution: 176.00ms\nFragment 1 [SOURCE]\n    CPU: 67.29us, Scheduled: 73.59us, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 0 rows (0B); per task: avg.: 0.00 std.dev.: 0.00, Output: 0 rows (0B)\n    Peak Memory: 0B, Tasks count: 1; per task: max: 0B\n    Output layout: [span_id, span_kind, duration_ms]\n    Output partitioning: SINGLE []\n    ScanFilterProject[table = lakehouse:analytics.agent_spans$data@3573670507266723599, filterPredicate = (trace_id = varchar '00000000000000000000000000000000')]\n        Layout: [span_id:varchar, span_kind:varchar, duration_ms:double]\n        Estimates: {rows: 0 (0B), cpu: 0, memory: 0B, network: 0B}/{rows: 0 (0B), cpu: 0, memory: 0B, network: 0B}/{rows: 0 (0B), cpu: 0, memory: 0B, network: 0B}\n        CPU: 0.00ns (?%), Scheduled: 0.00ns (?%), Blocked: 0.00ns (?%), Output: 0 rows (0B)\n        Input avg.: 0.00 rows, Input std.dev.: ?%\n        span_kind := 10:span_kind:varchar\n        span_id := 5:span_id:varchar\n        duration_ms := 16:duration_ms:double\n        trace_id := 4:trace_id:varchar\n        Input: 0 rows (0B), Filtered: ?%\n\n"
     ]
   ]
 }

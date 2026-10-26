@@ -7,19 +7,19 @@
     "concept": "Conditional aggregation across UNION ALL of several fact tables",
     "question": "Do any curated rows lack the shared keys every module relies on?",
     "interpretation": "Spark rejects events missing required context, so these should be zero; a non-zero value would indicate a contract change that bypassed validation.",
-    "params": "days=30"
+    "params": "days=2"
   },
-  "elapsed_ms": 140.3,
+  "elapsed_ms": 503.4,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 128,
-    "cpuTimeMillis": 162,
-    "wallTimeMillis": 236,
-    "processedRows": 675920,
-    "processedBytes": 29481768,
-    "physicalInputBytes": 29481768,
-    "peakMemoryBytes": 2243001,
-    "totalSplits": 112
+    "elapsedTimeMillis": 495,
+    "cpuTimeMillis": 2027,
+    "wallTimeMillis": 9003,
+    "processedRows": 3325247,
+    "processedBytes": 128641602,
+    "physicalInputBytes": 128641602,
+    "peakMemoryBytes": 5760,
+    "totalSplits": 195
   },
   "columns": [
     "table_name",
@@ -32,7 +32,7 @@
   "rows": [
     [
       "agent_security_findings",
-      2674,
+      8711,
       0,
       0,
       0,
@@ -40,7 +40,7 @@
     ],
     [
       "agent_run_metrics",
-      45980,
+      226542,
       0,
       0,
       0,
@@ -48,7 +48,7 @@
     ],
     [
       "agent_evaluation_results",
-      324686,
+      1601851,
       0,
       0,
       0,
@@ -56,7 +56,7 @@
     ],
     [
       "agent_spans",
-      302580,
+      1488143,
       0,
       0,
       0,

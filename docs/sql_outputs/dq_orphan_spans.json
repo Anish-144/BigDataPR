@@ -7,19 +7,19 @@
     "concept": "Anti-join (LEFT JOIN ... WHERE right side IS NULL)",
     "question": "Which traces contain spans pointing to a parent that never arrived (or was quarantined)?",
     "interpretation": "Orphans break the trace waterfall. Causes: corrupted parent IDs, or a parent event that was quarantined as structurally invalid (check dead_letter_events for the same trace).",
-    "params": "days=30"
+    "params": "days=2"
   },
-  "elapsed_ms": 906.9,
+  "elapsed_ms": 1326.9,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 968,
-    "cpuTimeMillis": 802,
-    "wallTimeMillis": 1564,
-    "processedRows": 907740,
-    "processedBytes": 34832560,
-    "physicalInputBytes": 25857823,
-    "peakMemoryBytes": 11170166,
-    "totalSplits": 113
+    "elapsedTimeMillis": 1399,
+    "cpuTimeMillis": 5553,
+    "wallTimeMillis": 25708,
+    "processedRows": 5487960,
+    "processedBytes": 130047022,
+    "physicalInputBytes": 130047022,
+    "peakMemoryBytes": 275121747,
+    "totalSplits": 229
   },
   "columns": [
     "test_run_id",
@@ -29,10 +29,40 @@
   ],
   "rows": [
     [
-      "TR-20261009-315910",
-      205,
-      67,
-      "01d9b1700eb498726081963a50a4c37d"
+      "TR-20261010-fb4df8",
+      1483,
+      398,
+      "00f7abaf55d71e99fe79100fdda03948"
+    ],
+    [
+      "TR-20261010-69ab72",
+      371,
+      148,
+      "00f05b18fa75ff43c02b99f01750964c"
+    ],
+    [
+      "TR-20261009-83cb19",
+      113,
+      36,
+      "026ee6aaeb04b9a98dc8a99a6120c6eb"
+    ],
+    [
+      "TR-20261010-e9b86d",
+      80,
+      35,
+      "060c912e86126cbd715f5bbf6bca50c7"
+    ],
+    [
+      "TR-20261010-2fa7eb",
+      80,
+      35,
+      "080e0b30acb96e3f08ed01d84a61f868"
+    ],
+    [
+      "TR-20261009-34bcb1",
+      56,
+      29,
+      "0345f7f3fd00ddcbc47d05dc21910060"
     ]
   ]
 }

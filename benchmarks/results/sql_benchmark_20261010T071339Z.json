@@ -1,0 +1,278 @@
+{
+  "recorded_at": "2026-10-10T07:11:54.514104+00:00",
+  "dataset": {
+    "raw_agent_events": 8961181,
+    "agent_run_metrics": 609878,
+    "agent_spans": 3999817,
+    "daily_agent_summary": 72
+  },
+  "environment": "single-node Trino 467 in Docker (see docs/BENCHMARK_METHODOLOGY.md); NOT a multi-node cluster",
+  "tiers": [
+    {
+      "query": "exp_tier_raw_json",
+      "runs": 5,
+      "wall_ms_median": 1070.5,
+      "wall_ms_min": 969.2,
+      "wall_ms_max": 1127.7,
+      "trino_elapsed_ms_median": 1138,
+      "cpu_ms_median": 3767,
+      "processed_rows": 4584561,
+      "processed_bytes": 326018042,
+      "physical_input_bytes": 326018042,
+      "splits": 112,
+      "scope_days": 3
+    },
+    {
+      "query": "exp_tier_curated",
+      "runs": 5,
+      "wall_ms_median": 114.0,
+      "wall_ms_min": 91.8,
+      "wall_ms_max": 128.0,
+      "trino_elapsed_ms_median": 96,
+      "cpu_ms_median": 135,
+      "processed_rows": 311896,
+      "processed_bytes": 29206232,
+      "physical_input_bytes": 29206232,
+      "splits": 87,
+      "scope_days": 3
+    },
+    {
+      "query": "exp_tier_summary",
+      "runs": 5,
+      "wall_ms_median": 54.9,
+      "wall_ms_min": 45.1,
+      "wall_ms_max": 78.5,
+      "trino_elapsed_ms_median": 44,
+      "cpu_ms_median": 4,
+      "processed_rows": 32,
+      "processed_bytes": 14320,
+      "physical_input_bytes": 14320,
+      "splits": 22,
+      "scope_days": 3
+    },
+    {
+      "query": "exp_tier_raw_json",
+      "error": "EXCEEDED_LOCAL_MEMORY_LIMIT",
+      "error_message": "Query exceeded per-node memory limit of 512MB [Allocated: 508.81MB, Delta: 9.75MB, Top Consumers: {ScanFilterAndProjectOperator=465.15MB, HashAggregationOperator=43.57MB, PagePartitioner=82.91kB}]",
+      "scope_days": 60
+    },
+    {
+      "query": "exp_tier_curated",
+      "runs": 5,
+      "wall_ms_median": 107.8,
+      "wall_ms_min": 97.5,
+      "wall_ms_max": 159.7,
+      "trino_elapsed_ms_median": 107,
+      "cpu_ms_median": 257,
+      "processed_rows": 609878,
+      "processed_bytes": 56839965,
+      "physical_input_bytes": 56839965,
+      "splits": 119,
+      "scope_days": 60
+    },
+    {
+      "query": "exp_tier_summary",
+      "runs": 5,
+      "wall_ms_median": 66.0,
+      "wall_ms_min": 47.6,
+      "wall_ms_max": 68.9,
+      "trino_elapsed_ms_median": 44,
+      "cpu_ms_median": 7,
+      "processed_rows": 72,
+      "processed_bytes": 32304,
+      "physical_input_bytes": 32304,
+      "splits": 27,
+      "scope_days": 60
+    }
+  ],
+  "pruning": [
+    {
+      "query": "with_partition_filter",
+      "runs": 5,
+      "wall_ms_median": 91.0,
+      "wall_ms_min": 69.6,
+      "wall_ms_max": 91.4,
+      "trino_elapsed_ms_median": 63,
+      "cpu_ms_median": 9,
+      "processed_rows": 21121,
+      "processed_bytes": 2007101,
+      "physical_input_bytes": 2007101,
+      "splits": 36
+    },
+    {
+      "query": "without_partition_filter",
+      "runs": 5,
+      "wall_ms_median": 101.2,
+      "wall_ms_min": 94.5,
+      "wall_ms_max": 137.1,
+      "trino_elapsed_ms_median": 79,
+      "cpu_ms_median": 196,
+      "processed_rows": 609878,
+      "processed_bytes": 56839965,
+      "physical_input_bytes": 56839965,
+      "splits": 101
+    }
+  ],
+  "layout": {
+    "variants": {
+      "sorted": {
+        "table": "agent_spans_sorted_by_trace",
+        "session_properties": {
+          "task_concurrency": "4",
+          "task_max_writer_count": "1"
+        },
+        "build_ms": 13384.9,
+        "data_files": 2,
+        "bytes": 53094550
+      },
+      "sorted_small_rowgroups": {
+        "table": "agent_spans_sorted_small_rg",
+        "session_properties": {
+          "task_concurrency": "4",
+          "task_max_writer_count": "1",
+          "lakehouse.parquet_writer_block_size": "1MB"
+        },
+        "build_ms": 12582.5,
+        "data_files": 2,
+        "bytes": 56906062
+      },
+      "unsorted": {
+        "table": "agent_spans",
+        "data_files": 16,
+        "bytes": 51239650
+      }
+    },
+    "lookups": [
+      {
+        "trace_id": "ed0bb3374133196f1a8f1a24ffafcaab",
+        "unsorted": {
+          "wall_ms_median": 74.3,
+          "processed_rows": 680911,
+          "physical_input_bytes": 18480238,
+          "splits": 16
+        },
+        "sorted": {
+          "wall_ms_median": 90.9,
+          "processed_rows": 897073,
+          "physical_input_bytes": 15847911,
+          "splits": 2
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 1792.8,
+          "processed_rows": 3758,
+          "physical_input_bytes": 1028151,
+          "splits": 259
+        }
+      },
+      {
+        "trace_id": "dc599a869fd6dea5d4e18d177271fce1",
+        "unsorted": {
+          "wall_ms_median": 80.3,
+          "processed_rows": 716312,
+          "physical_input_bytes": 19961732,
+          "splits": 16
+        },
+        "sorted": {
+          "wall_ms_median": 107.8,
+          "processed_rows": 897073,
+          "physical_input_bytes": 15847911,
+          "splits": 2
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 1816.5,
+          "processed_rows": 3755,
+          "physical_input_bytes": 1027383,
+          "splits": 259
+        }
+      },
+      {
+        "trace_id": "1bfd2d95b20d5559a56a4f008b3ba3d9",
+        "unsorted": {
+          "wall_ms_median": 82.7,
+          "processed_rows": 680911,
+          "physical_input_bytes": 17950366,
+          "splits": 16
+        },
+        "sorted": {
+          "wall_ms_median": 70.0,
+          "processed_rows": 897073,
+          "physical_input_bytes": 5784736,
+          "splits": 2
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 1790.2,
+          "processed_rows": 3754,
+          "physical_input_bytes": 337845,
+          "splits": 259
+        }
+      },
+      {
+        "trace_id": "21251f8154f0e293dbd72bd5b99c9c86",
+        "unsorted": {
+          "wall_ms_median": 94.5,
+          "processed_rows": 680911,
+          "physical_input_bytes": 17950366,
+          "splits": 16
+        },
+        "sorted": {
+          "wall_ms_median": 109.0,
+          "processed_rows": 897073,
+          "physical_input_bytes": 15847911,
+          "splits": 2
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 1849.6,
+          "processed_rows": 3756,
+          "physical_input_bytes": 1027878,
+          "splits": 259
+        }
+      },
+      {
+        "trace_id": "11bc3e0427b128003b15821acd11c2cd",
+        "unsorted": {
+          "wall_ms_median": 82.8,
+          "processed_rows": 680911,
+          "physical_input_bytes": 17950366,
+          "splits": 16
+        },
+        "sorted": {
+          "wall_ms_median": 77.1,
+          "processed_rows": 897073,
+          "physical_input_bytes": 5784736,
+          "splits": 2
+        },
+        "sorted_small_rowgroups": {
+          "wall_ms_median": 2009.5,
+          "processed_rows": 3754,
+          "physical_input_bytes": 337442,
+          "splits": 259
+        }
+      }
+    ],
+    "window": "event_date >= current_date - INTERVAL '1' DAY",
+    "explain_unsorted": {
+      "scan_inputs": [
+        "680911 rows (6.42MB)",
+        "680911 rows (6.42MB)"
+      ],
+      "plan_excerpt": "    CPU: 774.96ms, Scheduled: 1.08s, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 680911 rows (6.42MB); per task: avg.: 680911.00 std.dev.: 0.00, Output: 4 rows (84B)\n    ScanFilterProject[table = lakehouse:analytics.agent_spans$data@3573670507266723599 constraint on [event_date], filterPredicate = (trace_id = varchar 'ed0bb3374133196f1a8f1a24ffafcaab')]\n        Input: 680911 rows (6.42MB), Filtered: 100.00%, Physical input: 10.76MB, Physical input time: 41.33ms",
+      "splits_mentions": []
+    },
+    "explain_sorted": {
+      "scan_inputs": [
+        "897073 rows (28.24MB)",
+        "897073 rows (28.24MB)"
+      ],
+      "plan_excerpt": "    CPU: 34.99ms, Scheduled: 47.05ms, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 897073 rows (28.24MB); per task: avg.: 897073.00 std.dev.: 0.00, Output: 4 rows (84B)\n    ScanFilterProject[table = lakehouse:analytics.agent_spans_sorted_by_trace$data@7345920503454343905 constraint on [event_date], filterPredicate = (trace_id = varchar 'ed0bb3374133196f1a8f1a24ffafcaab')]\n        Input: 897073 rows (28.24MB), Filtered: 100.00%, Physical input: 11.45MB, Physical input time: 15.82ms",
+      "splits_mentions": []
+    },
+    "explain_sorted_small_rowgroups": {
+      "scan_inputs": [
+        "3758 rows (71.05kB)",
+        "3758 rows (71.05kB)"
+      ],
+      "plan_excerpt": "    CPU: 8.31s, Scheduled: 1.29m, Blocked 0.00ns (Input: 0.00ns, Output: 0.00ns), Input: 3758 rows (71.05kB); per task: avg.: 3758.00 std.dev.: 0.00, Output: 4 rows (84B)\n    ScanFilterProject[table = lakehouse:analytics.agent_spans_sorted_small_rg$data@2258157449119373593 constraint on [event_date], filterPredicate = (trace_id = varchar 'ed0bb3374133196f1a8f1a24ffafcaab')]\n        Input: 3758 rows (71.05kB), Filtered: 99.89%, Physical input: 930.92kB, Physical input time: 70.83ms",
+      "splits_mentions": []
+    }
+  }
+}

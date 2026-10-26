@@ -18,7 +18,7 @@ Open these browser tabs:
 
 | Tab | URL |
 |---|---|
-| Dashboard | http://localhost:3000 |
+| Dashboard | http://localhost:3000 (landing page; open the workbench at http://localhost:3000/app) |
 | Spark UI (Structured Streaming tab) | http://localhost:4040 |
 | Trino UI | http://localhost:8080 (any user name) |
 | MinIO console (bucket `warehouse/analytics`) | http://localhost:9001 |
@@ -63,8 +63,8 @@ Open these browser tabs:
 - `plan_partition_pruning` / `analyze_with_partition_filter`: EXPLAIN and pruning.
 - `security_detection_vs_ground_truth`: UNNEST of labels, a confusion-matrix style query.
 - Show docs/BENCHMARK_REPORT.md for the three-tier result: raw JSON vs curated facts vs summary table. Then the
-  honest negatives: pruning halves bytes read without a latency gain at this size; sorting alone does not help,
-  but sorting with small row groups cuts rows read about 30x.
+  honest negatives: pruning to one day reads ~29x fewer rows but saves only ~10 ms at this size; sorting alone does not help,
+  but sorting with small row groups cuts rows read per trace lookup from ~681k to ~3.8k (about 180x).
 - Mention the decimal-literal pitfall (`1.0` vs `1e0`) found during the project. It is good teaching material.
 
 ## 5. "Faster and cheaper" - is it better? (2 min)

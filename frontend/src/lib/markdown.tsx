@@ -7,6 +7,7 @@
  */
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { appPath } from "./nav";
 
 const TRACE_RE = /^[0-9a-f]{32}$/;
 const RUN_RE = /^R-[0-9a-f]{6}-\d{3,}$/;
@@ -15,9 +16,9 @@ const ALERT_RE = /^A-[0-9a-f]{16}$/;
 
 /** Internal route for a known id, or null. */
 export function idHref(id: string): string | null {
-  if (TRACE_RE.test(id) || RUN_RE.test(id)) return `/runs/${id}`;
-  if (TR_RE.test(id)) return `/testing?run=${encodeURIComponent(id)}`;
-  if (ALERT_RE.test(id)) return `/anomalies?alert=${encodeURIComponent(id)}`;
+  if (TRACE_RE.test(id) || RUN_RE.test(id)) return appPath(`/runs/${id}`);
+  if (TR_RE.test(id)) return appPath(`/testing?run=${encodeURIComponent(id)}`);
+  if (ALERT_RE.test(id)) return appPath(`/anomalies?alert=${encodeURIComponent(id)}`);
   return null;
 }
 

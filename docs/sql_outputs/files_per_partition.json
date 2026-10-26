@@ -8,16 +8,16 @@
     "question": "How many data files does each table/partition have, and how big are they?",
     "interpretation": "Frequent streaming commits create many small files; compaction (sql/09: optimize) rewrites them into fewer, larger files, which reduces per-file open/plan overhead for queries."
   },
-  "elapsed_ms": 143.2,
+  "elapsed_ms": 196.0,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 126,
-    "cpuTimeMillis": 33,
-    "wallTimeMillis": 67,
-    "processedRows": 14,
-    "processedBytes": 121637,
-    "physicalInputBytes": 121637,
-    "peakMemoryBytes": 3680,
+    "elapsedTimeMillis": 199,
+    "cpuTimeMillis": 133,
+    "wallTimeMillis": 153,
+    "processedRows": 173,
+    "processedBytes": 1429205,
+    "physicalInputBytes": 1429205,
+    "peakMemoryBytes": 4016,
     "totalSplits": 100
   },
   "columns": [
@@ -31,67 +31,147 @@
   "rows": [
     [
       "agent_spans",
-      "2026-10-06",
+      "2026-10-02",
       1,
-      15607,
-      0.85,
-      866.1
+      12721,
+      0.7,
+      712.6
+    ],
+    [
+      "agent_spans",
+      "2026-10-03",
+      5,
+      384870,
+      20.87,
+      4275.1
+    ],
+    [
+      "agent_spans",
+      "2026-10-04",
+      9,
+      515345,
+      28.04,
+      3190.8
+    ],
+    [
+      "agent_spans",
+      "2026-10-05",
+      7,
+      515387,
+      28.06,
+      4105.4
+    ],
+    [
+      "agent_spans",
+      "2026-10-06",
+      10,
+      524873,
+      28.64,
+      2933.0
     ],
     [
       "agent_spans",
       "2026-10-07",
-      1,
-      43526,
-      2.36,
-      2414.9
+      10,
+      558478,
+      30.49,
+      3121.8
     ],
     [
       "agent_spans",
       "2026-10-08",
-      2,
-      72064,
-      3.91,
-      2000.3
+      12,
+      591070,
+      32.22,
+      2749.3
     ],
     [
       "agent_spans",
       "2026-10-09",
-      3,
-      171383,
-      9.3,
-      3173.2
+      12,
+      759262,
+      41.35,
+      3528.2
+    ],
+    [
+      "agent_spans",
+      "2026-10-10",
+      4,
+      137811,
+      7.52,
+      1925.1
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-02",
+      1,
+      28292,
+      2.82,
+      2890.2
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-03",
+      5,
+      861928,
+      84.45,
+      17295.9
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-04",
+      9,
+      1154175,
+      113.4,
+      12902.6
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-05",
+      7,
+      1153531,
+      113.51,
+      16605.0
     ],
     [
       "raw_agent_events",
       "2026-10-06",
-      1,
-      34881,
-      3.42,
-      3503.0
+      11,
+      1174368,
+      115.7,
+      10770.8
     ],
     [
       "raw_agent_events",
       "2026-10-07",
-      1,
-      97248,
-      9.67,
-      9905.2
+      11,
+      1250108,
+      123.39,
+      11486.8
     ],
     [
       "raw_agent_events",
       "2026-10-08",
-      2,
-      160660,
-      15.98,
-      8182.3
+      13,
+      1322660,
+      130.39,
+      10270.6
     ],
     [
       "raw_agent_events",
       "2026-10-09",
-      3,
-      383585,
-      37.84,
-      12915.2
+      17,
+      1699690,
+      167.65,
+      10098.3
+    ],
+    [
+      "raw_agent_events",
+      "2026-10-10",
+      29,
+      316429,
+      31.2,
+      1101.6
     ]
   ]
 }

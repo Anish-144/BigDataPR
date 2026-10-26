@@ -67,7 +67,9 @@ GROUP BY event_type;
 -- @concept: JSON functions over the bronze table; full-column reads of raw_value
 -- @question: Daily success rate per agent version, computed directly from raw Kafka payloads.
 -- @interpretation: Must read and parse the large raw_value column for every run.metrics event (slowest tier).
--- @params: days=60
+--   Over the full ~9M-event history this query exceeds the 512 MB per-query memory budget and Trino stops it
+--   (measured by benchmarks/sql_benchmark.py); the curated and summary tiers answer the same question.
+-- @params: days=3
 SELECT
     event_date,
     agent_id,
@@ -86,7 +88,7 @@ ORDER BY event_date, agent_id, agent_version;
 -- @concept: Typed columnar facts, partition pruning
 -- @question: Daily success rate per agent version from agent_run_metrics.
 -- @interpretation: Reads two narrow typed columns (task_success, keys) instead of JSON text.
--- @params: days=60
+-- @params: days=3
 SELECT
     event_date,
     agent_id,
@@ -103,7 +105,7 @@ ORDER BY event_date, agent_id, agent_version;
 -- @concept: Materialised aggregate (one row per day x agent version)
 -- @question: Daily success rate per agent version from daily_agent_summary.
 -- @interpretation: Reads a handful of pre-aggregated rows; freshness depends on the last summary refresh.
--- @params: days=60
+-- @params: days=3
 SELECT
     event_date,
     agent_id,

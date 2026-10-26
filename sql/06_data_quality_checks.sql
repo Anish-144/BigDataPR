@@ -5,6 +5,10 @@
 -- (duplicates, negative durations, orphan spans, clock skew) are kept and
 -- detected here. The integration test asserts these checks find exactly the
 -- number of issues the generator injected.
+--
+-- Checks run incrementally over recent partitions (default 2 days, like the
+-- lakehouse_maintenance DAG). Exact checks over the whole history (~9M events)
+-- exceed the 512 MB per-query budget of the single-node Trino (measured).
 -- =============================================================================
 
 -- @query: dq_scorecard
@@ -13,7 +17,7 @@
 -- @question: How healthy is the curated data overall?
 -- @interpretation: issue_rate_pct is issues / rows checked. Non-zero counts are expected when a scenario injects
 --   dirty data (dirty_rate > 0); compare them with the generator's dirty_injected summary.
--- @params: days=30
+-- @params: days=2
 WITH raw AS (
     SELECT * FROM lakehouse.analytics.raw_agent_events
     WHERE event_date >= current_date - (:days * INTERVAL '1' DAY)
@@ -25,7 +29,9 @@ spans AS (
 checks AS (
     SELECT 'quarantined_records' AS check_name, count_if(NOT is_valid) AS issues, count(*) AS rows_checked FROM raw
     UNION ALL
-    SELECT 'duplicate_event_ids', count(*) - count(DISTINCT event_id), count(*) FROM raw WHERE is_valid
+    -- distinct over a 64-bit hash of event_id instead of the 36-char string: several times less memory;
+    -- P(any collision) for ~10M ids is ~3e-6 (birthday bound n^2 / 2^65)
+    SELECT 'duplicate_event_ids', count(*) - count(DISTINCT xxhash64(to_utf8(event_id))), count(*) FROM raw WHERE is_valid
     UNION ALL
     SELECT 'null_trace_ids_in_spans', count_if(trace_id IS NULL OR span_id IS NULL), count(*) FROM spans
     UNION ALL
@@ -55,7 +61,7 @@ ORDER BY issues DESC;
 -- @question: Do any curated rows lack the shared keys every module relies on?
 -- @interpretation: Spark rejects events missing required context, so these should be zero; a non-zero value would
 --   indicate a contract change that bypassed validation.
--- @params: days=30
+-- @params: days=2
 SELECT 'agent_spans' AS table_name, count(*) AS rows_checked,
        count_if(event_id IS NULL) AS null_event_id, count_if(run_id IS NULL) AS null_run_id,
        count_if(trace_id IS NULL) AS null_trace_id, count_if(agent_id IS NULL) AS null_agent_id
@@ -79,17 +85,17 @@ FROM lakehouse.analytics.agent_security_findings WHERE event_date >= current_dat
 -- @question: Which event IDs were ingested more than once, and on which topics?
 -- @interpretation: Duplicates are expected under at-least-once delivery. Analytical queries that must be exact
 --   can de-duplicate with ROW_NUMBER() OVER (PARTITION BY event_id ...).
--- @params: days=30
+-- @params: days=2
 SELECT
     kafka_topic,
     event_type,
     count(*)            AS duplicated_event_ids,
     sum(copies - 1)     AS extra_copies
 FROM (
-    SELECT event_id, kafka_topic, event_type, count(*) AS copies
+    SELECT xxhash64(to_utf8(event_id)) AS event_key, kafka_topic, event_type, count(*) AS copies
     FROM lakehouse.analytics.raw_agent_events
     WHERE is_valid AND event_date >= current_date - (:days * INTERVAL '1' DAY)
-    GROUP BY event_id, kafka_topic, event_type
+    GROUP BY xxhash64(to_utf8(event_id)), kafka_topic, event_type
     HAVING count(*) > 1
 ) d
 GROUP BY kafka_topic, event_type
@@ -101,7 +107,7 @@ ORDER BY extra_copies DESC;
 -- @question: Which traces contain spans pointing to a parent that never arrived (or was quarantined)?
 -- @interpretation: Orphans break the trace waterfall. Causes: corrupted parent IDs, or a parent event that was
 --   quarantined as structurally invalid (check dead_letter_events for the same trace).
--- @params: days=30
+-- @params: days=2
 SELECT
     c.test_run_id,
     count(*)                    AS orphan_spans,
@@ -121,7 +127,7 @@ ORDER BY orphan_spans DESC;
 -- @concept: Aggregation over the dead-letter table
 -- @question: Why were records rejected by the stream processor, and is the rejection rate stable?
 -- @interpretation: Every rejected record is kept (raw bytes + reason) - nothing is silently dropped.
--- @params: days=30
+-- @params: days=2
 SELECT
     ingest_date,
     validation_error,
@@ -138,7 +144,7 @@ ORDER BY ingest_date DESC, records DESC;
 -- @question: Are event timestamps plausible (ordered, not in the future, inside their test run's window)?
 -- @interpretation: For simulated runs event_time lies in the test run's simulated window; for realtime runs it
 --   lies between started_at and ended_at. Events outside indicate producer clock problems.
--- @params: days=30
+-- @params: days=2
 SELECT
     t.test_run_id,
     t.time_mode,
@@ -160,7 +166,7 @@ ORDER BY runs DESC;
 -- @concept: Join an aggregate of child facts back to the parent fact
 -- @question: Does each run's reported span_count match the spans actually stored?
 -- @interpretation: Mismatches indicate lost or duplicated span events (e.g. a quarantined span or a duplicate).
--- @params: days=30
+-- @params: days=2
 WITH span_counts AS (
     SELECT trace_id, count(DISTINCT span_id) AS stored_spans
     FROM lakehouse.analytics.agent_spans

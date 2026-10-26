@@ -9,17 +9,17 @@
     "interpretation": "Normalising by runs avoids ranking high-volume scenarios as risky just because they are large. critical_findings are weighted separately because they indicate attempted exfiltration / prohibited actions.",
     "params": "days=30"
   },
-  "elapsed_ms": 201.0,
+  "elapsed_ms": 359.9,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 211,
-    "cpuTimeMillis": 61,
-    "wallTimeMillis": 103,
-    "processedRows": 48666,
-    "processedBytes": 4618340,
-    "physicalInputBytes": 4617890,
-    "peakMemoryBytes": 2786952,
-    "totalSplits": 170
+    "elapsedTimeMillis": 374,
+    "cpuTimeMillis": 504,
+    "wallTimeMillis": 1301,
+    "processedRows": 632378,
+    "processedBytes": 58957855,
+    "physicalInputBytes": 58957405,
+    "peakMemoryBytes": 7951315,
+    "totalSplits": 294
   },
   "columns": [
     "scenario_id",
@@ -113,6 +113,26 @@
       1
     ],
     [
+      "benchmark_5000000",
+      "RAG Helpdesk",
+      "2.0.0",
+      43063,
+      4179,
+      470,
+      97.04,
+      1
+    ],
+    [
+      "benchmark_1000000",
+      "RAG Helpdesk",
+      "2.0.0",
+      25809,
+      2490,
+      291,
+      96.48,
+      1
+    ],
+    [
       "baseline",
       "RAG Helpdesk",
       "2.0.0",
@@ -120,7 +140,7 @@
       209,
       24,
       83.94,
-      2
+      1
     ],
     [
       "regression",
@@ -130,7 +150,27 @@
       72,
       0,
       70.38,
-      2
+      1
+    ],
+    [
+      "fault_injection_holdout",
+      "RAG Helpdesk",
+      "2.0.0",
+      1447,
+      101,
+      0,
+      69.8,
+      1
+    ],
+    [
+      "benchmark_1000000",
+      "RAG Helpdesk",
+      "2.1.0",
+      26391,
+      1827,
+      264,
+      69.23,
+      1
     ],
     [
       "baseline",
@@ -140,47 +180,7 @@
       174,
       26,
       68.37,
-      2
-    ],
-    [
-      "fault_injection",
-      "RAG Helpdesk",
-      "2.0.0",
-      1543,
-      91,
-      0,
-      58.98,
-      2
-    ],
-    [
-      "fault_injection",
-      "RAG Helpdesk",
-      "2.1.0",
-      1520,
-      71,
-      0,
-      46.71,
-      2
-    ],
-    [
-      "regression",
-      "RAG Helpdesk",
-      "2.1.0",
-      1008,
-      45,
-      0,
-      44.64,
-      2
-    ],
-    [
-      "baseline",
-      "Planner Agent",
-      "2.0.0",
-      2466,
-      71,
-      27,
-      28.79,
-      2
+      1
     ]
   ]
 }

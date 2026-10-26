@@ -200,10 +200,13 @@ function SparkQueryCard({ name, q }: { name: string; q: SparkQuery }) {
 function DataQuality() {
   const { days } = useDays();
   const q = useDataQuality(days);
+  const applied = q.data?.window?.applied_days ?? days;
   return (
     <Card
       title="Data quality"
-      subtitle={`Quarantine, duplicates, orphan spans, run/span consistency and timestamp checks over the last ${days} day${days > 1 ? "s" : ""}`}
+      subtitle={`Quarantine, duplicates, orphan spans, run/span consistency and timestamp checks over the last ${applied} day${applied > 1 ? "s" : ""}${
+        applied < days ? ` (capped from ${days}: exact checks over full history exceed Trino's per-query memory)` : ""
+      }`}
       actions={
         <button type="button" className="btn btn-sm" onClick={() => q.refetch()} disabled={q.isFetching}>
           <Icon name="refresh" size={14} /> {q.isFetching ? "Running…" : "Re-run"}
@@ -220,16 +223,16 @@ function DataQuality() {
         <ErrorPanel error={q.error} onRetry={() => q.refetch()} />
       ) : q.data ? (
         <div className={`flex flex-col gap-4 ${q.isFetching ? "opacity-70" : ""}`}>
-          {q.data.dq_scorecard && (
+          {q.data.results.dq_scorecard && (
             <ResultCard
-              result={q.data.dq_scorecard}
+              result={q.data.results.dq_scorecard}
               title="Data-quality scorecard"
               subtitle="One row per check. REVIEW/FAIL mark checks above their tolerance - dirty records are injected on purpose by some scenarios."
               render={{ result: (r) => <StatusBadge status={String(r.result).toLowerCase() === "pass" ? "pass" : String(r.result).toLowerCase() === "fail" ? "fail" : "review"} label={String(r.result)} /> }}
             />
           )}
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-            {Object.entries(q.data)
+            {Object.entries(q.data.results)
               .filter(([k]) => k !== "dq_scorecard")
               .map(([k, r]) => (
                 <ResultCard key={k} result={r} maxHeight={280} />

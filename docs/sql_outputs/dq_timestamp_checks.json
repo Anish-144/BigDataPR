@@ -7,19 +7,19 @@
     "concept": "Interval arithmetic, joins to the test-run dimension",
     "question": "Are event timestamps plausible (ordered, not in the future, inside their test run's window)?",
     "interpretation": "For simulated runs event_time lies in the test run's simulated window; for realtime runs it lies between started_at and ended_at. Events outside indicate producer clock problems.",
-    "params": "days=30"
+    "params": "days=2"
   },
-  "elapsed_ms": 280.8,
+  "elapsed_ms": 285.5,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 267,
-    "cpuTimeMillis": 75,
-    "wallTimeMillis": 217,
-    "processedRows": 45988,
-    "processedBytes": 4390077,
-    "physicalInputBytes": 4389397,
-    "peakMemoryBytes": 134728,
-    "totalSplits": 78
+    "elapsedTimeMillis": 296,
+    "cpuTimeMillis": 544,
+    "wallTimeMillis": 1323,
+    "processedRows": 226562,
+    "processedBytes": 21313282,
+    "physicalInputBytes": 21311582,
+    "peakMemoryBytes": 155912,
+    "totalSplits": 104
   },
   "columns": [
     "test_run_id",
@@ -32,16 +32,43 @@
   ],
   "rows": [
     [
-      "TR-20261009-315910",
+      "TR-20261010-69ab72",
       "simulated",
-      19980,
+      112659,
       0,
       0,
       0,
       null
     ],
     [
-      "TR-20261009-12eb56",
+      "TR-20261010-2fa7eb",
+      "simulated",
+      22528,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261010-e9b86d",
+      "simulated",
+      22500,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261009-34bcb1",
+      "simulated",
+      17728,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261009-a92ac1",
       "simulated",
       12000,
       0,
@@ -50,7 +77,25 @@
       null
     ],
     [
-      "TR-20261009-23c1c6",
+      "TR-20261009-5b93e7",
+      "simulated",
+      12000,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261009-83cb19",
+      "simulated",
+      11985,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261009-9b5cf2",
       "simulated",
       8000,
       0,
@@ -59,9 +104,18 @@
       null
     ],
     [
-      "TR-20261009-9b7e8a",
+      "TR-20261009-6312db",
       "simulated",
       6000,
+      0,
+      0,
+      0,
+      null
+    ],
+    [
+      "TR-20261010-fb4df8",
+      "simulated",
+      1142,
       0,
       0,
       0,

@@ -9,17 +9,17 @@
     "interpretation": "Ground truth = injected_faults labels written by the generator (never used by detectors). 'poisoned_document_retrieved' marks runs that retrieved a poisoned KB document without an injected fault - prompt-injection findings there are true detections, not false positives.",
     "params": "days=30"
   },
-  "elapsed_ms": 237.7,
+  "elapsed_ms": 1042.7,
   "stats": {
     "state": "FINISHED",
-    "elapsedTimeMillis": 231,
-    "cpuTimeMillis": 108,
-    "wallTimeMillis": 203,
-    "processedRows": 99841,
-    "processedBytes": 9278559,
-    "physicalInputBytes": 9172158,
-    "peakMemoryBytes": 14001382,
-    "totalSplits": 309
+    "elapsedTimeMillis": 1097,
+    "cpuTimeMillis": 6041,
+    "wallTimeMillis": 12761,
+    "processedRows": 1285892,
+    "processedBytes": 118701786,
+    "physicalInputBytes": 117835779,
+    "peakMemoryBytes": 1766655,
+    "totalSplits": 557
   },
   "columns": [
     "injected_scenario",
@@ -33,57 +33,57 @@
     [
       "exfiltration_sequence",
       "exfiltration_sequence",
-      177,
-      177,
+      1056,
+      1056,
       100.0,
       0
     ],
     [
       "poisoned_document_retrieved",
       "prompt_injection",
-      593,
-      592,
-      99.83,
-      0
+      8033,
+      8025,
+      99.9,
+      9
     ],
     [
       "policy_violation",
       "policy_violation",
-      224,
-      224,
+      1257,
+      1257,
       100.0,
       0
     ],
     [
       "privilege_escalation",
       "privilege_escalation",
-      208,
-      208,
+      1298,
+      1298,
       100.0,
-      0
+      1
     ],
     [
       "prompt_injection",
       "prompt_injection",
-      220,
-      220,
+      1937,
+      1937,
       100.0,
-      0
+      9
     ],
     [
       "sensitive_data_leak",
       "sensitive_data_output",
-      232,
-      232,
+      1300,
+      1300,
       100.0,
       0
     ],
     [
       "suspicious_tool_access",
       "tool_not_allowlisted",
-      194,
-      194,
-      100.0,
+      1789,
+      1787,
+      99.89,
       0
     ]
   ]
