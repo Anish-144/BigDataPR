@@ -1,7 +1,8 @@
 # AgentShield — MongoDB Integration & Architecture Guide (`MONGODB_README.md`)
 
-> **Faculty Viva & Demo Quick Link:** For the comprehensive interactive query reference, copy-paste demonstration script, and Big Data viva defense notes, open:  
-> 👉 [`docs/MONGODB_QUERY_REFERENCE.md`](file:///c:/Users/Tapan/Downloads/BigDataPR/docs/MONGODB_QUERY_REFERENCE.md)
+> **Faculty Viva & Demo Quick Links:**  
+> 📖 **Layman's Guide & Viva Script (Plain English + Real-World Analogies):** 👉 [`docs/MONGODB_LAYMANS_GUIDE.md`](file:///c:/Users/Tapan/Downloads/BigDataPR/docs/MONGODB_LAYMANS_GUIDE.md)  
+> ⚡ **All-In-One Query Reference & Technical Cookbook (Sections A–G):** 👉 [`docs/MONGODB_QUERY_REFERENCE.md`](file:///c:/Users/Tapan/Downloads/BigDataPR/docs/MONGODB_QUERY_REFERENCE.md)
 
 Welcome to the **AgentShield MongoDB Guide**. This document explains **what** MongoDB stores in AgentShield, **why** our Big Data platform uses polyglot persistence, **where** the code lives, and **how** it operates alongside Kafka, Spark, Apache Iceberg, MinIO, Trino, and PostgreSQL.
 
