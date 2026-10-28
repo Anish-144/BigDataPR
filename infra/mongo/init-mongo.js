@@ -187,3 +187,147 @@ casesCol.createIndex(
 );
 
 print("[agentshield-mongo] Successfully initialized security_cases indexes.");
+
+// -----------------------------------------------------------------------------
+// 3. Collection: investigation_sessions with JSON Schema Validation
+// -----------------------------------------------------------------------------
+const sessionsSchema = {
+  $jsonSchema: {
+    bsonType: "object",
+    required: ["session_id", "title", "status", "turn_count", "created_at", "updated_at"],
+    properties: {
+      session_id: {
+        bsonType: "string",
+        pattern: "^SESS-[0-9]{6}-[0-9a-fA-F]{4,8}$",
+        description: "Standardized unique investigation session identifier"
+      },
+      title: {
+        bsonType: "string",
+        minLength: 3,
+        maxLength: 256,
+        description: "Descriptive title for the investigation session"
+      },
+      analyst: {
+        bsonType: "string",
+        pattern: "^[A-Za-z0-9_.\\-]{1,64}$",
+        description: "Username of the analyst running the investigation"
+      },
+      status: {
+        enum: ["ACTIVE", "ARCHIVED", "CLOSED"],
+        description: "Lifecycle state of the investigation session"
+      },
+      scope_context: {
+        bsonType: "object",
+        properties: {
+          test_run_id: { bsonType: ["string", "null"] },
+          run_id: { bsonType: ["string", "null"] },
+          trace_id: { bsonType: ["string", "null"] },
+          agent_id: { bsonType: ["string", "null"] },
+          agent_version: { bsonType: ["string", "null"] },
+          baseline_version: { bsonType: ["string", "null"] }
+        }
+      },
+      turn_count: {
+        bsonType: "int",
+        minimum: 0,
+        maximum: 100,
+        description: "Number of conversation turns in the session"
+      },
+      turns: {
+        bsonType: "array",
+        items: {
+          bsonType: "object",
+          required: ["turn_id", "question", "intent", "mode", "answer", "grounded", "created_at"],
+          properties: {
+            turn_id: { bsonType: "int", minimum: 1 },
+            question: { bsonType: "string", minLength: 1, maxLength: 1000 },
+            intent: { bsonType: "string", minLength: 1, maxLength: 64 },
+            mode: { enum: ["deterministic", "llm"] },
+            grounded: { bsonType: "bool" },
+            answer: { bsonType: "string", minLength: 1 },
+            evidence: {
+              bsonType: "array",
+              items: {
+                bsonType: "object",
+                required: ["kind", "ref", "title"],
+                properties: {
+                  kind: { bsonType: "string" },
+                  ref: { bsonType: "string" },
+                  title: { bsonType: "string" },
+                  detail: { bsonType: "string" }
+                }
+              }
+            },
+            suggested_questions: {
+              bsonType: "array",
+              items: { bsonType: "string" }
+            },
+            feedback: {
+              bsonType: ["object", "null"],
+              properties: {
+                rating: { bsonType: "int", minimum: 1, maximum: 5 },
+                verdict: { enum: ["accurate", "hallucination", "incomplete"] },
+                notes: { bsonType: ["string", "null"], maxLength: 1000 },
+                submitted_at: { bsonType: "date" },
+                submitted_by: { bsonType: "string" }
+              }
+            },
+            created_at: { bsonType: "date" }
+          }
+        }
+      },
+      tags: {
+        bsonType: "array",
+        items: { bsonType: "string" }
+      },
+      created_at: { bsonType: "date" },
+      updated_at: { bsonType: "date" }
+    }
+  }
+};
+
+if (!existingCollections.includes("investigation_sessions")) {
+  dbInstance.createCollection("investigation_sessions", { validator: sessionsSchema });
+  print("[agentshield-mongo] Created collection: investigation_sessions with schema validator");
+} else {
+  dbInstance.runCommand({
+    collMod: "investigation_sessions",
+    validator: sessionsSchema
+  });
+  print("[agentshield-mongo] Updated schema validator on existing collection: investigation_sessions");
+}
+
+// -----------------------------------------------------------------------------
+// 4. Indexes for investigation_sessions
+// -----------------------------------------------------------------------------
+const sessionsCol = dbInstance.getCollection("investigation_sessions");
+
+// Unique business key
+sessionsCol.createIndex({ session_id: 1 }, { unique: true, name: "idx_session_id_unique" });
+
+// Status & recency listing
+sessionsCol.createIndex({ status: 1, updated_at: -1 }, { name: "idx_sessions_status_updated" });
+
+// Analyst filter
+sessionsCol.createIndex({ analyst: 1, updated_at: -1 }, { name: "idx_sessions_analyst" });
+
+// Agent correlation
+sessionsCol.createIndex(
+  { "scope_context.agent_id": 1, "scope_context.agent_version": 1 },
+  { name: "idx_sessions_agent" }
+);
+
+// Test run and trace correlations
+sessionsCol.createIndex({ "scope_context.test_run_id": 1 }, { name: "idx_sessions_test_run" });
+sessionsCol.createIndex({ "scope_context.trace_id": 1 }, { name: "idx_sessions_trace_id" });
+
+// Multikey index on evidence references
+sessionsCol.createIndex({ "turns.evidence.ref": 1 }, { name: "idx_multikey_turns_evidence_ref" });
+
+// Full-text search index across titles, questions, and answers
+sessionsCol.createIndex(
+  { title: "text", "turns.question": "text", "turns.answer": "text" },
+  { name: "idx_text_session_content" }
+);
+
+print("[agentshield-mongo] Successfully initialized investigation_sessions indexes.");

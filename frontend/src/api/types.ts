@@ -589,6 +589,80 @@ export interface InvestigationHistoryItem {
   [k: string]: unknown;
 }
 
+// ---------- investigation sessions (MongoDB) ----------
+export type SessionStatus = "ACTIVE" | "ARCHIVED" | "CLOSED";
+export type TurnVerdict = "accurate" | "hallucination" | "incomplete" | "irrelevant" | "misleading" | string;
+
+export interface TurnFeedback {
+  rating: number; // 1-5
+  verdict: TurnVerdict;
+  notes?: string | null;
+  submitted_at: string;
+  submitted_by?: string | null;
+}
+
+export interface InvestigationTurn {
+  turn_id: number;
+  question: string;
+  intent: string;
+  mode: string;
+  grounded: boolean;
+  answer: string;
+  evidence: Evidence[];
+  suggested_questions: string[];
+  feedback?: TurnFeedback | null;
+  created_at: string;
+}
+
+export interface InvestigationSession {
+  id?: string;
+  session_id: string;
+  title: string;
+  analyst: string;
+  scope_context: InvestigationContext;
+  status: SessionStatus;
+  turn_count: number;
+  turns: InvestigationTurn[];
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SessionAnalytics {
+  total_sessions: number;
+  active_sessions: number;
+  archived_sessions: number;
+  status_breakdown: Record<string, number>;
+  total_turns: number;
+  avg_turns_per_session: number;
+  avg_rating: number | null;
+  ratings_count: number;
+  verdicts_breakdown: Record<string, number>;
+  mode_breakdown: Record<string, number>;
+  grounded_ratio: number;
+  top_intents: { intent: string; count: number }[];
+  session_depth_distribution: { depth_range: string; count: number }[];
+  top_investigated_agents: { agent_id: string; agent_version?: string; sessions: number; total_turns: number }[];
+}
+
+export interface SessionFilters {
+  status?: string;
+  analyst?: string;
+  agent_id?: string;
+  test_run_id?: string;
+  trace_id?: string;
+  search?: string;
+  sort?: "recent" | "updated" | "turns";
+}
+
+export interface PagedSessions {
+  items: InvestigationSession[];
+  total: number;
+  limit: number;
+  offset: number;
+  has_more: boolean;
+}
+
 // ---------- security cases (MongoDB) ----------
 export type CaseStatus = "OPEN" | "TRIAGED" | "IN_REVIEW" | "REMEDIATION_PENDING" | "RESOLVED" | "DISMISSED";
 export type CaseSeverity = "low" | "medium" | "high" | "critical";

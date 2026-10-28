@@ -22,6 +22,7 @@ from common.settings import get_settings
 log = logging.getLogger("agentshield.mongo")
 
 CASES_COLLECTION = "security_cases"
+SESSIONS_COLLECTION = "investigation_sessions"
 
 CASES_SCHEMA: dict[str, Any] = {
     "$jsonSchema": {
@@ -164,6 +165,118 @@ CASES_INDEXES: list[IndexModel] = [
     IndexModel([("title", TEXT), ("timeline.notes", TEXT)], name="idx_text_title_notes"),
 ]
 
+SESSIONS_SCHEMA: dict[str, Any] = {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["session_id", "title", "status", "turn_count", "created_at", "updated_at"],
+        "properties": {
+            "session_id": {
+                "bsonType": "string",
+                "pattern": r"^SESS-[0-9]{6}-[0-9a-fA-F]{4,8}$",
+                "description": "Standardized unique investigation session identifier",
+            },
+            "title": {
+                "bsonType": "string",
+                "minLength": 3,
+                "maxLength": 256,
+                "description": "Descriptive title for the investigation session",
+            },
+            "analyst": {
+                "bsonType": "string",
+                "pattern": r"^[A-Za-z0-9_.\-]{1,64}$",
+                "description": "Username of the analyst running the investigation",
+            },
+            "status": {
+                "enum": ["ACTIVE", "ARCHIVED", "CLOSED"],
+                "description": "Lifecycle state of the investigation session",
+            },
+            "scope_context": {
+                "bsonType": "object",
+                "properties": {
+                    "test_run_id": {"bsonType": ["string", "null"]},
+                    "run_id": {"bsonType": ["string", "null"]},
+                    "trace_id": {"bsonType": ["string", "null"]},
+                    "agent_id": {"bsonType": ["string", "null"]},
+                    "agent_version": {"bsonType": ["string", "null"]},
+                    "baseline_version": {"bsonType": ["string", "null"]},
+                },
+            },
+            "turn_count": {
+                "bsonType": "int",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Number of conversation turns in the session",
+            },
+            "turns": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "required": ["turn_id", "question", "intent", "mode", "answer", "grounded", "created_at"],
+                    "properties": {
+                        "turn_id": {"bsonType": "int", "minimum": 1},
+                        "question": {"bsonType": "string", "minLength": 1, "maxLength": 1000},
+                        "intent": {"bsonType": "string", "minLength": 1, "maxLength": 64},
+                        "mode": {"enum": ["deterministic", "llm"]},
+                        "grounded": {"bsonType": "bool"},
+                        "answer": {"bsonType": "string", "minLength": 1},
+                        "evidence": {
+                            "bsonType": "array",
+                            "items": {
+                                "bsonType": "object",
+                                "required": ["kind", "ref", "title"],
+                                "properties": {
+                                    "kind": {"bsonType": "string"},
+                                    "ref": {"bsonType": "string"},
+                                    "title": {"bsonType": "string"},
+                                    "detail": {"bsonType": "string"},
+                                },
+                            },
+                        },
+                        "suggested_questions": {
+                            "bsonType": "array",
+                            "items": {"bsonType": "string"},
+                        },
+                        "feedback": {
+                            "bsonType": ["object", "null"],
+                            "properties": {
+                                "rating": {"bsonType": "int", "minimum": 1, "maximum": 5},
+                                "verdict": {"enum": ["accurate", "hallucination", "incomplete"]},
+                                "notes": {"bsonType": ["string", "null"], "maxLength": 1000},
+                                "submitted_at": {"bsonType": "date"},
+                                "submitted_by": {"bsonType": "string"},
+                            },
+                        },
+                        "created_at": {"bsonType": "date"},
+                    },
+                },
+            },
+            "tags": {
+                "bsonType": "array",
+                "items": {"bsonType": "string"},
+            },
+            "created_at": {"bsonType": "date"},
+            "updated_at": {"bsonType": "date"},
+        },
+    }
+}
+
+SESSIONS_INDEXES: list[IndexModel] = [
+    IndexModel([("session_id", ASCENDING)], unique=True, name="idx_session_id_unique"),
+    IndexModel([("status", ASCENDING), ("updated_at", DESCENDING)], name="idx_sessions_status_updated"),
+    IndexModel([("analyst", ASCENDING), ("updated_at", DESCENDING)], name="idx_sessions_analyst"),
+    IndexModel(
+        [("scope_context.agent_id", ASCENDING), ("scope_context.agent_version", ASCENDING)],
+        name="idx_sessions_agent",
+    ),
+    IndexModel([("scope_context.test_run_id", ASCENDING)], name="idx_sessions_test_run"),
+    IndexModel([("scope_context.trace_id", ASCENDING)], name="idx_sessions_trace_id"),
+    IndexModel([("turns.evidence.ref", ASCENDING)], name="idx_multikey_turns_evidence_ref"),
+    IndexModel(
+        [("title", TEXT), ("turns.question", TEXT), ("turns.answer", TEXT)],
+        name="idx_text_session_content",
+    ),
+]
+
 
 @lru_cache(maxsize=1)
 def get_mongo_client() -> MongoClient:
@@ -201,8 +314,13 @@ def get_cases_collection() -> Collection:
     return get_mongo_db()[CASES_COLLECTION]
 
 
+def get_sessions_collection() -> Collection:
+    """Return the investigation_sessions collection."""
+    return get_mongo_db()[SESSIONS_COLLECTION]
+
+
 def init_mongo() -> None:
-    """Idempotently initialize MongoDB collection, schema validation, and indexes.
+    """Idempotently initialize MongoDB collections, schema validation, and indexes.
 
     Degrades gracefully: if MongoDB is offline or unreachable at startup, logs
     an error without crashing the application process.
@@ -214,6 +332,8 @@ def init_mongo() -> None:
         db = get_mongo_db()
 
         existing = db.list_collection_names()
+
+        # 1. security_cases collection
         if CASES_COLLECTION not in existing:
             db.create_collection(CASES_COLLECTION, validator=CASES_SCHEMA)
             log.info("created MongoDB collection '%s' with $jsonSchema validation", CASES_COLLECTION)
@@ -223,9 +343,24 @@ def init_mongo() -> None:
             except Exception as exc:
                 log.warning("could not update validator on collection '%s': %s", CASES_COLLECTION, exc)
 
-        col = db[CASES_COLLECTION]
-        col.create_indexes(CASES_INDEXES)
+        col_cases = db[CASES_COLLECTION]
+        col_cases.create_indexes(CASES_INDEXES)
         log.info("verified %d indexes on collection '%s'", len(CASES_INDEXES), CASES_COLLECTION)
+
+        # 2. investigation_sessions collection
+        if SESSIONS_COLLECTION not in existing:
+            db.create_collection(SESSIONS_COLLECTION, validator=SESSIONS_SCHEMA)
+            log.info("created MongoDB collection '%s' with $jsonSchema validation", SESSIONS_COLLECTION)
+        else:
+            try:
+                db.command("collMod", SESSIONS_COLLECTION, validator=SESSIONS_SCHEMA)
+            except Exception as exc:
+                log.warning("could not update validator on collection '%s': %s", SESSIONS_COLLECTION, exc)
+
+        col_sess = db[SESSIONS_COLLECTION]
+        col_sess.create_indexes(SESSIONS_INDEXES)
+        log.info("verified %d indexes on collection '%s'", len(SESSIONS_INDEXES), SESSIONS_COLLECTION)
+
     except (PyMongoError, ServerSelectionTimeoutError, Exception) as exc:
         log.warning("MongoDB unavailable during init_mongo (operating in degraded mode): %s", exc)
 
@@ -241,6 +376,7 @@ def check_mongo_health() -> dict[str, Any]:
         db = get_mongo_db()
         cols = db.list_collection_names()
         cases_count = db[CASES_COLLECTION].count_documents({}) if CASES_COLLECTION in cols else 0
+        sessions_count = db[SESSIONS_COLLECTION].count_documents({}) if SESSIONS_COLLECTION in cols else 0
 
         return {
             "status": "ok",
@@ -248,6 +384,7 @@ def check_mongo_health() -> dict[str, Any]:
             "database": db.name,
             "collections": sorted(cols),
             "cases_count": cases_count,
+            "sessions_count": sessions_count,
         }
     except Exception as exc:
         return {

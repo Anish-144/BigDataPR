@@ -15,9 +15,12 @@ import type {
   InvestigationContext,
   InvestigationHistoryItem,
   InvestigationResponse,
+  InvestigationSession,
+  InvestigationTurn,
   LinkedFinding,
   Overview,
   Paged,
+  PagedSessions,
   PipelineHealth,
   QueryResult,
   RunRow,
@@ -25,12 +28,15 @@ import type {
   SecurityCase,
   SecurityPolicy,
   SecuritySummary,
+  SessionAnalytics,
+  SessionFilters,
   SqlShowcase,
   StartTestRunResponse,
   TestRunDetail,
   TestRunList,
   TimelineEntry,
   Trace,
+  TurnFeedback,
 } from "./types";
 
 type QR = QueryResult;
@@ -234,9 +240,156 @@ export const useInvestigationHistory = (limit = 20) =>
 export const useInvestigate = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { question: string; context: InvestigationContext }) =>
+    mutationFn: (body: { question: string; context: InvestigationContext; session_id?: string }) =>
       api<InvestigationResponse>("/api/v1/investigations", { method: "POST", body }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["inv-history"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["inv-history"] });
+      qc.invalidateQueries({ queryKey: ["inv-sessions"] });
+    },
+  });
+};
+
+// ---------- investigation sessions (MongoDB) ----------
+export const useInvestigationSessions = (filters: SessionFilters = {}, limit = 50, offset = 0) =>
+  useQuery({
+    queryKey: ["inv-sessions", filters, limit, offset],
+    queryFn: () => api<PagedSessions>(`/api/v1/investigations/sessions${qs({ ...filters, limit, offset })}`),
+    placeholderData: keepPreviousData,
+  });
+
+export const useInvestigationSession = (sessionId: string | null) =>
+  useQuery({
+    queryKey: ["inv-session", sessionId],
+    queryFn: () => api<InvestigationSession>(`/api/v1/investigations/sessions/${encodeURIComponent(sessionId!)}`),
+    enabled: !!sessionId,
+  });
+
+export const useSessionAnalytics = () =>
+  useQuery({
+    queryKey: ["inv-session-analytics"],
+    queryFn: () => api<SessionAnalytics>("/api/v1/investigations/sessions/summary/analytics"),
+    staleTime: 60_000,
+  });
+
+export const useCreateSession = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      title?: string;
+      analyst?: string;
+      scope_context?: InvestigationContext;
+      initial_question?: string;
+      tags?: string[];
+      use_llm?: boolean;
+    }) =>
+      api<InvestigationSession>("/api/v1/investigations/sessions", {
+        method: "POST",
+        body,
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["inv-sessions"] });
+      qc.invalidateQueries({ queryKey: ["inv-session-analytics"] });
+    },
+  });
+};
+
+export const useAddSessionTurn = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      sessionId,
+      question,
+      contextOverride,
+      useLlm,
+    }: {
+      sessionId: string;
+      question: string;
+      contextOverride?: InvestigationContext;
+      useLlm?: boolean;
+    }) =>
+      api<{ session_id: string; turn: InvestigationTurn; turn_count: number }>(
+        `/api/v1/investigations/sessions/${encodeURIComponent(sessionId)}/turns`,
+        {
+          method: "POST",
+          body: {
+            question,
+            context_override: contextOverride,
+            use_llm: useLlm ?? false,
+          },
+        }
+      ),
+    onSuccess: (_d, v) => {
+      qc.invalidateQueries({ queryKey: ["inv-session", v.sessionId] });
+      qc.invalidateQueries({ queryKey: ["inv-sessions"] });
+      qc.invalidateQueries({ queryKey: ["inv-session-analytics"] });
+      qc.invalidateQueries({ queryKey: ["inv-history"] });
+    },
+  });
+};
+
+export const useSubmitTurnFeedback = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      sessionId,
+      turnId,
+      rating,
+      verdict,
+      notes,
+      submittedBy,
+    }: {
+      sessionId: string;
+      turnId: number;
+      rating: number;
+      verdict: string;
+      notes?: string;
+      submittedBy?: string;
+    }) =>
+      api<{ session_id: string; turn_id: number; feedback: TurnFeedback }>(
+        `/api/v1/investigations/sessions/${encodeURIComponent(sessionId)}/turns/${turnId}/feedback`,
+        {
+          method: "PATCH",
+          body: {
+            rating,
+            verdict,
+            notes: notes || null,
+            submitted_by: submittedBy,
+          },
+        }
+      ),
+    onSuccess: (_d, v) => {
+      qc.invalidateQueries({ queryKey: ["inv-session", v.sessionId] });
+      qc.invalidateQueries({ queryKey: ["inv-session-analytics"] });
+    },
+  });
+};
+
+export const useUpdateSession = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      sessionId,
+      title,
+      status,
+      tags,
+    }: {
+      sessionId: string;
+      title?: string;
+      status?: "ACTIVE" | "ARCHIVED" | "CLOSED";
+      tags?: string[];
+    }) =>
+      api<InvestigationSession>(
+        `/api/v1/investigations/sessions/${encodeURIComponent(sessionId)}`,
+        {
+          method: "PATCH",
+          body: { title, status, tags },
+        }
+      ),
+    onSuccess: (_d, v) => {
+      qc.invalidateQueries({ queryKey: ["inv-session", v.sessionId] });
+      qc.invalidateQueries({ queryKey: ["inv-sessions"] });
+      qc.invalidateQueries({ queryKey: ["inv-session-analytics"] });
+    },
   });
 };
 

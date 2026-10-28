@@ -1,53 +1,58 @@
-# AgentShield — MongoDB Integration Guide (`MONGODB_README.md`)
+# AgentShield — MongoDB Integration & Architecture Guide (`MONGODB_README.md`)
 
-Welcome to the **AgentShield MongoDB Guide**. If you are new to this part of the project, this document explains **what** we added, **why** we added it, **where** the code lives, and **how** it works in our big data platform.
+> **Faculty Viva & Demo Quick Link:** For the comprehensive interactive query reference, copy-paste demonstration script, and Big Data viva defense notes, open:  
+> 👉 [`docs/MONGODB_QUERY_REFERENCE.md`](file:///c:/Users/Tapan/Downloads/BigDataPR/docs/MONGODB_QUERY_REFERENCE.md)
+
+Welcome to the **AgentShield MongoDB Guide**. This document explains **what** MongoDB stores in AgentShield, **why** our Big Data platform uses polyglot persistence, **where** the code lives, and **how** it operates alongside Kafka, Spark, Apache Iceberg, MinIO, Trino, and PostgreSQL.
 
 ---
 
 ## 1. Overview
 
-### What is MongoDB?
-MongoDB is an open-source, document-oriented NoSQL database. Instead of storing data in rigid rows and columns like a traditional relational database (SQL), MongoDB stores records as flexible, JSON-like BSON (Binary JSON) documents. Documents can contain nested sub-objects and arrays, allowing related information to be stored together in a single document.
+### What is MongoDB in AgentShield?
+MongoDB 7.0 is our operational NoSQL document database, configured with the WiredTiger storage engine and enforced via `$jsonSchema` validation. It manages two high-value operational collections:
+1. **`security_cases`**: Operational security incident triage, collaborative timelines, polymorphic evidence bundles, and MTTR compliance.
+2. **`investigation_sessions`**: AI Investigation Assistant conversational multi-turn session memory, lakehouse evidence references, and model evaluation feedback store.
 
-### Why Did We Add MongoDB to AgentShield?
+### Why Polyglot Persistence?
 1. **Academic & Big Data Curriculum Requirement:**
-   In modern Big Data engineering, no single database engine satisfies every workload. Our coursework requires demonstrating **Polyglot Persistence**—combining an analytical lakehouse (OLAP) with a document-oriented operational database (NoSQL) to handle different data velocities, access patterns, and mutation lifecycles.
-2. **Operational Incident Management:**
-   While Apache Iceberg stores raw, immutable telemetry traces at scale, security engineers need a mutable, collaborative operational workspace to triage security findings, assign analysts, record forensic observations, attach polymorphic evidence, and track remediation. MongoDB provides the ideal document store for this operational lifecycle.
+   Modern Big Data architectures require demonstrating **Polyglot Persistence**—pairing an analytical lakehouse (OLAP) with a document-oriented operational database (NoSQL) to handle different data velocities, access patterns, and mutation lifecycles.
+2. **Operational Document Mutation vs. Columnar Lakehouse:**
+   While Apache Iceberg stores raw, immutable telemetry at scale, analysts need sub-millisecond atomic document updates (`$set`, `$push`, `$inc`, `arrayFilters`) for incident management and multi-turn AI dialogues without triggering expensive Iceberg commit cycles.
 
 ---
 
-## 2. Before vs. After
+## 2. Before vs. After MongoDB Integration
 
 ### Before MongoDB Integration
 - AgentShield collected agent telemetry through Kafka, processed streams in Spark Structured Streaming, and committed immutable Parquet files to Apache Iceberg on MinIO.
-- Security findings (such as prompt injections or disallowed tool calls) were queried via Trino as static historical analytical facts.
-- **Problem:** Security analysts had no way to create mutable incident cases, assign owners, append investigation notes, attach evidence payloads, or track remediation workflows. Iceberg is designed for append-only analytical queries, not low-latency interactive document mutations.
+- Security findings and investigation queries were queried via Trino or stored as flat historical logs in PostgreSQL.
+- **Problem:** Security analysts had no way to conduct multi-turn investigations, save assistant conversation memory, submit turn-level evaluation feedback, or track remediation workflows in real-time.
 
 ### After MongoDB Integration
-- Telemetry facts remain safely stored in Apache Iceberg for analytical integrity.
-- High-risk findings and anomaly alerts can be escalated with one click into **Operational Security Cases** stored in MongoDB 7.0.
-- Analysts collaborate on cases through an append-only timeline, attach polymorphic evidence artifacts, assign triage priorities, and verify policy changes before resolving incidents.
+- Telemetry facts remain safely stored in Apache Iceberg for analytical integrity (Zero Data Duplication).
+- Security findings can be escalated into **Operational Security Cases** (`security_cases`).
+- Analysts conduct multi-turn troubleshooting with preserved context and evaluation feedback in **Investigation Sessions** (`investigation_sessions`).
 
 ### Capability Comparison Table
 
-| Feature / Dimension | Before (Iceberg + Trino Only) | After (Iceberg + MongoDB Integration) |
+| Feature / Dimension | Before (Iceberg + Postgres Only) | After (Iceberg + MongoDB Integration) |
 |---|---|---|
-| **Storage Architecture** | OLAP Lakehouse only (Parquet on MinIO via Iceberg) | **Polyglot Persistence**: OLAP Lakehouse (Iceberg) + NoSQL Document Store (MongoDB) |
-| **Security Finding Handling** | Read-only detection facts in lakehouse tables | Findings can be escalated into mutable operational cases |
-| **Data Mutability** | Append-only batch commits (high latency for single updates) | Sub-millisecond atomic document updates (`$set`, `$push`, `$addToSet`) |
-| **Analyst Collaboration** | None; external tracking required | In-app collaborative timeline with author signatures and timestamps |
-| **Evidence Attachment** | Rigid columnar schema; arbitrary payloads difficult to store | Polymorphic evidence bundles (`canary_leak`, `tool_trace`, `policy_denial`, `log_diff`) |
-| **Operational Metrics** | SQL batch scans for finding counts | Live MongoDB aggregation pipelines computing caseload, SLA breaches, and MTTR |
-| **Data Integrity** | Table schemas enforced by Iceberg | Operational document structure enforced by MongoDB `$jsonSchema` validation |
+| **Storage Architecture** | OLAP Lakehouse + Relational DB | **Polyglot Persistence**: OLAP (Iceberg) + RDBMS (Postgres) + NoSQL (MongoDB 7.0) |
+| **Security Finding Handling** | Read-only detection facts in lakehouse tables | Findings escalated into mutable operational cases |
+| **AI Assistant Memory** | Stateless or single-turn flat Postgres rows | Persistent multi-turn dialogues in `investigation_sessions` |
+| **Data Mutability** | Append-only batch commits | Sub-millisecond atomic document updates (`$set`, `$push`, `$inc`) |
+| **Turn-Level Evaluation** | None | Surgical feedback ratings & verdicts using `arrayFilters` |
+| **Operational Metrics** | SQL batch scans on lakehouse | Live MongoDB aggregation pipelines (`$facet`, `$bucket`, `$group`) |
+| **Data Integrity** | Table schemas in Iceberg/Postgres | Document schema enforced by MongoDB engine `$jsonSchema` |
 
 ---
 
 ## 3. What MongoDB Does in AgentShield
 
-MongoDB powers **Candidate B: Operational Security Findings, Investigation Cases & Collaborative Remediation Store**.
+MongoDB powers two operational capabilities:
 
-Here is what the feature provides:
+### Capability 1: Operational Security Cases (`security_cases`)
 
 1. **Security Case Management:**
    A case represents an active security investigation (e.g. unauthorized egress attempt or synthetic canary token leak). Cases maintain standardized IDs (e.g. `CASE-202610-0042`), titles, severities (`low`, `medium`, `high`, `critical`), and operational priorities (`P1`–`P4`).
@@ -64,6 +69,19 @@ Here is what the feature provides:
    Tracks recommended policy actions (e.g., `DROP_TOOL_PERMISSIONS`, `REVOKE_EGRESS_CAPABILITY`), target tool names, and policy configuration files (`config/policies.yaml`). A case can be marked resolved only when remediation is verified.
 7. **Telemetry Correlation (No Data Duplication):**
    Raw telemetry rows remain in Iceberg. MongoDB documents store references to `finding_id` and `trace_id`. The UI provides direct links back to the lakehouse trace waterfall (`/app/runs/{trace_id}`).
+
+### Capability 2: AI Assistant Multi-Turn Session Memory & Evaluation Store (`investigation_sessions`)
+
+1. **Stateful Multi-Turn Dialogues:**
+   Maintains conversational memory across turns for specific security investigations. Sessions maintain persistent IDs (e.g. `SES-20261028-4A9B1C`), titles, assigned analysts, and scoped context (`test_run_id`, `trace_id`, `agent_id`).
+2. **Atomic In-Place Append:**
+   Follow-up questions and grounded answers are appended to the document's `turns` array using MongoDB's atomic `$push` and `$inc` operators without rewriting the conversation.
+3. **Structured Lakehouse Evidence Referencing:**
+   Each turn records structured evidence links pointing back to Iceberg lakehouse traces and SQL showcase queries without duplicating telemetry payloads.
+4. **Surgical Turn Evaluation with `arrayFilters`:**
+   Analysts submit 1–5 star ratings, verdicts (`accurate`, `hallucination`, `incomplete`, `irrelevant`, `misleading`), and forensic review notes. Updates target *only* the specific turn subdocument via MongoDB's `arrayFilters` operator (`$[elem]`).
+5. **Real-Time Evaluation Analytics:**
+   Multi-branch aggregation pipelines (`$facet`, `$bucket`, `$unwind`) aggregate model accuracy, groundedness ratio, and session depth distributions in a single database round-trip.
 
 ---
 
